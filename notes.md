@@ -22,3 +22,10 @@
 
 ## Fornecedores e Transportadoras:
 - [] Detalhes específicos de fornecedores e transportadoras (ID, nome, localização, tipo de serviço oferecido, etc.).
+
+The four primary transportation management functions include:
+- transportation planning
+- freight
+- inventory
+- performance management
+- Reports
