@@ -1,13 +1,24 @@
+import {useEffect, useState} from 'react'
 import { useParams } from 'react-router-dom';
 import { Link } from 'react-router-dom';
 import { Row, Col, ListGroup, Card, Form } from 'react-bootstrap';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
-import loads from '../loads';
+import axios from 'axios'
 
 const LoadScreen = () => {
+  const [load, setLoad] = useState(null);
+
   const { id: loadId } = useParams();
-  const load = loads.find((l) => l._id === Number(loadId));
+
+  useEffect(() => {
+    const fetchLoad = async () => {
+      const {data} = await axios.get(`/api/loads/${loadId}`);
+      setLoad(data);
+    }
+
+    fetchLoad()
+  }, [loadId])
 
   if (!load) {
     return <div>Load not found</div>;
@@ -81,7 +92,7 @@ const LoadScreen = () => {
         </Col>
         <Col md={4}>
           <ListGroup.Item style={{ fontSize: '0.875rem' }}>
-            <strong>Freight Cost:</strong> $ {load.freightCost || 'N/A'}
+            <strong>Freight Cost:</strong> $ {load.totalFreightCost || 'N/A'}
           </ListGroup.Item>
         </Col>
       </Row>
@@ -102,7 +113,7 @@ const LoadScreen = () => {
       <Row className="mb-3">
         <Col md={4}>
           <ListGroup.Item style={{ fontSize: '0.875rem' }}>
-            <strong>Vehicle Number:</strong> {load.vehicleNumber || 'N/A'}
+            <strong>License Plate:</strong> {load.licensePlate || 'N/A'}
           </ListGroup.Item>
         </Col>
         <Col md={4}>

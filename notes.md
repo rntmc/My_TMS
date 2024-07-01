@@ -12,7 +12,7 @@
 
 ## Autenticação e Autenticação de Usuário:
 - [] Estado de autenticação (autenticado, não autenticado).
-- [] Detalhes do usuário autenticado (ID, nome de usuário, papel, etc.).
+- [] Detalhes do usuário autenticado (ID, nome de usuário, role, etc.).
 
 ## Status de Transporte:
 - [] Estado de transporte para rastreamento (ID de transporte, status atual, histórico de eventos, etc.).

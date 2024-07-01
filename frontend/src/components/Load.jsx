@@ -1,8 +1,26 @@
+import { useState, useEffect } from 'react'
 import {Table} from 'react-bootstrap'
 import { Link } from 'react-router-dom'
-import loads from '../loads'
+import axios from 'axios'
 
-const Load = ({ load }) => {
+
+const Load = () => {
+  const [loads, setLoads] = useState([])
+
+
+  useEffect(() => {
+    const fetchLoads = async () => {
+      try {
+        const {data} = await axios.get('/api/loads');
+        setLoads(data); 
+      } catch (error) {
+        console.error('Error fetching loads:', error);
+      }
+    };
+
+    fetchLoads();
+  }, [])
+
   return (
     <>
       <Table striped hover responsive className='table-sm'>
@@ -28,7 +46,7 @@ const Load = ({ load }) => {
               <td>
                 {load.orders.map((order, index) => (
                   <span key={index}>
-                    <Link to={`/load/${order}`}>{order}</Link>
+                    <Link to={`/order/${order}`}>{order}</Link>
                     {index !== load.orders.length - 1 && ', '}
                   </span>
                 ))}
