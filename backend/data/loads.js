@@ -1,5 +1,6 @@
 const loads = [
   {
+    loadId: 1,
     pickupDate: '01/05/2024',
     deliveryDate: '10/05/2024',
     origin: {
@@ -30,6 +31,7 @@ const loads = [
     status: 'Collected'
   },
   {
+    loadId: 2,
     pickupDate: '05/05/2024',
     deliveryDate: '10/05/2024',
     origin: {

@@ -2,6 +2,11 @@ import mongoose from "mongoose";
 import addressSchema from './addressModel.js';
 
 const loadSchema = new mongoose.Schema({
+  loadId: {
+    type: Number,
+    unique: true,
+    required: true,
+  },
   pickupDate: {
     type: Date,
     required: true

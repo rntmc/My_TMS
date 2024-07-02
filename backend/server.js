@@ -2,7 +2,8 @@ import express from 'express'
 import dotenv from 'dotenv'
 dotenv.config();
 import connectDB from './config/db.js';
-import loads from './data/loads.js';
+import {notFound, errorHandler} from './middleware/errorMiddleware.js'
+import loadRoutes from './routes/loadRoutes.js'
 
 const port = process.env.PORT || 5000;
 
@@ -14,13 +15,9 @@ app.get('/', (req, res) => {
   res.send('API is running...')
 })
 
-app.get('/api/loads', (req, res) => {
-  res.json(loads)
-})
+app.use('/api/loads', loadRoutes)
 
-app.get('/api/loads/:id', (req, res) => {
-  const load = loads.find((l) => l._id === Number(req.params.id));
-  res.json(load)
-})
+app.use(notFound)
+app.use(errorHandler)
 
 app.listen(port, () => console.log(`Server running on port ${port}`))

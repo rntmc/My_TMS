@@ -12,6 +12,7 @@ const Load = () => {
     const fetchLoads = async () => {
       try {
         const {data} = await axios.get('/api/loads');
+        console.log(data)
         setLoads(data); 
       } catch (error) {
         console.error('Error fetching loads:', error);
@@ -39,10 +40,10 @@ const Load = () => {
         </thead>
         <tbody>
           {loads.map((load) => (
-            <tr key={load._id}>
-              <td><Link to={`/load/${load._id}`}>{load._id}</Link></td>
-              <td>{load.origin}</td>
-              <td>{load.destination}</td>
+            <tr key={load.loadId}>
+              <td><Link to={`/load/${load._id}`}>{load.loadId}</Link></td>
+              <td>{load.origin.city}</td>
+              <td>{load.destination.city}</td>
               <td>
                 {load.orders.map((order, index) => (
                   <span key={index}>
@@ -52,8 +53,8 @@ const Load = () => {
                 ))}
               </td>
               <td>{load.carrier}</td>
-              <td>{load.method}</td>
-              <td>$ {load.freightCost}</td>
+              <td>{load.transportType}</td>
+              <td>$ {load.totalFreightCost}</td>
               <td>{load.status}</td>
             </tr>
           ))}

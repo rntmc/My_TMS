@@ -8,12 +8,12 @@ import axios from 'axios'
 
 const LoadScreen = () => {
   const [load, setLoad] = useState(null);
-
   const { id: loadId } = useParams();
 
   useEffect(() => {
     const fetchLoad = async () => {
       const {data} = await axios.get(`/api/loads/${loadId}`);
+      console.log(data)
       setLoad(data);
     }
 
@@ -32,7 +32,7 @@ const LoadScreen = () => {
 
       <Row className="my-3">
         <ListGroup style={{ fontSize: '0.875rem' }}>
-          <h3>Load Number: {load._id}</h3>
+          <h3>Load Number: {load.loadId}</h3>
         </ListGroup>
       </Row>
 
@@ -56,12 +56,12 @@ const LoadScreen = () => {
       <Row className="mb-3">
         <Col md={4}>
           <ListGroup.Item style={{ fontSize: '0.875rem' }}>
-            <strong>Origin:</strong> {load.origin || 'N/A'}
+            <strong>Origin:</strong> {`${load.origin.address}, ${load.origin.city}, ${load.origin.state}`}
           </ListGroup.Item>
         </Col>
         <Col md={4}>
           <ListGroup.Item style={{ fontSize: '0.875rem' }}>
-            <strong>Destination:</strong> {load.destination || 'N/A'}
+            <strong>Destination:</strong> {`${load.destination.address}, ${load.destination.city}, ${load.destination.state}`}
           </ListGroup.Item>
         </Col>
       </Row>

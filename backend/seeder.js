@@ -24,9 +24,14 @@ const importData = async () => {
 
     const createdUsers = await User.insertMany(users);
     const createdCarriers = await Carrier.insertMany(carriers);
-    const createdOrders = await Order.insertMany(orders);
     
     const adminUser = createdUsers.find(user => user.isAdmin);
+    
+    const sampleOrders = orders.map((order) => {
+      return {...order, user:adminUser}
+    })
+    
+    const createdOrders = await Order.insertMany(sampleOrders);
 
     const sampleLoads = loads.map((load) => {
       const carrier = createdCarriers.find(carrier => carrier.name === load.carrier);
