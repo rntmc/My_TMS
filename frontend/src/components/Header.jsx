@@ -2,7 +2,6 @@ import {Navbar, Nav, Container} from 'react-bootstrap';
 import {FaTruckPlane, FaUser} from 'react-icons/fa6';
 import {LinkContainer} from 'react-router-bootstrap'
 import logo4 from '../assets/logo4.jpg'
-import { Link } from 'react-router-dom';
 
 const Header = () => {
   return (

@@ -1,27 +1,30 @@
-import { useEffect, useState } from 'react'
-import axios from 'axios'
 import {Row} from 'react-bootstrap'
 import Load from '../components/Load'
+import Loader from '../components/Loader'
+import Message from '../components/Message'
+import { useGetLoadsQuery } from '../slices/loadsApiSlice'
 
 
 const HomeScreen = () => {
-  const [loads, setLoads] = useState([])
-
-  useEffect(() => {
-    const fetchLoads = async () => {
-      const {data} = await axios.get('/api/loads');
-      setLoads(data)
-    };
-
-    fetchLoads()
-  }, [])
+  const {data: loads, isLoading, error} = useGetLoadsQuery()
 
   return (
     <>
-      <h1>Loads</h1>
+    { isLoading ? (
+      <Loader/>
+    ) : error ? (
+      <Message variant='danger'>
+        {error?.data?.message || error.error}
+      </Message>
+    ) : (
+      <>
+        <h1>Loads</h1>
         <Row>
           <Load loads={loads} />
         </Row>
+      </>
+    )}
+      
     </>
   )
 }
