@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-import addressSchema from './addressSchema.js';
+import addressSchema from './addressModel.js';
 
 const orderSchema = new mongoose.Schema({
   orderId: {
@@ -41,6 +41,10 @@ const orderSchema = new mongoose.Schema({
     type: Boolean,
     default: false
   },
+  user: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User',  // Optional, if you want to track which user created or manages the order
+  }
 }, {
   timestamps: true // Adds createdAt and updatedAt fields automatically
 });

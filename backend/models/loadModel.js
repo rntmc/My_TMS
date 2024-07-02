@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-import addressSchema from './addressSchema.js';
+import addressSchema from './addressModel.js';
 
 const loadSchema = new mongoose.Schema({
   pickupDate: {
@@ -22,7 +22,7 @@ const loadSchema = new mongoose.Schema({
     required: true
   },
   orders: [{
-    type: mongoose.Schema.Types.ObjectId,
+    type: Number,
     ref: 'Order',
     required: true
   }],
@@ -62,7 +62,8 @@ const loadSchema = new mongoose.Schema({
   },
   user: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'User'  // Optional, if you want to track which user created or manages the load
+    ref: 'User',  // Optional, if you want to track which user created or manages the load
+    required: true
   }
 },{
   timestamps: true,

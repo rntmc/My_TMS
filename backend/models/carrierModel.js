@@ -1,5 +1,5 @@
 import mongoose from 'mongoose';
-import addressSchema from './addressSchema.js';
+import addressSchema from './addressModel.js';
 
 const carrierSchema = new mongoose.Schema({
   name: {
@@ -11,9 +11,14 @@ const carrierSchema = new mongoose.Schema({
     required: true,
   },
   contactInfo: {
-    email: String,
-    phone: String,
-    required: true,
+    email: {
+      type: String,
+      required: true,
+    },
+    phone: {
+      type: String,
+      required: true,
+    },
   },
   address: addressSchema,
   servicesOffered: {
