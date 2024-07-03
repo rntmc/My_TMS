@@ -5,7 +5,7 @@ import bookingSliceReducer from './slices/bookingSlice'
 const store = configureStore({
   reducer: {
     [apiSlice.reducerPath]: apiSlice.reducer,
-    booking: bookingSliceReducer,
+    booking: bookingSliceReducer, //check if it will be needed
   },
   middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat(apiSlice.middleware),
   devTools: true,

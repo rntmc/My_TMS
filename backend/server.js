@@ -1,9 +1,11 @@
 import express from 'express'
 import dotenv from 'dotenv'
+import cookieParser from 'cookie-parser';
 dotenv.config();
 import connectDB from './config/db.js';
 import {notFound, errorHandler} from './middleware/errorMiddleware.js'
 import loadRoutes from './routes/loadRoutes.js'
+import userRoutes from './routes/userRoutes.js'
 
 const port = process.env.PORT || 5000;
 
@@ -11,11 +13,18 @@ connectDB() //Connect to MongoDB
 
 const app = express();
 
+//Body parser middleware - so we can access req.body
+app.use(express.json())
+app.use(express.urlencoded({extended: true}))
+
+app.use(cookieParser())
+
 app.get('/', (req, res) => {
   res.send('API is running...')
 })
 
 app.use('/api/loads', loadRoutes)
+app.use('/api/users', userRoutes)
 
 app.use(notFound)
 app.use(errorHandler)
