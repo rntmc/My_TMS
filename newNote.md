@@ -1,22 +1,5 @@
-load._id
-load.pickupDate 
-load.deliveryDate
-load.origin 
-load.destination
-load.carrier
-load.transportType
-load.orders
-load.freightCost
-load.totalVolume 
-load.totalWeight
-load.vehicleNumber 
-load.driver
-load.insurance
-load.storageAndTransportConditions 
-load.specialNotes 
-load.status
-load.trackingInf
+## TO DO LIST:
 
-{event.location}
-Timestamp
-
+- [] check if we really need bookingSlice.js
+- [] loginScreen.jsx: Remove /register as only admin must be able to create users
+- [] RegisterScreen.jsx: add radio (admin, user, carrier). Only admins must be able to add users/carriers
