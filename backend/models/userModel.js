@@ -20,6 +20,16 @@ const userSchema = new mongoose.Schema({
     required: true,
     default: false,
   },
+  isUser: {
+    type: Boolean,
+    required: true,
+    default: false,
+  },
+  isCarrier: {
+    type: Boolean,
+    required: true,
+    default: false,
+  },
 }, {
   timestamps: true
 })

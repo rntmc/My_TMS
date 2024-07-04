@@ -5,10 +5,14 @@ import users from './data/users.js';
 import orders from './data/orders.js';
 import loads from './data/loads.js';
 import carriers from './data/carriers.js';
+import plants from './data/plants.js';
+import suppliers from './data/suppliers.js';
 import User from './models/userModel.js';
 import Order from './models/orderModel.js';
 import Carrier from './models/carrierModel.js';
 import Load from "./models/loadModel.js";
+import Plant from './models/plantModel.js';
+import Supplier from './models/supplierModel.js';
 import connectDB from './config/db.js';
 
 dotenv.config();
@@ -21,14 +25,27 @@ const importData = async () => {
     await Carrier.deleteMany();
     await Order.deleteMany();
     await Load.deleteMany();
+    await Plant.deleteMany();
+    await Supplier.deleteMany();
 
     const createdUsers = await User.insertMany(users);
     const createdCarriers = await Carrier.insertMany(carriers);
+    const createdPlants = await Plant.insertMany(plants);
+    const createdSuppliers = await Supplier.insertMany(suppliers);
     
     const adminUser = createdUsers.find(user => user.isAdmin);
     
     const sampleOrders = orders.map((order) => {
-      return {...order, user:adminUser}
+      const supplier = createdSuppliers.find(supplier => supplier.supplierNumber === order.origin.supplierNumber);
+      if (!supplier) {
+        throw new Error(`Supplier not found for order ${order.orderId}`);
+      }
+
+      return {
+        ...order, 
+        user:adminUser,
+        supplier: supplier._id
+      }
     })
     
     const createdOrders = await Order.insertMany(sampleOrders);
@@ -64,6 +81,8 @@ const destroyData = async () => {
     await Load.deleteMany();
     await User.deleteMany();
     await Carrier.deleteMany();
+    await Plant.deleteMany();
+    await Supplier.deleteMany();
 
     console.log('Data Destroyed!'.red.inverse);
     process.exit();

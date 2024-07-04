@@ -36,4 +36,24 @@ const admin = (req, res, next) => {
   } 
 };
 
-export {protect, admin};
+// User middleware
+const user = (req, res, next) => {
+  if (req.user && req.user.isUser) {
+    next();
+  } else {
+    res.status(401);
+    throw new Error('Not authorized')
+  } 
+};
+
+// Carrier middleware
+const carrier = (req, res, next) => {
+  if (req.user && req.user.isCarrier) {
+    next();
+  } else {
+    res.status(401);
+    throw new Error('Not authorized as Carrier')
+  } 
+};
+
+export {protect, admin, user, carrier};

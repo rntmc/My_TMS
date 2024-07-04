@@ -5,13 +5,13 @@ import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import Loader from '../components/Loader'
 import Message from '../components/Message'
-import { useGetLoadDetailsQuery } from '../slices/loadsApiSlice';
+import { useGetOrdersDetailsQuery } from '../slices/loadsApiSlice';
 
-const LoadScreen = () => {
-  const { id: loadId } = useParams();
+const OrderScreen = () => {
+  const { id: orderId } = useParams();
 
-  const { data: load, isLoading, error} = useGetLoadDetailsQuery(loadId);
-  console.log(load)
+  const { data: order, isLoading, error} = useGetOrderDetailsQuery(orderId);
+  console.log(order)
 
   return (
     <>
@@ -173,4 +173,4 @@ const LoadScreen = () => {
   );
 };
 
-export default LoadScreen;
+export default OrderScreen;

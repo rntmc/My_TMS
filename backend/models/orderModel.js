@@ -15,16 +15,38 @@ const orderSchema = new mongoose.Schema({
     type: Date,
     required: true
   },
-  origin: addressSchema,
-  destination: addressSchema,
-  volume: {
-    type: Number,
-    required: true
+  origin: {
+    supplierNumber: {
+      type: Number,
+      required: true
+    },
+    supplierName: {
+      type: String,
+      required: true
+    },
+    supplierLocation: addressSchema
   },
-  weight: {
-    type: Number,
-    required: true
+  destination: {
+    plantNumber: {
+      type: Number,
+      required: true
+    },
+    plantName: {
+      type: String,
+      required: true
+    },
+    plantLocation: addressSchema
   },
+  packages: [
+    {
+      packageQty: Number,
+      length: Number,
+      width: Number,
+      height: Number,
+      volume: Number,
+      weight: Number,
+    }
+  ],
   freightCost: {
     type: Number,
     required: true
@@ -41,14 +63,31 @@ const orderSchema = new mongoose.Schema({
     type: Boolean,
     default: false
   },
+  status: {
+    type: String,
+  },
   user: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'User',  // Optional, if you want to track which user created or manages the order
+    ref: 'User',  
+  },
+  supplier: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Supplier',  
+    required: true
   }
 }, {
-  timestamps: true // Adds createdAt and updatedAt fields automatically
+  timestamps: true 
 });
 
-const Order = mongoose.model("Order", orderSchema)
+// Pré-save hook para calcular automaticamente o volume
+orderSchema.pre('save', function(next) {
+  // Calcula o volume apenas se length, width e height estiverem definidos
+  if (this.packageQty && this.length && this.width && this.height) {
+    this.volume = this.length * this.width * this.height * this.packageQty;
+  }
+  next();
+});
+
+const Order = mongoose.model("Order", orderSchema);
 
 export default Order;
