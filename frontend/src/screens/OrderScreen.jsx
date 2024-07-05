@@ -114,12 +114,12 @@ const OrderScreen = () => {
           <Row className='mt-2 mb-2'>    
             <Col md={4}>
               <ListGroup.Item style={{ fontSize: '0.875rem' }}>
-                <strong>Total Volume:</strong> {order.volume || 'N/A'}
+                <strong>Total Volume:</strong> {order.volume || 'N/A'} m³
               </ListGroup.Item>
             </Col>
             <Col md={4}>
               <ListGroup.Item style={{ fontSize: '0.875rem' }}>
-                <strong>Total Weight:</strong> {order.weight || 'N/A'}
+                <strong>Total Weight:</strong> {order.weight || 'N/A'} kg
               </ListGroup.Item>
             </Col>
           </Row>

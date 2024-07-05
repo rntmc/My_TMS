@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Form, Button, Row, Col, Card } from 'react-bootstrap';
 import { useCreateOrderMutation } from '../slices/ordersApiSlice';
+import { FaPlus } from "react-icons/fa"
 
 const CreateOrderScreen = () => {
   const [orderId, setOrderId] = useState('');
@@ -340,155 +341,201 @@ const CreateOrderScreen = () => {
       </Col>
     </Row>
 
-    <Row>
-      <Col md ={4}>
-        <Form.Group controlId='productId'>
-          <Form.Label>Product ID</Form.Label>
-          <Form.Control
-            type='text'
-            placeholder='Enter product ID'
-            value={productId}
-            onChange={(e) => setProductId(e.target.value)}
-          ></Form.Control>
-        </Form.Group>
+    <Row className='mt-2'>
+      <Col md={1} className='d-flex justify-content-start align-items-start'>
+      <Button
+        style={{
+          padding: '0.3rem',
+          backgroundColor: '#a5a9ad',
+          color: 'white',
+          display: 'flex',
+          alignItems: 'start',
+        }}
+
+      >
+        <FaPlus style={{ fontSize: '1rem' }} />
+      </Button>
       </Col>
-      <Col md={8}>
-        <Form.Group controlId='productQuantity'>
-          <Form.Label>Product Quantity</Form.Label>
-          <Form.Control
-            type='number'
-            placeholder='Enter product quantity'
-            value={productQuantity}
-            onChange={(e) => setProductQuantity(e.target.value)}
-          ></Form.Control>
-        </Form.Group>
-      </Col>
+        <Col md ={2}>
+          <Form.Group controlId='productId'>
+            <Form.Label>Product ID</Form.Label>
+            <Form.Control
+              type='text'
+              placeholder='Enter product ID'
+              value={productId}
+              onChange={(e) => setProductId(e.target.value)}
+            />
+          </Form.Group>
+        </Col>
+        <Col md={2}>
+          <Form.Group controlId='productQuantity'>
+            <Form.Label>Product Quantity</Form.Label>
+            <Form.Control
+              type='number'
+              placeholder='Enter product quantity'
+              value={productQuantity}
+              onChange={(e) => setProductQuantity(e.target.value)}
+            ></Form.Control>
+          </Form.Group>
+        </Col>
     </Row>
 
 
-    {packages.map((pkg, index) => (
-        <Row key={index} className='mt-3'>
-          <Col md={1}>
-            <Form.Label>Nº PCs (m)</Form.Label>
-            <Form.Control
-              type='number'
-              placeholder='pieces'
-              value={pkg.packageQty}
-              onChange={(e) =>
-                setPackages(prevPackages =>
-                  prevPackages.map((prevPkg, i) =>
-                    i === index
-                      ? { ...prevPkg, packageQty: parseInt(e.target.value) || 0 }
-                      : prevPkg
-                  )
+  <React.Fragment>
+  <Row className='mt-2'>
+    <Col md={1} className='text-end'>
+      <Button variant='primary' onClick={handleAddPackage}
+        style={{
+          padding: '0.3rem',
+          backgroundColor: '#a5a9ad',
+          color: 'white',
+          display: 'flex',
+          alignItems: 'start',
+        }}
+      >
+        <FaPlus style={{ fontSize: '1rem' }} />
+      </Button>
+    </Col>
+    <Col md={1}>
+      <Form.Label>Nº PCs (m)</Form.Label>
+    </Col>
+    <Col md={1}>
+      <Form.Label>Length (m)</Form.Label>
+    </Col>
+    <Col md={1}>
+      <Form.Label>Width (m)</Form.Label>
+    </Col>
+    <Col md={1}>
+      <Form.Label>Height (m)</Form.Label>
+    </Col>
+    <Col md={2}>
+      <Form.Label>Total Volume</Form.Label>
+    </Col>
+    <Col md={2}>
+      <Form.Label>Weight</Form.Label>
+    </Col>
+  </Row>
+
+  {packages.map((pkg, index) => (
+    <Row key={index} className='mt-0'>
+      <Col md={1}>
+      </Col>
+      <Col md={1} style={{ marginBottom: '0' }}>
+        <Form.Group controlId={`packageQty-${index}`}>
+          <Form.Control
+            type='number'
+            placeholder='pieces'
+            value={pkg.packageQty}
+            onChange={(e) =>
+              setPackages(prevPackages =>
+                prevPackages.map((prevPkg, i) =>
+                  i === index
+                    ? { ...prevPkg, packageQty: parseInt(e.target.value) || 0 }
+                    : prevPkg
                 )
-              }
-            />
-          </Col>
+              )
+            }
+          />
+        </Form.Group>
+      </Col>
 
-          <Col md={1}>
-            <Form.Label>Length (m)</Form.Label>
-            <Form.Control
-              type='number'
-              placeholder='length'
-              value={pkg.length}
-              onChange={(e) =>
-                setPackages(prevPackages =>
-                  prevPackages.map((prevPkg, i) =>
-                    i === index
-                      ? { ...prevPkg, length: parseInt(e.target.value) || 0 }
-                      : prevPkg
-                  )
+      <Col md={1} style={{ marginBottom: '0' }}>
+        <Form.Group controlId={`length-${index}`}>
+          <Form.Control
+            type='number'
+            placeholder='length'
+            value={pkg.length}
+            onChange={(e) =>
+              setPackages(prevPackages =>
+                prevPackages.map((prevPkg, i) =>
+                  i === index
+                    ? { ...prevPkg, length: parseInt(e.target.value) || 0 }
+                    : prevPkg
                 )
-              }
-            />
-          </Col>
+              )
+            }
+          />
+        </Form.Group>
+      </Col>
 
-          <Col md={1}>
-            <Form.Label>Width (m)</Form.Label>
-            <Form.Control
-              type='number'
-              placeholder='width'
-              value={pkg.width}
-              onChange={(e) =>
-                setPackages(prevPackages =>
-                  prevPackages.map((prevPkg, i) =>
-                    i === index
-                      ? { ...prevPkg, width: parseInt(e.target.value) || 0 }
-                      : prevPkg
-                  )
+      <Col md={1} style={{ marginBottom: '0' }}>
+        <Form.Group controlId={`width-${index}`}>
+          <Form.Control
+            type='number'
+            placeholder='width'
+            value={pkg.width}
+            onChange={(e) =>
+              setPackages(prevPackages =>
+                prevPackages.map((prevPkg, i) =>
+                  i === index
+                    ? { ...prevPkg, width: parseInt(e.target.value) || 0 }
+                    : prevPkg
                 )
-              }
-            />
-          </Col>
+              )
+            }
+          />
+        </Form.Group>
+      </Col>
 
-          <Col md={1}>
-            <Form.Label>Height (m)</Form.Label>
-            <Form.Control
-              type='number'
-              placeholder='height'
-              value={pkg.height}
-              onChange={(e) =>
-                setPackages(prevPackages =>
-                  prevPackages.map((prevPkg, i) =>
-                    i === index
-                      ? { ...prevPkg, height: parseInt(e.target.value) || 0 }
-                      : prevPkg
-                  )
+      <Col md={1} style={{ marginBottom: '0' }}>
+        <Form.Group controlId={`height-${index}`}>
+          <Form.Control
+            type='number'
+            placeholder='height'
+            value={pkg.height}
+            onChange={(e) =>
+              setPackages(prevPackages =>
+                prevPackages.map((prevPkg, i) =>
+                  i === index
+                    ? { ...prevPkg, height: parseInt(e.target.value) || 0 }
+                    : prevPkg
                 )
-              }
-            />
-          </Col>
+              )
+            }
+          />
+        </Form.Group>
+      </Col>
 
-          <Col md={2}>
-            <Form.Group controlId={`volume-${index}`}>
-              <Form.Label>Total Volume</Form.Label>
-              <Form.Control
-                type='number'
-                placeholder='Enter volume'
-                value={pkg.volume}
-                onChange={(e) =>
-                  setPackages(prevPackages =>
-                    prevPackages.map((prevPkg, i) =>
-                      i === index
-                        ? { ...prevPkg, volume: parseInt(e.target.value) || 0 }
-                        : prevPkg
-                    )
-                  )
-                }
-              />
-            </Form.Group>
-          </Col>
+      <Col md={2} style={{ marginBottom: '0' }}>
+        <Form.Group controlId={`volume-${index}`}>
+          <Form.Control
+            type='number'
+            placeholder='Enter volume'
+            value={pkg.volume}
+            onChange={(e) =>
+              setPackages(prevPackages =>
+                prevPackages.map((prevPkg, i) =>
+                  i === index
+                    ? { ...prevPkg, volume: parseInt(e.target.value) || 0 }
+                    : prevPkg
+                )
+              )
+            }
+          />
+        </Form.Group>
+      </Col>
 
-          <Col md={2}>
-            <Form.Group controlId={`weight-${index}`}>
-              <Form.Label>Weight</Form.Label>
-              <Form.Control
-                type='number'
-                placeholder='Enter weight'
-                value={pkg.weight}
-                onChange={(e) =>
-                  setPackages(prevPackages =>
-                    prevPackages.map((prevPkg, i) =>
-                      i === index
-                        ? { ...prevPkg, weight: e.target.value }
-                        : prevPkg
-                    )
-                  )
-                }
-              />
-            </Form.Group>
-          </Col>
-
-          {index === packages.length - 1 && (
-            <Col md={1} className='align-self-end'>
-              <Button variant='primary' onClick={handleAddPackage}>
-                Add Package
-              </Button>
-            </Col>
-          )}
-        </Row>
-      ))}
+      <Col md={2} style={{ marginBottom: '0' }}>
+        <Form.Group controlId={`weight-${index}`}>
+          <Form.Control
+            type='number'
+            placeholder='Enter weight'
+            value={pkg.weight}
+            onChange={(e) =>
+              setPackages(prevPackages =>
+                prevPackages.map((prevPkg, i) =>
+                  i === index
+                    ? { ...prevPkg, weight: e.target.value }
+                    : prevPkg
+                )
+              )
+            }
+          />
+        </Form.Group>
+      </Col>
+    </Row>
+  ))}
+</React.Fragment>
 
       <Form.Group controlId='dangerousGoods' className='mt-3'>
         <Form.Check
@@ -508,9 +555,6 @@ const CreateOrderScreen = () => {
           onChange={(e) => setFreightCost(e.target.value)}
         ></Form.Control>
       </Form.Group>
-
-
-
 
       <Button type='submit' variant='primary mt-3'>
         Create Order
