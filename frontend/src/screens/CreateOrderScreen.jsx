@@ -82,7 +82,7 @@ const CreateOrderScreen = () => {
           country: destinationCountry,
         },
       },
-      packages,
+      packages: [],
       freightCost,
       productId,
       productQuantity,
@@ -97,6 +97,25 @@ const CreateOrderScreen = () => {
     } catch (error) {
       console.error('Error creating order:', error);
     }
+  };
+
+  // Function to calculate total weight of orders
+  const calculateTotalWeight = () => {
+    let totalWeight = 0;
+    packages.forEach((pkg) => {
+      totalWeight += parseFloat(pkg.weight);
+    });
+    return totalWeight.toFixed(2);
+  };
+
+  // Function to calculate total volume of packages in cubic meters
+  const calculateTotalVolume = () => {
+    let totalVolume = 0;
+    packages.forEach((pkg) => {
+      const volume = (parseFloat(pkg.length / 100) * parseFloat(pkg.width / 100) * parseFloat(pkg.height /100)); // Convert cm³ to m³
+      totalVolume += volume * pkg.packageQty;
+    });
+    return totalVolume.toFixed(2); 
   };
 
   return (
@@ -356,6 +375,17 @@ const CreateOrderScreen = () => {
         <FaPlus style={{ fontSize: '1rem' }} />
       </Button>
       </Col>
+        <Col md={1}>
+          <Form.Group controlId='productQuantity'>
+            <Form.Label>Product Qty</Form.Label>
+            <Form.Control
+              type='number'
+              placeholder='Enter product quantity'
+              value={productQuantity}
+              onChange={(e) => setProductQuantity(e.target.value)}
+            ></Form.Control>
+          </Form.Group>
+        </Col>
         <Col md ={2}>
           <Form.Group controlId='productId'>
             <Form.Label>Product ID</Form.Label>
@@ -367,22 +397,11 @@ const CreateOrderScreen = () => {
             />
           </Form.Group>
         </Col>
-        <Col md={2}>
-          <Form.Group controlId='productQuantity'>
-            <Form.Label>Product Quantity</Form.Label>
-            <Form.Control
-              type='number'
-              placeholder='Enter product quantity'
-              value={productQuantity}
-              onChange={(e) => setProductQuantity(e.target.value)}
-            ></Form.Control>
-          </Form.Group>
-        </Col>
     </Row>
 
 
   <React.Fragment>
-  <Row className='mt-2'>
+  <Row >
     <Col md={1} className='text-end'>
       <Button variant='primary' onClick={handleAddPackage}
         style={{
@@ -397,19 +416,19 @@ const CreateOrderScreen = () => {
       </Button>
     </Col>
     <Col md={1}>
-      <Form.Label>Nº PCs (m)</Form.Label>
+      <Form.Label>Nº PCs</Form.Label>
     </Col>
     <Col md={1}>
-      <Form.Label>Length (m)</Form.Label>
+      <Form.Label>Length (cm)</Form.Label>
     </Col>
     <Col md={1}>
-      <Form.Label>Width (m)</Form.Label>
+      <Form.Label>Width (cm)</Form.Label>
     </Col>
     <Col md={1}>
-      <Form.Label>Height (m)</Form.Label>
+      <Form.Label>Height (cm)</Form.Label>
     </Col>
     <Col md={2}>
-      <Form.Label>Total Volume</Form.Label>
+      <Form.Label>Total Volume (m³)</Form.Label>
     </Col>
     <Col md={2}>
       <Form.Label>Weight</Form.Label>
@@ -417,105 +436,113 @@ const CreateOrderScreen = () => {
   </Row>
 
   {packages.map((pkg, index) => (
-    <Row key={index} className='mt-0'>
+    <Row key={index}>
       <Col md={1}>
       </Col>
       <Col md={1} style={{ marginBottom: '0' }}>
-        <Form.Group controlId={`packageQty-${index}`}>
-          <Form.Control
-            type='number'
-            placeholder='pieces'
-            value={pkg.packageQty}
-            onChange={(e) =>
-              setPackages(prevPackages =>
-                prevPackages.map((prevPkg, i) =>
-                  i === index
-                    ? { ...prevPkg, packageQty: parseInt(e.target.value) || 0 }
-                    : prevPkg
-                )
+      <Form.Group controlId={`packageQty-${index}`}>
+        <Form.Control
+          type='number'
+          placeholder='pieces'
+          value={pkg.packageQty}
+          onChange={(e) =>
+            setPackages(prevPackages =>
+              prevPackages.map((prevPkg, i) =>
+                i === index
+                  ? {
+                      ...prevPkg,
+                      packageQty: parseInt(e.target.value) || 0,
+                      volume: (((prevPkg.length / 100) * (prevPkg.width / 100) * (prevPkg.height / 100)) * (parseInt(e.target.value) || 0)).toFixed(2) // Atualiza o volume considerando o packageQty
+                    }
+                  : prevPkg
               )
-            }
-          />
-        </Form.Group>
-      </Col>
+            )
+          }
+        />
+      </Form.Group>
+    </Col>
 
-      <Col md={1} style={{ marginBottom: '0' }}>
-        <Form.Group controlId={`length-${index}`}>
-          <Form.Control
-            type='number'
-            placeholder='length'
-            value={pkg.length}
-            onChange={(e) =>
-              setPackages(prevPackages =>
-                prevPackages.map((prevPkg, i) =>
-                  i === index
-                    ? { ...prevPkg, length: parseInt(e.target.value) || 0 }
-                    : prevPkg
-                )
+    <Col md={1}>
+      <Form.Group controlId={`length-${index}`}>
+        <Form.Control
+          type='number'
+          placeholder='length'
+          value={pkg.length}
+          onChange={(e) =>
+            setPackages(prevPackages =>
+              prevPackages.map((prevPkg, i) =>
+                i === index
+                  ? {
+                      ...prevPkg,
+                      length: parseInt(e.target.value) || 0,
+                      volume: ((((parseInt(e.target.value) || 0) / 100) * (prevPkg.width / 100) * (prevPkg.height / 100)) * prevPkg.packageQty).toFixed(2) // Atualiza o volume considerando o length e converte para 2 casas decimais
+                    }
+                  : prevPkg
               )
-            }
-          />
-        </Form.Group>
-      </Col>
+            )
+          }
+        />
+      </Form.Group>
+    </Col>
 
-      <Col md={1} style={{ marginBottom: '0' }}>
-        <Form.Group controlId={`width-${index}`}>
-          <Form.Control
-            type='number'
-            placeholder='width'
-            value={pkg.width}
-            onChange={(e) =>
-              setPackages(prevPackages =>
-                prevPackages.map((prevPkg, i) =>
-                  i === index
-                    ? { ...prevPkg, width: parseInt(e.target.value) || 0 }
-                    : prevPkg
-                )
+    <Col md={1}>
+      <Form.Group controlId={`width-${index}`}>
+        <Form.Control
+          type='number'
+          placeholder='width'
+          value={pkg.width}
+          onChange={(e) =>
+            setPackages(prevPackages =>
+              prevPackages.map((prevPkg, i) =>
+                i === index
+                  ? {
+                      ...prevPkg,
+                      width: parseInt(e.target.value) || 0,
+                      volume: (((prevPkg.length / 100) * ((parseInt(e.target.value) || 0) / 100) * (prevPkg.height / 100)) * prevPkg.packageQty).toFixed(2) // Atualiza o volume considerando o width e converte para 2 casas decimais
+                    }
+                  : prevPkg
               )
-            }
-          />
-        </Form.Group>
-      </Col>
+            )
+          }
+        />
+      </Form.Group>
+    </Col>
 
-      <Col md={1} style={{ marginBottom: '0' }}>
-        <Form.Group controlId={`height-${index}`}>
-          <Form.Control
-            type='number'
-            placeholder='height'
-            value={pkg.height}
-            onChange={(e) =>
-              setPackages(prevPackages =>
-                prevPackages.map((prevPkg, i) =>
-                  i === index
-                    ? { ...prevPkg, height: parseInt(e.target.value) || 0 }
-                    : prevPkg
-                )
+    <Col md={1}>
+      <Form.Group controlId={`height-${index}`}>
+        <Form.Control
+          type='number'
+          placeholder='height'
+          value={pkg.height}
+          onChange={(e) =>
+            setPackages(prevPackages =>
+              prevPackages.map((prevPkg, i) =>
+                i === index
+                  ? {
+                      ...prevPkg,
+                      height: parseInt(e.target.value) || 0,
+                      volume: (((prevPkg.length / 100) * (prevPkg.width / 100) * ((parseInt(e.target.value) || 0) / 100)) * prevPkg.packageQty).toFixed(2) // Atualiza o volume considerando o height e converte para 2 casas decimais
+                    }
+                  : prevPkg
               )
-            }
-          />
-        </Form.Group>
-      </Col>
+            )
+          }
+        />
+      </Form.Group>
+    </Col>
 
-      <Col md={2} style={{ marginBottom: '0' }}>
-        <Form.Group controlId={`volume-${index}`}>
-          <Form.Control
-            type='number'
-            placeholder='Enter volume'
-            value={pkg.volume}
-            onChange={(e) =>
-              setPackages(prevPackages =>
-                prevPackages.map((prevPkg, i) =>
-                  i === index
-                    ? { ...prevPkg, volume: parseInt(e.target.value) || 0 }
-                    : prevPkg
-                )
-              )
-            }
-          />
-        </Form.Group>
-      </Col>
+    <Col md={2}>
+      <Form.Group controlId={`volume-${index}`}>
+        <Form.Control
+          type='number'
+          placeholder='Volume'
+          value={pkg.volume}
+          readOnly // Para evitar que o usuário edite diretamente o volume
+        />
+      </Form.Group>
+    </Col>
 
-      <Col md={2} style={{ marginBottom: '0' }}>
+      <Col md={2}>
         <Form.Group controlId={`weight-${index}`}>
           <Form.Control
             type='number'
@@ -535,9 +562,19 @@ const CreateOrderScreen = () => {
       </Col>
     </Row>
   ))}
+  <hr/>
+  <Row>
+    <Col md={1}/>
+    <Col md={1}>Total</Col>
+    <Col md={1}></Col>
+    <Col md={1}></Col>
+    <Col md={1}></Col>
+    <Col md={2}>{calculateTotalVolume()} m³</Col>  
+    <Col md={2}>{calculateTotalWeight()} kg</Col>
+  </Row>
 </React.Fragment>
 
-      <Form.Group controlId='dangerousGoods' className='mt-3'>
+      <Form.Group controlId='dangerousGoods'>
         <Form.Check
           type='checkbox'
           label='Dangerous Goods'
