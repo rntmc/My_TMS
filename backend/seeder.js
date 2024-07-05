@@ -2,17 +2,17 @@ import mongoose from "mongoose";
 import dotenv from 'dotenv';
 import colors from 'colors';
 import users from './data/users.js';
+import suppliers from './data/suppliers.js';
 import orders from './data/orders.js';
 import loads from './data/loads.js';
 import carriers from './data/carriers.js';
 import plants from './data/plants.js';
-import suppliers from './data/suppliers.js';
 import User from './models/userModel.js';
+import Supplier from './models/supplierModel.js';
 import Order from './models/orderModel.js';
 import Carrier from './models/carrierModel.js';
 import Load from "./models/loadModel.js";
 import Plant from './models/plantModel.js';
-import Supplier from './models/supplierModel.js';
 import connectDB from './config/db.js';
 
 dotenv.config();
@@ -21,39 +21,38 @@ connectDB();
 
 const importData = async () => {
   try {
-    await User.deleteMany();
-    await Carrier.deleteMany();
     await Order.deleteMany();
-    await Load.deleteMany();
-    await Plant.deleteMany();
+    await Carrier.deleteMany();
+    await User.deleteMany();
     await Supplier.deleteMany();
+    await Plant.deleteMany();
+    await Load.deleteMany();
 
-    const createdUsers = await User.insertMany(users);
-    const createdCarriers = await Carrier.insertMany(carriers);
-    const createdPlants = await Plant.insertMany(plants);
     const createdSuppliers = await Supplier.insertMany(suppliers);
+    const createdUsers = await User.insertMany(users);
+    const createdPlants = await Plant.insertMany(plants); 
+    const createdCarriers = await Carrier.insertMany(carriers);
     
     const adminUser = createdUsers.find(user => user.isAdmin);
     
     const sampleOrders = orders.map((order) => {
-      const supplier = createdSuppliers.find(supplier => supplier.supplierNumber === order.origin.supplierNumber);
-      if (!supplier) {
-        throw new Error(`Supplier not found for order ${order.orderId}`);
-      }
+      const { origin, destination, ...restOrder } = order;
 
       return {
-        ...order, 
-        user:adminUser,
-        supplier: supplier._id
+        ...restOrder, 
+        user: adminUser._id,
+        origin: { ...origin },
+        destination: { ...destination }
       }
     })
     
     const createdOrders = await Order.insertMany(sampleOrders);
 
+    
     const sampleLoads = loads.map((load) => {
       const carrier = createdCarriers.find(carrier => carrier.name === load.carrier);
       const orderIds = load.orders.map(orderId => {
-        const order = createdOrders.find(order => order.orderId === orderId);
+        const order = createdOrders.find(order => order.orderId[0] === orderId[0]);
         return order.orderId;
       });
 

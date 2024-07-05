@@ -27,7 +27,7 @@ const openingHoursSchema = new mongoose.Schema({
       message: props => `${props.value} is not a valid time!`
     }
   },
-},{ _id: false });
+});
 
 const supplierSchema = new mongoose.Schema({
   supplierNumber: {

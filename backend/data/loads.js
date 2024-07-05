@@ -19,7 +19,7 @@ const loads = [
     },
     carrier: 'Great Forwarder',
     transportType: 'AIR',
-    orders: [300],
+    orders: [300, 301],
     totalFreightCost: 500,
     totalVolume: 10,
     totalWeight: 2500,

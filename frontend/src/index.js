@@ -10,6 +10,7 @@ import reportWebVitals from './reportWebVitals';
 import PrivateRoute from './components/PrivateRoute';
 import HomeScreen from './screens/HomeScreen';
 import LoadScreen from './screens/LoadScreen';
+import OrderScreen from './screens/OrderScreen';
 import LoginScreen from './screens/LoginScreen';
 import RegisterScreen from './screens/RegisterScreen';
 import CreateOrderScreen from './screens/CreateOrderScreen';
@@ -23,6 +24,7 @@ const router = createBrowserRouter(
 
       <Route path='/' element={<PrivateRoute/>}>
         <Route path="/load/:id" element={<LoadScreen/>}/> 
+        <Route path="/order/:id" element={<OrderScreen/>}/> 
         <Route path="/createorder" element={<CreateOrderScreen/>}/> 
       </Route>
     </Route>

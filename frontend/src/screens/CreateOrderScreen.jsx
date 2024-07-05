@@ -3,7 +3,9 @@ import { Form, Button, Row, Col, Card } from 'react-bootstrap';
 import { useCreateOrderMutation } from '../slices/ordersApiSlice';
 
 const CreateOrderScreen = () => {
-  const [orderId, setOrderId] = useState(0);
+  const [orderId, setOrderId] = useState('');
+  const [carrier, setCarrier] = useState('');
+  const [status, setStatus] = useState('open');
   const [pickupDate, setPickupDate] = useState('');
   const [deliveryDate, setDeliveryDate] = useState('');
   const [originSupplierNumber, setOriginSupplierNumber] = useState('');
@@ -27,15 +29,13 @@ const CreateOrderScreen = () => {
       width: 0,
       height: 0,
       volume: 0,
-      weight: ''
+      weight: 0
     }
   ]);
   const [freightCost, setFreightCost] = useState('');
   const [productId, setProductId] = useState('');
   const [productQuantity, setProductQuantity] = useState(0);
   const [dangerousGoods, setDangerousGoods] = useState(false);
-  const [carrier, setCarrier] = useState('');
-  const [status, setStatus] = useState('');
 
   const [createOrder] = useCreateOrderMutation();
 
@@ -109,14 +109,24 @@ const CreateOrderScreen = () => {
             placeholder='Automatically generated'
             disabled
             value={orderId}
-            onChange={(e) => setOrderId(e.target.value)}
           ></Form.Control>
         </Form.Group>
+        </Col>
+        <Col md={3}>
+          <Form.Group controlId='status'>
+            <Form.Label>Status</Form.Label>
+            <Form.Control
+              type='text'
+              placeholder='Enter status'
+              value={status}
+              onChange={(e) => setStatus(e.target.value)}
+            ></Form.Control>
+          </Form.Group>
         </Col>
       </Row>
 
       <Row>
-        <Col md={6}>
+        <Col md={3}>
           <Form.Group controlId='pickupDate'>
             <Form.Label>Pickup Date</Form.Label>
             <Form.Control
@@ -127,7 +137,7 @@ const CreateOrderScreen = () => {
           </Form.Group>
         </Col>
 
-        <Col md={6}>
+        <Col md={3}>
           <Form.Group controlId='deliveryDate'>
             <Form.Label>Delivery Date</Form.Label>
             <Form.Control
@@ -137,7 +147,19 @@ const CreateOrderScreen = () => {
             ></Form.Control>
           </Form.Group>
         </Col>
+        <Col md={6}>
+          <Form.Group controlId='carrier'>
+            <Form.Label>Carrier</Form.Label>
+            <Form.Control
+              type='text'
+              placeholder='Enter carrier'
+              value={carrier}
+              onChange={(e) => setCarrier(e.target.value)}
+            ></Form.Control>
+          </Form.Group>
+        </Col>
       </Row>
+
     <Row>
       <Col md={6}>
       <Card className='mt-3 p-4'>
@@ -468,6 +490,14 @@ const CreateOrderScreen = () => {
         </Row>
       ))}
 
+      <Form.Group controlId='dangerousGoods' className='mt-3'>
+        <Form.Check
+          type='checkbox'
+          label='Dangerous Goods'
+          checked={dangerousGoods}
+          onChange={(e) => setDangerousGoods(e.target.checked)}
+        ></Form.Check>
+      </Form.Group>
 
       <Form.Group controlId='freightCost'>
         <Form.Label>Freight Cost</Form.Label>
@@ -480,34 +510,7 @@ const CreateOrderScreen = () => {
       </Form.Group>
 
 
-      <Form.Group controlId='dangerousGoods'>
-        <Form.Check
-          type='checkbox'
-          label='Dangerous Goods'
-          checked={dangerousGoods}
-          onChange={(e) => setDangerousGoods(e.target.checked)}
-        ></Form.Check>
-      </Form.Group>
 
-      <Form.Group controlId='carrier'>
-        <Form.Label>Carrier</Form.Label>
-        <Form.Control
-          type='text'
-          placeholder='Enter carrier'
-          value={carrier}
-          onChange={(e) => setCarrier(e.target.value)}
-        ></Form.Control>
-      </Form.Group>
-
-      <Form.Group controlId='status'>
-        <Form.Label>Status</Form.Label>
-        <Form.Control
-          type='text'
-          placeholder='Enter status'
-          value={status}
-          onChange={(e) => setStatus(e.target.value)}
-        ></Form.Control>
-      </Form.Group>
 
       <Button type='submit' variant='primary mt-3'>
         Create Order

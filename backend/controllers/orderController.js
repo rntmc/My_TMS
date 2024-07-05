@@ -27,9 +27,9 @@ const getOrderById = asyncHandler(async (req, res) => {
 // @ route POST /api/orders
 // @access User/admin
 const createOrder = asyncHandler(async (req, res) => {
-  let nextOrderId = 10000;
 
   const {  
+    orderId,
     packageQty,
     length, 
     width, 
@@ -45,15 +45,17 @@ const createOrder = asyncHandler(async (req, res) => {
     productQuantity,
     dangerousGoods,
     carrier,
-    status
+    status,
   } = req.body;
 
   const order = new Order({
+    orderId,
     packageQty,
     length,
     width,
     height,
-    orderId: nextOrderId++,
+    volume,
+    weight,
     pickupDate,
     deliveryDate,
     origin: {
@@ -62,15 +64,13 @@ const createOrder = asyncHandler(async (req, res) => {
     destination: {
       ...destination
     },
-    volume,
-    weight,
     freightCost,
     productId,
     productQuantity,
     dangerousGoods,
     carrier,
     status,
-    user: req.user._id
+    user: req.user._id,
   })
 
   const createdOrder = await order.save();

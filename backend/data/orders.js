@@ -1,7 +1,7 @@
 const orders = 
 [
   {
-    orderId: 300,
+    orderId:10000,
     pickupDate: '2024-05-01',
     deliveryDate: '2024-05-10',
     origin: {
@@ -26,25 +26,21 @@ const orders =
         country: 'USA'
       }
     },
-    packages: [
-      {
-        packageQty: 2,
-        length: 10,
-        width: 1,
-        height: 1,
-        volume: 10,
-        weight: 2500,
-      }
-    ],
-    freightCost: 500,
     productId: 'P12345',
     productQuantity: 50,
+    packageQty: 2,
+    length: 10,
+    width: 1,
+    height: 1,
+    volume: 10,
+    weight: 2500,
+    freightCost: 500,
     dangerousGoods: false,
     carrier: 'Great Forwarder',
-    status: 'confirmed'
+    status: 'confirmed',
   },
   {
-    orderId: 301,
+    orderId:10001,
     pickupDate: '2024-05-02',
     deliveryDate: '2024-05-11',
     origin: {
@@ -69,16 +65,11 @@ const orders =
         country: 'USA'
       }
     },
-    packages: [
-      {
-        packageQty: 2,
-        length: 10,
-        width: 1,
-        height: 1.5,
-        volume: 15,
-        weight: 3000,
-      }
-    ],
+    packageQty: 2,
+    length: 10,
+    width: 1,
+    height: 1.5,
+    volume: 15,
     weight: 3000,
     freightCost: 950,
     productId: 'P12346',
