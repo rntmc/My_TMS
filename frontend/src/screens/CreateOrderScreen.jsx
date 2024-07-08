@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { Form, Button, Row, Col, Card } from 'react-bootstrap';
+import React, { useState, useEffect } from 'react';
+import { Form, Button, Row, Col, Card, FormGroup } from 'react-bootstrap';
 import { useCreateOrderMutation } from '../slices/ordersApiSlice';
 import { FaPlus } from "react-icons/fa"
 
@@ -23,16 +23,22 @@ const CreateOrderScreen = () => {
   const [destinationState, setDestinationState] = useState('');
   const [destinationPostcode, setDestinationPostcode] = useState('');
   const [destinationCountry, setDestinationCountry] = useState('');
-  const [packages, setPackages] = useState([
-    {
-      packageQty: 0,
-      length: 0,
-      width: 0,
-      height: 0,
-      volume: 0,
-      weight: 0
-    }
-  ]);
+  const [packageQty, setPackageQty] = useState()
+  const [length, setLength] = useState()
+  const [width, setWidth] = useState()
+  const [height, setHeight] = useState()
+  const [volume, setVolume] = useState()
+  const [weight, setWeight] = useState()
+  // const [packages, setPackages] = useState([
+  //   {
+  //     packageQty: 0,
+  //     length: 0,
+  //     width: 0,
+  //     height: 0,
+  //     volume: 0,
+  //     weight: 0
+  //   }
+  // ]);
   const [freightCost, setFreightCost] = useState('');
   const [productId, setProductId] = useState('');
   const [productQuantity, setProductQuantity] = useState(0);
@@ -40,22 +46,32 @@ const CreateOrderScreen = () => {
 
   const [createOrder] = useCreateOrderMutation();
 
-  const handleAddPackage = () => {
-    setPackages([
-      ...packages,
-      {
-        packageQty: 0,
-        length: 0,
-        width: 0,
-        height: 0,
-        volume: 0,
-        weight: 0,
-      }
-    ]);
+  // const [lastOrderId, setLastOrderId] = useState(10004); // Start from 10004 so first order is 10005
+
+  // const handleAddPackage = () => {
+  //   setPackages([
+  //     ...packages,
+  //     {
+  //       packageQty: 0,
+  //       length: 0,
+  //       width: 0,
+  //       height: 0,
+  //       volume: 0,
+  //       weight: 0,
+  //     }
+  //   ]);
+  // };
+
+  const calculateVolume = () => {
+    if (length && width && height) {
+      return ((parseFloat(length) / 100) * (parseFloat(width) / 100) * (parseFloat(height) / 100)).toFixed(2);
+    }
+    return '';
   };
 
   const submitHandler = async (e) => {
     e.preventDefault();
+    const volume = calculateVolume();
     const orderData = {
       orderId,
       pickupDate,
@@ -82,7 +98,13 @@ const CreateOrderScreen = () => {
           country: destinationCountry,
         },
       },
-      packages: [],
+      // packages: [],
+      packageQty,
+      length,
+      width,
+      height,
+      volume,
+      weight,
       freightCost,
       productId,
       productQuantity,
@@ -100,23 +122,13 @@ const CreateOrderScreen = () => {
   };
 
   // Function to calculate total weight of orders
-  const calculateTotalWeight = () => {
-    let totalWeight = 0;
-    packages.forEach((pkg) => {
-      totalWeight += parseFloat(pkg.weight);
-    });
-    return totalWeight.toFixed(2);
-  };
+  // const calculatelWeight = () => {
+  //   let totalWeight = 0;
+  //     totalWeight += parseFloat(weight);
+  //   return totalWeight.toFixed(2);
+  // };
 
-  // Function to calculate total volume of packages in cubic meters
-  const calculateTotalVolume = () => {
-    let totalVolume = 0;
-    packages.forEach((pkg) => {
-      const volume = (parseFloat(pkg.length / 100) * parseFloat(pkg.width / 100) * parseFloat(pkg.height /100)); // Convert cm³ to m³
-      totalVolume += volume * pkg.packageQty;
-    });
-    return totalVolume.toFixed(2); 
-  };
+  // // Function to calculate total volume of packages in cubic meters
 
   return (
     <Form onSubmit={submitHandler}>
@@ -125,10 +137,10 @@ const CreateOrderScreen = () => {
         <Form.Group controlId='orderId'>
           <Form.Label>Order ID</Form.Label>
           <Form.Control
-            type='text'
+            type='number'
             placeholder='Automatically generated'
-            disabled
             value={orderId}
+            onChange={(e) => setOrderId(e.target.value)}
           ></Form.Control>
         </Form.Group>
         </Col>
@@ -402,7 +414,7 @@ const CreateOrderScreen = () => {
 
   <React.Fragment>
   <Row >
-    <Col md={1} className='text-end'>
+    {/* <Col md={1} className='text-end'>
       <Button variant='primary' onClick={handleAddPackage}
         style={{
           padding: '0.3rem',
@@ -414,7 +426,8 @@ const CreateOrderScreen = () => {
       >
         <FaPlus style={{ fontSize: '1rem' }} />
       </Button>
-    </Col>
+    </Col> */}
+    <Col md={1}></Col>
     <Col md={1}>
       <Form.Label>Nº PCs</Form.Label>
     </Col>
@@ -431,11 +444,11 @@ const CreateOrderScreen = () => {
       <Form.Label>Total Volume (m³)</Form.Label>
     </Col>
     <Col md={2}>
-      <Form.Label>Weight</Form.Label>
+      <Form.Label>Weight (kg)</Form.Label>
     </Col>
   </Row>
 
-  {packages.map((pkg, index) => (
+  {/* {packages.map((pkg, index) => (
     <Row key={index}>
       <Col md={1}>
       </Col>
@@ -529,8 +542,8 @@ const CreateOrderScreen = () => {
           }
         />
       </Form.Group>
-    </Col>
-
+    </Col> */}
+{/* 
     <Col md={2}>
       <Form.Group controlId={`volume-${index}`}>
         <Form.Control
@@ -568,13 +581,78 @@ const CreateOrderScreen = () => {
     <Col md={1}>Total</Col>
     <Col md={1}></Col>
     <Col md={1}></Col>
-    <Col md={1}></Col>
-    <Col md={2}>{calculateTotalVolume()} m³</Col>  
-    <Col md={2}>{calculateTotalWeight()} kg</Col>
+    <Col md={1}></Col> */}
+    {/* <Col md={2}>{calculateTotalVolume()} m³</Col>  
+    <Col md={2}>{calculateTotalWeight()} kg</Col> */}
+  {/* </Row> */}
+  <Row>
+    <Col md={1}>
+    </Col>
+    <Col md={1}>
+      <FormGroup>
+        <Form.Control
+          type='number'
+          placeholder='0'
+          value={packageQty}
+          onChange={(e) => setPackageQty(e.target.value)}
+        ></Form.Control>
+      </FormGroup>
+    </Col>
+    <Col md={1}>
+      <FormGroup>
+        <Form.Control
+          type='number'
+          placeholder='0'
+          value={length}
+          onChange={(e) => setLength(e.target.value)}
+        ></Form.Control>
+      </FormGroup>
+    </Col>
+    <Col md={1}>
+      <FormGroup>
+        <Form.Control
+          type='number'
+          placeholder='0'
+          value={width}
+          onChange={(e) => setWidth(e.target.value)}
+        ></Form.Control>
+      </FormGroup>
+    </Col>
+    <Col md={1}>
+      <FormGroup>
+        <Form.Control
+          type='number'
+          placeholder='0'
+          value={height}
+          onChange={(e) => setHeight(e.target.value)}
+        ></Form.Control>
+      </FormGroup>
+    </Col>
+    <Col md={2}>
+      <FormGroup>
+        <Form.Control
+          type='number'
+          readOnly
+          value={calculateVolume()}
+          placeholder='Volume'
+        />
+      </FormGroup>
+    </Col>
+    <Col md={2}>
+      <FormGroup>
+        <Form.Control
+          type='number'
+          placeholder='0'
+          value={weight}
+          onChange={(e) => setWeight(e.target.value)}
+        ></Form.Control>
+      </FormGroup>
+    </Col>
+
   </Row>
 </React.Fragment>
 
-      <Form.Group controlId='dangerousGoods'>
+      <Form.Group controlId='dangerousGoods' className='mt-2'>
         <Form.Check
           type='checkbox'
           label='Dangerous Goods'
