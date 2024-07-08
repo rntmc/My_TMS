@@ -1,82 +1,29 @@
 import React from 'react';
-import { Table, Row, Col, Button, OverlayTrigger, Tooltip } from 'react-bootstrap';
-import { MdOutlineEdit, MdClose  } from "react-icons/md";
-import { useGetUsersQuery } from '../slices/usersApiSlice';
+import { Row, Col, Button } from 'react-bootstrap';
+import { useNavigate } from 'react-router-dom';
 
 const DatabaseScreen = () => {
-  const { data: users, isLoading, isError } = useGetUsersQuery();
-  console.log(users)
+  const navigate = useNavigate();
 
-  if (isLoading) {
-    return <p>Loading...</p>;
-  }
-
-  if (isError) {
-    return <p>Error fetching users.</p>;
-  }
+  const handleNavigation = (role) => {
+    navigate(`/database/${role}`);
+  };
 
   return (
-    <Row>
-      <Col xs={12}>
-        <h2>User Database</h2>
-        <Table striped bordered hover>
-          <thead>
-            <tr>
-              <th>#</th>
-              <th>Name</th>
-              <th>Email</th>
-              <th>Role</th>
-              <th>Options</th>
-            </tr>
-          </thead>
-          <tbody>
-            {users.map((user, index) => (
-              <tr key={user._id} style={{ height: '2rem' }}>
-                <td>{index + 1}</td>
-                <td>{user.name}</td>
-                <td>{user.email}</td>
-                <td>
-                  {user.role ? user.role : ''}
-                </td>
-                <td>
-                  <div style={{ display: 'flex', flexDirection: 'row', gap: '0.25rem', justifyContent: 'center' }}>
-                    <OverlayTrigger
-                      placement="top"
-                      overlay={<Tooltip id={`tooltip-edit-${user._id}`}>Editar</Tooltip>}
-                    >
-                      <Button 
-                        style={{
-                          padding: '0.3rem',
-                          backgroundColor: '#a5a9ad',
-                          color: 'white',
-                          display: 'flex',
-                          alignItems: 'center',
-                        }}>
-                        <MdOutlineEdit style={{ fontSize: '1rem' }}/>
-                      </Button>
-                    </OverlayTrigger>
-
-                    <OverlayTrigger
-                      placement="top"
-                      overlay={<Tooltip id={`tooltip-delete-${user._id}`}>Deletar</Tooltip>}
-                    >
-                        <Button 
-                          style={{
-                            padding: '0.3rem',
-                            backgroundColor: '#a5a9ad',
-                            color: 'white',
-                            display: 'flex',
-                            alignItems: 'center',
-                          }}>
-                          <MdClose style={{ fontSize: '1rem', color: 'red' }}/>
-                        </Button>
-                    </OverlayTrigger>
-                  </div>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </Table>
+    <Row style={{ padding: '20px', backgroundColor: '#f8f9fa', borderRadius: '10px', boxShadow: '0 0 10px rgba(0, 0, 0, 0.1)' }}>
+      <Col xs={12} className="text-center" style={{ marginBottom: '20px' }}>
+        <h2>Databases</h2>
+        <div style={{ display: 'flex', justifyContent: 'center', gap: '1rem' }}>
+          <Button variant="primary" onClick={() => handleNavigation('users')} style={{ padding: '0.5rem 1rem' }}>
+            Users
+          </Button>
+          <Button variant="secondary" onClick={() => handleNavigation('carriers')} style={{ padding: '0.5rem 1rem' }}>
+            Carriers
+          </Button>
+          <Button variant="success" onClick={() => handleNavigation('admins')} style={{ padding: '0.5rem 1rem' }}>
+            Admins
+          </Button>
+        </div>
       </Col>
     </Row>
   );

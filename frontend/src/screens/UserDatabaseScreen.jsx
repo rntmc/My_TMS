@@ -1,103 +1,106 @@
-import React, { useState } from 'react';
-import { Form, Button, Row, Col } from 'react-bootstrap';
-import { useRegisterMutation } from '../slices/usersApiSlice';
+import React from 'react';
+import { Table, Row, Col, Button, OverlayTrigger, Tooltip } from 'react-bootstrap';
+import { Link } from 'react-router-dom';
+import { MdOutlineEdit, MdClose } from "react-icons/md";
+import { IoMdAdd } from "react-icons/io";
+import { useGetUsersQuery } from '../slices/usersApiSlice';
 
 const UserDatabaseScreen = () => {
-  const [name, setName] = useState('');
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [role, setRole] = useState('');
+  const { data: users, isLoading, isError } = useGetUsersQuery();
+  console.log(users)
 
-  const [registerUser, { isLoading, error }] = useRegisterMutation();
+  if (isLoading) {
+    return <p>Loading...</p>;
+  }
 
-  const submitHandler = async (e) => {
-    e.preventDefault();
-    const userData = { name, email, password, role };
-
-    try {
-      const response = await registerUser(userData).unwrap();
-      console.log('User created:', response);
-      // Clear form fields or perform additional actions upon successful user creation
-      setName('');
-      setEmail('');
-      setPassword('');
-      setRole('');   // Reset role selections
-    } catch (err) {
-      console.error('Error creating user:', err);
-    }
-  };
+  if (isError) {
+    return <p>Error fetching users.</p>;
+  }
 
   return (
-    <Row>
-      <Col xs={12} md={6}>
-        <Form onSubmit={submitHandler}>
-          <Form.Group controlId="name">
-            <Form.Label>Name</Form.Label>
-            <Form.Control
-              type="text"
-              placeholder="Enter name"
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-              required
-            />
-          </Form.Group>
+    <Row style={{ padding: '20px', backgroundColor: '#f8f9fa', borderRadius: '10px', boxShadow: '0 0 10px rgba(0, 0, 0, 0.1)' }}>
+      <Col xs={12} style={{ marginBottom: '20px' }}>
+        <Row>
+          <Col md={11}>
+            <h2>Users Database</h2>
+          </Col>
+          <Col md={1} className="text-center">
+            <OverlayTrigger
+              placement="top"
+              overlay={<Tooltip>Add User</Tooltip>}
+            >
+              <Link to='/database/usercreation'>
+                <Button variant="primary" style={{ padding: '0.3rem', backgroundColor: '#007bff', border: 'none', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+                  <IoMdAdd style={{ fontSize: '1.5rem' }} />
+                </Button>  
+              </Link>
+            </OverlayTrigger>
+          </Col>
+        </Row>
+      </Col>
+      <Col xs={12}>
+        <Table striped bordered hover style={{ backgroundColor: 'white', borderRadius: '10px', overflow: 'hidden', boxShadow: '0 0 10px rgba(0, 0, 0, 0.1)' }}>
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Name</th>
+              <th>Email</th>
+              <th>Role</th>
+              <th>Options</th>
+            </tr>
+          </thead>
+          <tbody>
+            {users.map((user, index) => (
+              <tr key={user._id} style={{ height: '2rem' }}>
+                <td>{index + 1}</td>
+                <td>{user.name}</td>
+                <td>{user.email}</td>
+                <td>{user.role ? user.role : ''}</td>
+                <td>
+                  <div style={{ display: 'flex', flexDirection: 'row', gap: '0.5rem', justifyContent: 'center' }}>
+                    <OverlayTrigger
+                      placement="top"
+                      overlay={<Tooltip id={`tooltip-edit-${user._id}`}>Editar</Tooltip>}
+                    >
+                      <Button 
+                        style={{
+                          padding: '0.3rem',
+                          backgroundColor: '#a5a9ad',
+                          color: 'white',
+                          display: 'flex',
+                          justifyContent: 'center',
+                          alignItems: 'center',
+                          border: 'none',
+                          borderRadius: '5px'
+                        }}>
+                        <MdOutlineEdit style={{ fontSize: '1rem' }}/>
+                      </Button>
+                    </OverlayTrigger>
 
-          <Form.Group controlId="email">
-            <Form.Label>Email address</Form.Label>
-            <Form.Control
-              type="email"
-              placeholder="Enter email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              required
-            />
-          </Form.Group>
-
-          <Form.Group controlId="password">
-            <Form.Label>Password</Form.Label>
-            <Form.Control
-              type="password"
-              placeholder="Password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              required
-            />
-          </Form.Group>
-
-          <Form.Group>
-            <Form.Check
-              type="radio"
-              label="Admin"
-              id="admin"
-              name="role" // Use same name for all radio buttons
-              value="Admin"
-              checked={role === 'Admin'}
-              onChange={(e) => setRole(e.target.value)}
-            />
-            <Form.Check
-              type="radio"
-              label="User"
-              id="user"
-              name="role"
-              value="User"
-              checked={role === 'User'}
-              onChange={(e) => setRole(e.target.value)}
-            />
-            <Form.Check
-              type="radio"
-              label="Carrier"
-              id="carrier"
-              name="role"
-              value="Carrier"
-              checked={role === 'Carrier'}
-              onChange={(e) => setRole(e.target.value)}
-            />
-          </Form.Group>
-
-          <Button variant="primary" type="submit" disabled={isLoading}>
-            {isLoading ? 'Creating...' : 'Create User'}
-          </Button>
-        </Form>
+                    <OverlayTrigger
+                      placement="top"
+                      overlay={<Tooltip id={`tooltip-delete-${user._id}`}>Deletar</Tooltip>}
+                    >
+                      <Button 
+                        style={{
+                          padding: '0.3rem',
+                          backgroundColor: '#a5a9ad',
+                          color: 'red',
+                          display: 'flex',
+                          justifyContent: 'center',
+                          alignItems: 'center',
+                          border: 'none',
+                          borderRadius: '5px'
+                        }}>
+                        <MdClose style={{ fontSize: '1rem' }}/>
+                      </Button>
+                    </OverlayTrigger>
+                  </div>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </Table>
       </Col>
     </Row>
   );
