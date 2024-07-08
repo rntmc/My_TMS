@@ -14,6 +14,7 @@ import OrderScreen from './screens/OrderScreen';
 import LoginScreen from './screens/LoginScreen';
 import RegisterScreen from './screens/RegisterScreen';
 import CreateOrderScreen from './screens/CreateOrderScreen';
+import UserDatabaseScreen from './screens/UserDatabaseScreen';
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -26,6 +27,7 @@ const router = createBrowserRouter(
         <Route path="/load/:id" element={<LoadScreen/>}/> 
         <Route path="/order/:id" element={<OrderScreen/>}/> 
         <Route path="/createorder" element={<CreateOrderScreen/>}/> 
+        <Route path="/userdatabase" element={<UserDatabaseScreen/>}/> 
       </Route>
     </Route>
   )

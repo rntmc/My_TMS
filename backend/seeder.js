@@ -33,7 +33,7 @@ const importData = async () => {
     const createdPlants = await Plant.insertMany(plants); 
     const createdCarriers = await Carrier.insertMany(carriers);
     
-    const adminUser = createdUsers.find(user => user.isAdmin);
+    const adminUser = createdUsers.find(user => user.role[0]);
     
     const sampleOrders = orders.map((order) => {
       const { origin, destination, ...restOrder } = order;

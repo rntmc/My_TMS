@@ -59,12 +59,6 @@ const LoginScreen = () => {
         {isLoading && <Loader/>}
       </Form>
 
-
-      <Row className='py-3'>
-        <Col>
-          New Customer? <Link to={redirect ? `/register?redirect=${redirect}` : '/register' }>Register</Link> {/*REMOVE THIS???*/}
-        </Col>
-      </Row>
     </FormContainer>
   )
 }

@@ -23,7 +23,6 @@ export const usersApiSlice = apiSlice.injectEndpoints({ //endpoint: {{baseURL}}/
         method: 'POST',
       })
     }),
-    
   }),
 })
 

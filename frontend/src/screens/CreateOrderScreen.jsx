@@ -23,12 +23,12 @@ const CreateOrderScreen = () => {
   const [destinationState, setDestinationState] = useState('');
   const [destinationPostcode, setDestinationPostcode] = useState('');
   const [destinationCountry, setDestinationCountry] = useState('');
-  const [packageQty, setPackageQty] = useState()
-  const [length, setLength] = useState()
-  const [width, setWidth] = useState()
-  const [height, setHeight] = useState()
-  const [volume, setVolume] = useState()
-  const [weight, setWeight] = useState()
+  const [packageQty, setPackageQty] = useState('')
+  const [length, setLength] = useState('')
+  const [width, setWidth] = useState('')
+  const [height, setHeight] = useState('')
+  const [volume, setVolume] = useState('')
+  const [weight, setWeight] = useState('')
   // const [packages, setPackages] = useState([
   //   {
   //     packageQty: 0,
@@ -64,7 +64,7 @@ const CreateOrderScreen = () => {
 
   const calculateVolume = () => {
     if (length && width && height) {
-      return ((parseFloat(length) / 100) * (parseFloat(width) / 100) * (parseFloat(height) / 100)).toFixed(2);
+      return (parseFloat(packageQty) * (parseFloat(length) / 100) * (parseFloat(width) / 100) * (parseFloat(height) / 100)).toFixed(2);
     }
     return '';
   };
@@ -427,7 +427,20 @@ const CreateOrderScreen = () => {
         <FaPlus style={{ fontSize: '1rem' }} />
       </Button>
     </Col> */}
-    <Col md={1}></Col>
+    <Col md={1} className='d-flex justify-content-start align-items-start'>
+    <Button
+      style={{
+        padding: '0.3rem',
+        backgroundColor: '#a5a9ad',
+        color: 'white',
+        display: 'flex',
+        alignItems: 'start',
+      }}
+
+    >
+      <FaPlus style={{ fontSize: '1rem' }} />
+    </Button>
+    </Col>
     <Col md={1}>
       <Form.Label>Nº PCs</Form.Label>
     </Col>

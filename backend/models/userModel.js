@@ -15,20 +15,9 @@ const userSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
-  isAdmin: {
-    type: Boolean,
-    required: true,
-    default: false,
-  },
-  isUser: {
-    type: Boolean,
-    required: true,
-    default: false,
-  },
-  isCarrier: {
-    type: Boolean,
-    required: true,
-    default: false,
+  role: {
+    type: String,
+    enum: ["Admin", "User", "Carrier"], 
   },
 }, {
   timestamps: true

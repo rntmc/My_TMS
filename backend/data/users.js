@@ -5,19 +5,19 @@ const users = [
     name: 'User',
     email: 'user@email.com',
     password: bcrypt.hashSync('123456', 10),
-    isUser: true,
+    role: "User",
   },
   {
     name: 'Admin',
     email: 'admin@email.com',
     password: bcrypt.hashSync('123456', 10),
-    isAdmin: true,
+    role: "Admin",
   },
   {
     name: 'Carrier',
     email: 'carrier@email.com',
     password: bcrypt.hashSync('123456', 10),
-    isCarrier: true,
+    role: "Carrier",
   },
 ]
 
