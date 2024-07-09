@@ -17,6 +17,10 @@ import CreateOrderScreen from './screens/CreateOrderScreen';
 import UserDatabaseCreationScreen from './screens/UserDatabaseCreationScreen';
 import UserDatabaseScreen from './screens/UserDatabaseScreen';
 import DatabaseScreen from './screens/DatabaseScreen';
+import CarrierDatabaseScreen from './screens/CarrierDatabaseScreen';
+import CarrierDatabaseCreationScreen from './screens/CarrierDatabaseCreationScreen';
+import SupplierDatabaseScreen from './screens/SupplierDatabaseScreen';
+import SupplierDatabaseCreationScreen from './screens/SupplierDatabaseCreationScreen';
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -32,6 +36,10 @@ const router = createBrowserRouter(
         <Route path="/database" element={<DatabaseScreen/>}/> 
         <Route path="/database/usercreation" element={<UserDatabaseCreationScreen/>}/> 
         <Route path="/database/users" element={<UserDatabaseScreen/>}/> 
+        <Route path="/database/carriercreation" element={<CarrierDatabaseCreationScreen/>}/> 
+        <Route path="/database/carriers" element={<CarrierDatabaseScreen/>}/> 
+        <Route path="/database/suppliercreation" element={<SupplierDatabaseCreationScreen/>}/> 
+        <Route path="/database/suppliers" element={<SupplierDatabaseScreen/>}/> 
       </Route>
     </Route>
   )

@@ -20,6 +20,9 @@ const DatabaseScreen = () => {
           <Button variant="secondary" onClick={() => handleNavigation('carriers')} style={{ padding: '0.5rem 1rem' }}>
             Carriers
           </Button>
+          <Button variant="warning" onClick={() => navigate('/database/suppliers')} style={{ padding: '0.5rem 1rem' }}>
+            Suppliers
+          </Button>
           <Button variant="success" onClick={() => handleNavigation('admins')} style={{ padding: '0.5rem 1rem' }}>
             Admins
           </Button>

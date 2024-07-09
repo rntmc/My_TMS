@@ -68,7 +68,7 @@ const UserDatabaseCreationScreen = () => {
             />
           </Form.Group>
 
-          <Form.Group>
+          <Form.Group className='mt-2'>
             <Form.Check
               type="radio"
               label="Admin"
@@ -98,7 +98,7 @@ const UserDatabaseCreationScreen = () => {
             />
           </Form.Group>
 
-          <Button variant="primary" type="submit" disabled={isLoading}>
+          <Button variant="primary" type="submit" disabled={isLoading} className='mt-2'>
             {isLoading ? 'Creating...' : 'Create User'}
           </Button>
         </Form>

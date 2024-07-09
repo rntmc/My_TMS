@@ -9,3 +9,4 @@
 - [] Add Product quantity rows
 - [] Add measurements rows
 - [] User Database: active or inactive. Organization?
+- [] Supplier Database: adjust opening hours to accept blank days

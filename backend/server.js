@@ -7,6 +7,8 @@ import {notFound, errorHandler} from './middleware/errorMiddleware.js'
 import loadRoutes from './routes/loadRoutes.js'
 import orderRoutes from './routes/orderRoutes.js'
 import userRoutes from './routes/userRoutes.js'
+import carrierRoutes from './routes/carrierRoutes.js'
+import supplierRoutes from './routes/supplierRoutes.js'
 
 const port = process.env.PORT || 5000;
 
@@ -27,6 +29,8 @@ app.get('/', (req, res) => {
 app.use('/api/loads', loadRoutes)
 app.use('/api/users', userRoutes)
 app.use('/api/orders', orderRoutes)
+app.use('/api/carriers', carrierRoutes)
+app.use('/api/suppliers', supplierRoutes)
 
 app.use(notFound)
 app.use(errorHandler)

@@ -3,18 +3,17 @@ import { Table, Row, Col, Button, OverlayTrigger, Tooltip } from 'react-bootstra
 import { Link } from 'react-router-dom';
 import { MdOutlineEdit, MdClose } from "react-icons/md";
 import { IoMdAdd } from "react-icons/io";
-import { useGetUsersQuery } from '../slices/usersApiSlice';
+import { useGetSuppliersQuery } from '../slices/suppliersApiSlice';
 
-const UserDatabaseScreen = () => {
-  const { data: users, isLoading, isError } = useGetUsersQuery();
-  console.log(users)
+const SupplierDatabaseScreen = () => {
+  const { data: suppliers, isLoading, isError } = useGetSuppliersQuery();
 
   if (isLoading) {
     return <p>Loading...</p>;
   }
 
   if (isError) {
-    return <p>Error fetching users.</p>;
+    return <p>Error fetching suppliers.</p>;
   }
 
   return (
@@ -22,14 +21,14 @@ const UserDatabaseScreen = () => {
       <Col xs={12} style={{ marginBottom: '20px' }}>
         <Row>
           <Col md={11}>
-            <h2>Users Database</h2>
+            <h2>Suppliers Database</h2>
           </Col>
           <Col md={1} className="text-center">
             <OverlayTrigger
               placement="top"
-              overlay={<Tooltip>Add User</Tooltip>}
+              overlay={<Tooltip>Add Supplier</Tooltip>}
             >
-              <Link to='/database/usercreation'>
+              <Link to='/database/suppliercreation'>
                 <Button variant="primary" style={{ padding: '0.3rem', backgroundColor: '#007bff', border: 'none', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
                   <IoMdAdd style={{ fontSize: '1.5rem' }} />
                 </Button>  
@@ -43,24 +42,28 @@ const UserDatabaseScreen = () => {
           <thead>
             <tr>
               <th>#</th>
+              <th>Supplier ID</th>
               <th>Name</th>
-              <th>Email</th>
-              <th>Role</th>
+              <th>Contact Person</th>
+              <th>Postcode</th>
+              <th>Country</th>
               <th>Action</th>
             </tr>
           </thead>
           <tbody>
-            {users.map((user, index) => (
-              <tr key={user._id} style={{ height: '2rem' }}>
+            {suppliers.map((supplier, index) => (
+              <tr key={supplier._id} style={{ height: '2rem' }}>
                 <td>{index + 1}</td>
-                <td>{user.name}</td>
-                <td>{user.email}</td>
-                <td>{user.role ? user.role : ''}</td>
+                <td>{supplier.supplierNumber}</td>
+                <td>{supplier.name}</td>
+                <td>{supplier.contactPerson}</td>
+                <td>{supplier.location.postcode}</td>
+                <td>{supplier.location.country}</td>
                 <td>
                   <div style={{ display: 'flex', flexDirection: 'row', gap: '0.5rem', justifyContent: 'center' }}>
                     <OverlayTrigger
                       placement="top"
-                      overlay={<Tooltip id={`tooltip-edit-${user._id}`}>Editar</Tooltip>}
+                      overlay={<Tooltip id={`tooltip-edit-${supplier._id}`}>Edit</Tooltip>}
                     >
                       <Button 
                         style={{
@@ -79,7 +82,7 @@ const UserDatabaseScreen = () => {
 
                     <OverlayTrigger
                       placement="top"
-                      overlay={<Tooltip id={`tooltip-delete-${user._id}`}>Deletar</Tooltip>}
+                      overlay={<Tooltip id={`tooltip-delete-${supplier._id}`}>Delete</Tooltip>}
                     >
                       <Button 
                         style={{
@@ -106,4 +109,4 @@ const UserDatabaseScreen = () => {
   );
 };
 
-export default UserDatabaseScreen;
+export default SupplierDatabaseScreen;

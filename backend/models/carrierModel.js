@@ -2,6 +2,11 @@ import mongoose from 'mongoose';
 import addressSchema from './addressModel.js';
 
 const carrierSchema = new mongoose.Schema({
+  carrierNumber: {
+    type: Number,
+    required: true, 
+    unique: true,
+  },
   name: {
     type: String,
     required: true,
