@@ -73,7 +73,23 @@ const getCarriers = asyncHandler(async (req, res) => {
   res.status(200).json(carriers)
 });
 
+// @Desc delete carriers
+// @ route DELETE /api/carriers
+// @access Private
+const deleteCarrier = asyncHandler(async (req, res) => {
+  const carrier = await Carrier.findById(req.params.id)
+
+  if(carrier) {
+    await carrier.deleteOne({_id: carrier._id})
+    res.status(200).json({message: 'carrier deleted successfully'});
+  } else {
+    res.status(404);
+    throw new Error('carrier not found')
+  }
+})
+
 export {
   registerCarrier,
   getCarriers,
+  deleteCarrier,
 }

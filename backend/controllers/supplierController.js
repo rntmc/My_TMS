@@ -1,8 +1,8 @@
 import asyncHandler from '../middleware/asyncHandler.js';
 import Supplier from '../models/supplierModel.js'
 
-// @Desc Register carrier
-// @ route POST /api/carriers
+// @Desc Register supplier
+// @ route POST /api/supplier
 // @access Public
 const registerSupplier = asyncHandler(async (req, res) => {
   const {
@@ -56,15 +56,31 @@ const registerSupplier = asyncHandler(async (req, res) => {
   }
 })
 
-// @Desc Get carriers
-// @ route GET /api/carriers
+// @Desc Get supplier
+// @ route GET /api/supplier
 // @access Private
 const getSuppliers = asyncHandler(async (req, res) => {
   const supplier = await Supplier.find({});
   res.status(200).json(supplier)
 });
 
+// @Desc Delete supplier
+// @ route DELETE /api/supplier
+// @access Private
+const deleteSupplier = asyncHandler(async (req, res) => {
+  const supplier = await Supplier.findById(req.params.id)
+
+  if(supplier) {
+    await Supplier.deleteOne({_id: supplier._id})
+    res.status(200).json({message: 'Supplier deleted successfully'});
+  } else {
+    res.status(404);
+    throw new Error('Supplier not found')
+  }
+})
+
 export {
   registerSupplier,
   getSuppliers,
+  deleteSupplier,
 }

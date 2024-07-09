@@ -11,7 +11,7 @@ const UserDatabaseCreationScreen = () => {
 
   const navigate = useNavigate()
 
-  const [registerUser, { isLoading, error }] = useRegisterMutation();
+  const [registerUser, { isLoading }] = useRegisterMutation();
 
   const submitHandler = async (e) => {
     e.preventDefault();

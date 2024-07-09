@@ -27,7 +27,7 @@ const SupplierDatabaseCreationScreen = () => {
   ]);
 
   const navigate = useNavigate();
-  const [addSupplier, { isLoading, error }] = useAddSupplierMutation();
+  const [addSupplier, { isLoading }] = useAddSupplierMutation();
 
   const submitHandler = async (e) => {
     e.preventDefault();

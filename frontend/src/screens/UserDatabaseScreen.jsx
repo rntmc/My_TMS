@@ -3,10 +3,12 @@ import { Table, Row, Col, Button, OverlayTrigger, Tooltip } from 'react-bootstra
 import { Link } from 'react-router-dom';
 import { MdOutlineEdit, MdClose } from "react-icons/md";
 import { IoMdAdd } from "react-icons/io";
-import { useGetUsersQuery } from '../slices/usersApiSlice';
+import { toast } from "react-toastify";
+import { useGetUsersQuery, useDeleteUserMutation } from '../slices/usersApiSlice';
 
 const UserDatabaseScreen = () => {
   const { data: users, isLoading, isError } = useGetUsersQuery();
+  const [deleteUser] = useDeleteUserMutation()
   console.log(users)
 
   if (isLoading) {
@@ -16,6 +18,31 @@ const UserDatabaseScreen = () => {
   if (isError) {
     return <p>Error fetching users.</p>;
   }
+  
+  const deleteHandler = async (id) => {
+    const userToDelete = users.find(user => user._id === id);
+  
+    if (!userToDelete) {
+      toast.error('User not found');
+      return;
+    }
+  
+    if (userToDelete.role === 'Admin') {
+      toast.error('Cannot delete admin users');
+      return;
+    }
+  
+    if (window.confirm('Are you sure?')) {
+      try {
+        await deleteUser(id);
+        toast.success('User deleted')
+      } catch(error) {
+        console.error('Error deleting user:', error);
+        toast.error(error?.data?.message || error.error)
+      }
+    }
+  }
+  
 
   return (
     <Row style={{ padding: '20px', backgroundColor: '#f8f9fa', borderRadius: '10px', boxShadow: '0 0 10px rgba(0, 0, 0, 0.1)' }}>
@@ -91,7 +118,9 @@ const UserDatabaseScreen = () => {
                           alignItems: 'center',
                           border: 'none',
                           borderRadius: '5px'
-                        }}>
+                        }}
+                        onClick={() => deleteHandler(user._id)}
+                        >
                         <MdClose style={{ fontSize: '1rem' }}/>
                       </Button>
                     </OverlayTrigger>

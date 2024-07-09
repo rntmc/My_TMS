@@ -1,13 +1,14 @@
 import React from 'react';
 import { Table, Row, Col, Button, OverlayTrigger, Tooltip } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
+import { toast } from "react-toastify";
 import { MdOutlineEdit, MdClose } from "react-icons/md";
 import { IoMdAdd } from "react-icons/io";
-import { useGetCarriersQuery } from '../slices/carriersApiSlice';
+import { useGetCarriersQuery, useDeleteCarriersMutation } from '../slices/carriersApiSlice';
 
 const CarrierDatabaseScreen = () => {
   const { data: carriers, isLoading, isError } = useGetCarriersQuery();
-  console.log(carriers)
+  const [deleteCarrier] = useDeleteCarriersMutation();
 
   if (isLoading) {
     return <p>Loading...</p>;
@@ -15,6 +16,25 @@ const CarrierDatabaseScreen = () => {
 
   if (isError) {
     return <p>Error fetching users.</p>;
+  }
+
+  const deleteCarrierHandler = async (id) => {
+    const carrierToDelete = carriers.find(carrier => carrier._id === id);
+  
+    if (!carrierToDelete) {
+      toast.error('Carrier not found');
+      return;
+    }
+  
+    if (window.confirm('Are you sure?')) {
+      try {
+        await deleteCarrier(id);
+        toast.success('Carrier deleted')
+      } catch(error) {
+        console.error('Error deleting carrier:', error);
+        toast.error(error?.data?.message || error.error)
+      }
+    }
   }
 
   return (
@@ -97,7 +117,9 @@ const CarrierDatabaseScreen = () => {
                           alignItems: 'center',
                           border: 'none',
                           borderRadius: '5px'
-                        }}>
+                        }}
+                          onClick={() => deleteCarrierHandler(carrier._id)}
+                        >
                         <MdClose style={{ fontSize: '1rem' }}/>
                       </Button>
                     </OverlayTrigger>

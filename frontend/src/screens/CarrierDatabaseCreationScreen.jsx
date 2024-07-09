@@ -25,7 +25,7 @@ const CarrierDatabaseCreationScreen = () => {
 
   const navigate = useNavigate()
 
-  const [registerUser, { isLoading, error }] = useAddCarrierMutation();
+  const [registerUser, { isLoading }] = useAddCarrierMutation();
 
   const submitHandler = async (e) => {
     e.preventDefault();

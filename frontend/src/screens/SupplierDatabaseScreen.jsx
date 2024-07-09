@@ -1,19 +1,41 @@
 import React from 'react';
 import { Table, Row, Col, Button, OverlayTrigger, Tooltip } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
+import { toast } from "react-toastify";
 import { MdOutlineEdit, MdClose } from "react-icons/md";
 import { IoMdAdd } from "react-icons/io";
-import { useGetSuppliersQuery } from '../slices/suppliersApiSlice';
+import { useGetSuppliersQuery, useDeleteSupplierMutation } from '../slices/suppliersApiSlice';
 
 const SupplierDatabaseScreen = () => {
   const { data: suppliers, isLoading, isError } = useGetSuppliersQuery();
+  const [deleteSupplier] = useDeleteSupplierMutation()
 
+  
   if (isLoading) {
     return <p>Loading...</p>;
   }
-
+  
   if (isError) {
     return <p>Error fetching suppliers.</p>;
+  }
+  
+  const deleteSupplierHandler = async (id) => {
+    const supplierToDelete = suppliers.find(supplier => supplier._id === id);
+  
+    if (!supplierToDelete) {
+      toast.error('Supplier not found');
+      return;
+    }
+  
+    if (window.confirm('Are you sure?')) {
+      try {
+        await deleteSupplier(id);
+        toast.success('Supplier deleted')
+      } catch(error) {
+        console.error('Error deleting supplier:', error);
+        toast.error(error?.data?.message || error.error)
+      }
+    }
   }
 
   return (
@@ -94,7 +116,9 @@ const SupplierDatabaseScreen = () => {
                           alignItems: 'center',
                           border: 'none',
                           borderRadius: '5px'
-                        }}>
+                        }}
+                          onClick={() => deleteSupplierHandler(supplier._id)}
+                        >
                         <MdClose style={{ fontSize: '1rem' }}/>
                       </Button>
                     </OverlayTrigger>

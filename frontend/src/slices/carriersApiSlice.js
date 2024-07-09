@@ -17,10 +17,17 @@ export const carriersApiSlice = apiSlice.injectEndpoints({ //endpoint: {{baseURL
       providesTags: ['Carriers'],
       keepUnusedDataFor: 5
     }),
+    deleteCarriers: builder.mutation({
+      query: (carrierId) => ({
+        url: `${CARRIERS_URL}/${carrierId}`,
+        method: 'DELETE'
+      })
+    }),
   }),
 })
 
 export const {
   useAddCarrierMutation,
   useGetCarriersQuery,
+  useDeleteCarriersMutation,
 } = carriersApiSlice;
