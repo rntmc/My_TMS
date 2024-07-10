@@ -22,7 +22,7 @@ router.route('/profile')
 router.route('/:id')
   .delete(deleteUser)
   .get(protect, admin, getUserById)
-  .put(protect, admin, updateUser)
+  .put(updateUser)
 router.post('/logout', logoutUser);
 router.post('/auth', authUser);
 

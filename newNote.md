@@ -11,3 +11,4 @@
 - [] User Database: active or inactive. Organization?
 - [] Supplier Database: adjust opening hours to accept blank days
 - [] Perhaps add OrganizationID to userModel, so they are linked to that organization orders only
+- [] Order Component: if status is Open, show confirm button(carrier & admin only)

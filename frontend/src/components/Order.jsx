@@ -1,8 +1,9 @@
 import { useState, useEffect } from 'react';
-import { Table } from 'react-bootstrap';
+import { Table, Button, OverlayTrigger, Tooltip } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
 import { CgDanger } from "react-icons/cg";
+import { FaCheck } from "react-icons/fa"
 
 const Order = () => {
   const [orders, setOrders] = useState([]);
@@ -30,7 +31,6 @@ const Order = () => {
         <thead style={{ fontSize: '12px' }}>
           <tr>
             <th>Order #</th>
-            <th></th>
             <th>Origin</th>
             <th>Destination</th>
             <th>
@@ -45,9 +45,9 @@ const Order = () => {
         <tbody style={{ fontSize: '12px' }}>
           {orders.map((order) => (
             <tr key={order._id}>
-              <td><Link to={`/order/${order._id}`}>{order.orderId}</Link></td>
               <td>
-                {order.dangerousGoods ? <CgDanger /> : ''}
+                <Link to={`/order/${order._id}`}>{order.orderId}</Link>
+                {' '}{order.dangerousGoods ? <CgDanger /> : ''}
               </td>
               <td>
                 <div>
@@ -77,7 +77,28 @@ const Order = () => {
               </td>
               <td>{order.volume} m³</td>
               <td>{order.weight} kg</td>
-              <td>{order.status}</td>
+              <td>{order.status}
+                <div style={{ display: 'flex', flexDirection: 'row', gap: '0.5rem', justifyContent: 'center' }}>
+                  <OverlayTrigger
+                    placement="top"
+                    overlay={<Tooltip id={`tooltip-confirm-${order._id}`}>Confirm</Tooltip>}
+                  >
+                    <Button 
+                      style={{
+                        padding: '0.3rem',
+                        backgroundColor: '#a5a9ad',
+                        color: 'white',
+                        display: 'flex',
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                        border: 'none',
+                        borderRadius: '5px'
+                      }}>
+                      <FaCheck style={{ fontSize: '1rem', color: "green" }}/>
+                    </Button>
+                  </OverlayTrigger>
+                </div>
+              </td>
             </tr>
           ))}
         </tbody>

@@ -20,29 +20,29 @@ const UserDatabaseScreen = () => {
   }
   
   const deleteHandler = async (id) => {
-    const userToDelete = users.find(user => user._id === id);
-  
-    if (!userToDelete) {
-      toast.error('User not found');
-      return;
-    }
-  
-    if (userToDelete.role === 'Admin') {
-      toast.error('Cannot delete admin users');
-      return;
-    }
-  
-    if (window.confirm('Are you sure?')) {
-      try {
-        await deleteUser(id);
-        toast.success('User deleted')
-      } catch(error) {
-        console.error('Error deleting user:', error);
-        toast.error(error?.data?.message || error.error)
-      }
+  const userToDelete = users.find(user => user._id === id);
+
+  if (!userToDelete) {
+    toast.error('User not found');
+    return;
+  }
+
+  if (userToDelete.role === 'Admin') {
+    toast.error('Cannot delete admin users');
+    return;
+  }
+
+  if (window.confirm('Are you sure?')) {
+    try {
+      await deleteUser(id);
+      toast.success('User deleted')
+    } catch(error) {
+      console.error('Error deleting user:', error);
+      toast.error(error?.data?.message || error.error)
     }
   }
-  
+}
+
 
   return (
     <Row style={{ padding: '20px', backgroundColor: '#f8f9fa', borderRadius: '10px', boxShadow: '0 0 10px rgba(0, 0, 0, 0.1)' }}>
