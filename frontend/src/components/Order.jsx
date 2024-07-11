@@ -39,6 +39,7 @@ const Order = () => {
             </th>
             <th>Volume</th>
             <th>Weight</th>
+            <th>Freight Cost</th>
             <th>Status</th>
           </tr>
         </thead>
@@ -47,7 +48,7 @@ const Order = () => {
             <tr key={order._id}>
               <td>
                 <Link to={`/order/${order._id}`}>{order.orderId}</Link>
-                {' '}{order.dangerousGoods ? <CgDanger /> : ''}
+                {' '}{order.dangerousGoods ? <CgDanger style={{color:"lightsalmon"}}/> : ''}
               </td>
               <td>
                 <div>
@@ -77,26 +78,29 @@ const Order = () => {
               </td>
               <td>{order.volume} m³</td>
               <td>{order.weight} kg</td>
+              <td>$ {order.freightCost}</td>
               <td>{order.status}
                 <div style={{ display: 'flex', flexDirection: 'row', gap: '0.5rem', justifyContent: 'center' }}>
-                  <OverlayTrigger
-                    placement="top"
-                    overlay={<Tooltip id={`tooltip-confirm-${order._id}`}>Confirm</Tooltip>}
-                  >
-                    <Button 
-                      style={{
-                        padding: '0.3rem',
-                        backgroundColor: '#a5a9ad',
-                        color: 'white',
-                        display: 'flex',
-                        justifyContent: 'center',
-                        alignItems: 'center',
-                        border: 'none',
-                        borderRadius: '5px'
-                      }}>
-                      <FaCheck style={{ fontSize: '1rem', color: "green" }}/>
-                    </Button>
-                  </OverlayTrigger>
+                  {order.status === "open" ? (
+                    <OverlayTrigger
+                      placement="top"
+                      overlay={<Tooltip id={`tooltip-confirm-${order._id}`}>Confirm</Tooltip>}
+                    >
+                      <Button 
+                        style={{
+                          padding: '0.3rem',
+                          backgroundColor: '#a5a9ad',
+                          color: 'white',
+                          display: 'flex',
+                          justifyContent: 'center',
+                          alignItems: 'center',
+                          border: 'none',
+                          borderRadius: '5px'
+                        }}>
+                        <FaCheck style={{ fontSize: '1rem', color: "green" }}/>
+                      </Button>
+                    </OverlayTrigger>
+                  ) : ("")}
                 </div>
               </td>
             </tr>

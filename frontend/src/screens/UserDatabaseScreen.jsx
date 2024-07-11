@@ -1,12 +1,14 @@
 import React from 'react';
 import { Table, Row, Col, Button, OverlayTrigger, Tooltip } from 'react-bootstrap';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate, useParams } from 'react-router-dom';
 import { MdOutlineEdit, MdClose } from "react-icons/md";
 import { IoMdAdd } from "react-icons/io";
 import { toast } from "react-toastify";
 import { useGetUsersQuery, useDeleteUserMutation } from '../slices/usersApiSlice';
 
 const UserDatabaseScreen = () => {
+  const navigate = useNavigate()
+
   const { data: users, isLoading, isError } = useGetUsersQuery();
   const [deleteUser] = useDeleteUserMutation()
   console.log(users)
@@ -18,8 +20,13 @@ const UserDatabaseScreen = () => {
   if (isError) {
     return <p>Error fetching users.</p>;
   }
+
+  const navigateHandler = async (id) => {
+    navigate(`/database/edituser/${id}`)
+  }
   
   const deleteHandler = async (id) => {
+  console.log(`Deleting user with id: ${id}`);
   const userToDelete = users.find(user => user._id === id);
 
   if (!userToDelete) {
@@ -34,7 +41,9 @@ const UserDatabaseScreen = () => {
 
   if (window.confirm('Are you sure?')) {
     try {
-      await deleteUser(id);
+      console.log(`Attempting to delete user with id: ${id}`);
+      const response = await deleteUser(id);
+      console.log(`User deleted response:`, response);
       toast.success('User deleted')
     } catch(error) {
       console.error('Error deleting user:', error);
@@ -99,7 +108,9 @@ const UserDatabaseScreen = () => {
                           alignItems: 'center',
                           border: 'none',
                           borderRadius: '5px'
-                        }}>
+                        }}
+                        onClick={() => navigateHandler(user._id)}
+                        >
                         <MdOutlineEdit style={{ fontSize: '1rem' }}/>
                       </Button>
                     </OverlayTrigger>

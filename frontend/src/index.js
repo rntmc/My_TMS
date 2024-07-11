@@ -9,6 +9,7 @@ import App from './App';
 import reportWebVitals from './reportWebVitals';
 import PrivateRoute from './components/PrivateRoute';
 import HomeScreen from './screens/HomeScreen';
+import Bookings from './screens/Bookings';
 import LoadScreen from './screens/LoadScreen';
 import OrderScreen from './screens/OrderScreen';
 import LoginScreen from './screens/LoginScreen';
@@ -21,6 +22,7 @@ import CarrierDatabaseScreen from './screens/CarrierDatabaseScreen';
 import CarrierDatabaseCreationScreen from './screens/CarrierDatabaseCreationScreen';
 import SupplierDatabaseScreen from './screens/SupplierDatabaseScreen';
 import SupplierDatabaseCreationScreen from './screens/SupplierDatabaseCreationScreen';
+import DatabaseUserEditScreen from './screens/DatabaseUserEditScreen';
 import ProfileScreen from './screens/ProfileScreen';
 
 const router = createBrowserRouter(
@@ -42,6 +44,8 @@ const router = createBrowserRouter(
         <Route path="/database/suppliercreation" element={<SupplierDatabaseCreationScreen/>}/> 
         <Route path="/database/suppliers" element={<SupplierDatabaseScreen/>}/> 
         <Route path="/profile" element={<ProfileScreen/>}/> 
+        <Route path="/Bookings" element={<Bookings/>}/> 
+        <Route path="/database/edituser/:id" element={<DatabaseUserEditScreen/>}/> 
       </Route>
     </Route>
   )

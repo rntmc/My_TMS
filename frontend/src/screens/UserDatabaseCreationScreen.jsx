@@ -46,7 +46,7 @@ const UserDatabaseCreationScreen = () => {
             />
           </Form.Group>
 
-          <Form.Group controlId="email">
+          <Form.Group controlId="email" className='mt-2'>
             <Form.Label>Email address</Form.Label>
             <Form.Control
               type="email"
@@ -57,7 +57,7 @@ const UserDatabaseCreationScreen = () => {
             />
           </Form.Group>
 
-          <Form.Group controlId="password">
+          <Form.Group controlId="password" className='mt-2'>
             <Form.Label>Password</Form.Label>
             <Form.Control
               type="password"
@@ -69,6 +69,7 @@ const UserDatabaseCreationScreen = () => {
           </Form.Group>
 
           <Form.Group className='mt-2'>
+            <Form.Label>Role</Form.Label>
             <Form.Check
               type="radio"
               label="Admin"

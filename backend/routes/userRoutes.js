@@ -19,10 +19,12 @@ router.route('/')
 router.route('/profile')
   .get(protect, getUserProfile)
   .put(protect, updateUserProfile)
+
 router.route('/:id')
-  .delete(deleteUser)
-  .get(protect, admin, getUserById)
-  .put(updateUser)
+  .delete(protect, deleteUser)
+  .get(protect, getUserById)
+  .put(protect, updateUser)
+  
 router.post('/logout', logoutUser);
 router.post('/auth', authUser);
 
