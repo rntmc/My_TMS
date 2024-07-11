@@ -23,6 +23,7 @@ import CarrierDatabaseCreationScreen from './screens/CarrierDatabaseCreationScre
 import SupplierDatabaseScreen from './screens/SupplierDatabaseScreen';
 import SupplierDatabaseCreationScreen from './screens/SupplierDatabaseCreationScreen';
 import DatabaseUserEditScreen from './screens/DatabaseUserEditScreen';
+import DatabaseCarrierEditScreen from './screens/DatabaseCarrierEditScreen';
 import ProfileScreen from './screens/ProfileScreen';
 
 const router = createBrowserRouter(
@@ -46,6 +47,7 @@ const router = createBrowserRouter(
         <Route path="/profile" element={<ProfileScreen/>}/> 
         <Route path="/Bookings" element={<Bookings/>}/> 
         <Route path="/database/edituser/:id" element={<DatabaseUserEditScreen/>}/> 
+        <Route path="/database/editcarrier/:id" element={<DatabaseCarrierEditScreen/>}/> 
       </Route>
     </Route>
   )

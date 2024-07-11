@@ -1,6 +1,6 @@
 import React from 'react';
 import { Table, Row, Col, Button, OverlayTrigger, Tooltip } from 'react-bootstrap';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { toast } from "react-toastify";
 import { MdOutlineEdit, MdClose } from "react-icons/md";
 import { IoMdAdd } from "react-icons/io";
@@ -10,6 +10,8 @@ const CarrierDatabaseScreen = () => {
   const { data: carriers, isLoading, isError } = useGetCarriersQuery();
   const [deleteCarrier] = useDeleteCarriersMutation();
 
+  const navigate = useNavigate()
+
   if (isLoading) {
     return <p>Loading...</p>;
   }
@@ -17,6 +19,11 @@ const CarrierDatabaseScreen = () => {
   if (isError) {
     return <p>Error fetching users.</p>;
   }
+
+  const navigateHandler = async (id) => {
+    navigate(`/database/editcarrier/${id}`)
+  }
+  
 
   const deleteCarrierHandler = async (id) => {
     const carrierToDelete = carriers.find(carrier => carrier._id === id);
@@ -98,7 +105,9 @@ const CarrierDatabaseScreen = () => {
                           alignItems: 'center',
                           border: 'none',
                           borderRadius: '5px'
-                        }}>
+                        }}
+                        onClick={() => navigateHandler(carrier._id)}
+                        >
                         <MdOutlineEdit style={{ fontSize: '1rem' }}/>
                       </Button>
                     </OverlayTrigger>

@@ -23,6 +23,20 @@ export const carriersApiSlice = apiSlice.injectEndpoints({ //endpoint: {{baseURL
         method: 'DELETE'
       })
     }),
+    getCarrier: builder.query({
+      query: () => ({
+        url: `${CARRIERS_URL}`,
+      }),
+      keepUnusedDataFor: 5,
+    }),
+    updateCarrier: builder.mutation({
+      query: (data) => ({
+        url: `${CARRIERS_URL}/${data.carrierId}`,
+        method: 'PUT',
+        body: data,
+      }),
+      invalidatesTags: ['Carriers'],
+    }),
   }),
 })
 
@@ -30,4 +44,6 @@ export const {
   useAddCarrierMutation,
   useGetCarriersQuery,
   useDeleteCarriersMutation,
+  useGetCarrierQuery,
+  useUpdateCarrierMutation,
 } = carriersApiSlice;
