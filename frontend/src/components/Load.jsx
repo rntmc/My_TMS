@@ -7,13 +7,16 @@ import { FaCheck } from "react-icons/fa"
 
 const Load = () => {
   const [loads, setLoads] = useState([])
+  const [orders, setOrders] = useState([])
 
   useEffect(() => {
     const fetchLoads = async () => {
       try {
-        const {data} = await axios.get('/api/loads');
-        console.log(data)
-        setLoads(data); 
+        const {data: loads} = await axios.get('/api/loads');
+        setLoads(loads); 
+
+        const {data: ordersData} = await axios.get('/api/orders');
+        setOrders(ordersData);
       } catch (error) {
         console.error('Error fetching loads:', error);
       }
@@ -21,6 +24,10 @@ const Load = () => {
 
     fetchLoads();
   }, [])
+
+  const findOrderById = (orderId) => {
+    return orders.find(order => order.orderId === orderId);
+  };
 
   return (
     <>
@@ -57,12 +64,15 @@ const Load = () => {
                 </div>
               </td>
               <td>
-                {load.orders.map((order, index) => (
-                  <span key={index}>
-                    <Link to={`/order/${order}`}>{order}</Link>
-                    {index !== load.orders.length - 1 && ', '}
-                  </span>
-                ))}
+                {load.orders.map((orderId, index) => {
+                  const order = findOrderById(orderId);
+                  return (
+                    <span key={index}>
+                      {order && <Link to={`/order/${order._id}`}>{order.orderId}</Link>}
+                      {index !== load.orders.length - 1 && ', '}
+                    </span>
+                  );
+                })}
               </td>
               <td>$ {load.totalFreightCost}</td>
               <td>{load.totalWeight} kg</td>
