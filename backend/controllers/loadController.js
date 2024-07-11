@@ -23,4 +23,64 @@ const getLoadsById = asyncHandler(async (req, res) => {
   }
 })
 
-export {getLoadsById, getLoads}
+// @Desc Create new load
+// @ route POST /api/loads
+// @access User/admin
+const createLoad = asyncHandler(async (req, res) => {
+
+  const {  
+    loadId,
+    packageQty,
+    pickupDate,
+    deliveryDate,
+    origin,
+    destination,
+    carrier,
+    transportType,
+    orders,
+    totalFreightCost,
+    totalVolume,
+    totalWeight,
+    licensePlate,
+    driver,
+    insurance,
+    storageAndTransportConditions,
+    specialNotes,
+    status,
+  } = req.body;
+
+  console.log('req:', req);
+
+  const load = new Load({
+    loadId,
+    packageQty,
+    pickupDate,
+    deliveryDate,
+    origin: {
+      ...origin
+    },
+    destination: {
+      ...destination
+    },
+    carrier,
+    transportType,
+    orders,
+    totalFreightCost,
+    totalVolume,
+    totalWeight,
+    licensePlate,
+    driver,
+    insurance,
+    storageAndTransportConditions,
+    specialNotes,
+    status,
+    user: req.user._id,
+  })
+
+  const createdLoad = await load.save();
+
+  res.status(201).json(createdLoad)
+})
+
+
+export {getLoadsById, getLoads, createLoad}

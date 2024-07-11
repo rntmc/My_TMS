@@ -68,7 +68,6 @@ const loadSchema = new mongoose.Schema({
   user: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User',  // Optional, if you want to track which user created or manages the load
-    required: true
   }
 },{
   timestamps: true,

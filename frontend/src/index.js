@@ -15,6 +15,7 @@ import OrderScreen from './screens/OrderScreen';
 import LoginScreen from './screens/LoginScreen';
 import RegisterScreen from './screens/RegisterScreen';
 import CreateOrderScreen from './screens/CreateOrderScreen';
+import CreateLoadScreen from './screens/CreateLoadScreen';
 import UserDatabaseCreationScreen from './screens/UserDatabaseCreationScreen';
 import UserDatabaseScreen from './screens/UserDatabaseScreen';
 import DatabaseScreen from './screens/DatabaseScreen';
@@ -38,6 +39,7 @@ const router = createBrowserRouter(
         <Route path="/load/:id" element={<LoadScreen/>}/> 
         <Route path="/order/:id" element={<OrderScreen/>}/> 
         <Route path="/createorder" element={<CreateOrderScreen/>}/> 
+        <Route path="/createload" element={<CreateLoadScreen/>}/> 
         <Route path="/database" element={<DatabaseScreen/>}/> 
         <Route path="/database/usercreation" element={<UserDatabaseCreationScreen/>}/> 
         <Route path="/database/users" element={<UserDatabaseScreen/>}/> 

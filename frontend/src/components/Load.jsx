@@ -40,12 +40,22 @@ const Load = () => {
 
           </tr>
         </thead>
-        <tbody>
+        <tbody style={{ fontSize: '12px' }}>
           {loads.map((load) => (
             <tr key={load.loadId}>
               <td><Link to={`/load/${load._id}`}>{load.loadId}</Link></td>
-              <td>{load.origin.city}</td>
-              <td>{load.destination.city}</td>
+              <td>
+                <div className='disp'>
+                  {load.origin.city}, {load.origin.state} <br />
+                  {load.origin.country} - {load.origin.postcode}          
+                </div>
+              </td>
+              <td>
+                <div className='disp'>
+                  {load.destination.city}, {load.destination.state} <br />
+                  {load.destination.country} - {load.destination.postcode}          
+                </div>
+              </td>
               <td>
                 {load.orders.map((order, index) => (
                   <span key={index}>

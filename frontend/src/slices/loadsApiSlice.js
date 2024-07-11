@@ -14,11 +14,19 @@ export const loadsApiSlice = apiSlice.injectEndpoints({
         url: `${LOADS_URL}/${loadId}`,
       }),
       keepUnusedDataFor: 5,
-    })
+    }),
+    createLoad: builder.mutation({
+      query: (load) => ({
+        url: LOADS_URL,
+        method: 'POST',
+        body: {...load},
+      })
+    }),
   }),
 })
 
 export const {
   useGetLoadsQuery, 
-  useGetLoadDetailsQuery
+  useGetLoadDetailsQuery,
+  useCreateLoadMutation,
 } = loadsApiSlice;
