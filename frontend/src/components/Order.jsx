@@ -1,29 +1,45 @@
 import { useState, useEffect } from 'react';
 import { Table, Button, OverlayTrigger, Tooltip } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
-import axios from 'axios';
 import { CgDanger } from "react-icons/cg";
-import { FaCheck } from "react-icons/fa"
+import { FaCheck } from "react-icons/fa";
+import { useGetOrdersQuery, useUpdateOrderStatusMutation } from '../slices/ordersApiSlice';
 
 const Order = () => {
+  const { data: ordersData, error, isLoading } = useGetOrdersQuery();
   const [orders, setOrders] = useState([]);
+  const [updateOrderStatus] = useUpdateOrderStatusMutation();
 
   useEffect(() => {
-    const fetchOrders = async () => {
-      try {
-        const { data } = await axios.get('/api/orders');
-        data.forEach(order => {
-          order.pickupDate = new Date(order.pickupDate).toLocaleDateString();
-          order.deliveryDate = new Date(order.deliveryDate).toLocaleDateString();
-        });
-        setOrders(data); 
-      } catch (error) {
-        console.error('Error fetching orders:', error);
-      }
-    };
+    if (ordersData) {
+      const formattedOrders = ordersData.map(order => ({
+        ...order,
+        pickupDate: new Date(order.pickupDate).toLocaleDateString(),
+        deliveryDate: new Date(order.deliveryDate).toLocaleDateString(),
+      }));
+      setOrders(formattedOrders);
+    }
+  }, [ordersData]);
 
-    fetchOrders();
-  }, []);
+  const handleStatus = async (orderId) => {
+    try {
+      // Update the status in the local state
+      setOrders((prevOrders) =>
+        prevOrders.map((order) =>
+          order._id === orderId ? { ...order, status: 'confirmed' } : order
+        )
+      );
+
+      // Send the updated status to the server
+      await updateOrderStatus({ orderId, status: 'confirmed' });
+
+    } catch (error) {
+      console.error('Error updating order status:', error);
+    }
+  };
+
+  if (isLoading) return <p>Loading...</p>;
+  if (error) return <p>Error: {error.message}</p>;
 
   return (
     <>
@@ -76,7 +92,7 @@ const Order = () => {
                 <div>{order.pickupDate}</div>
                 <div>{order.deliveryDate}</div>
               </td>
-              <td>{order.volume} m³</td>
+              <td>{order.volume} m&#179;</td>
               <td>{order.weight} kg</td>
               <td>$ {order.freightCost}</td>
               <td>{order.status}
@@ -96,7 +112,9 @@ const Order = () => {
                           alignItems: 'center',
                           border: 'none',
                           borderRadius: '5px'
-                        }}>
+                        }}
+                        onClick={() => handleStatus(order._id)}
+                      >
                         <FaCheck style={{ fontSize: '1rem', color: "green" }}/>
                       </Button>
                     </OverlayTrigger>

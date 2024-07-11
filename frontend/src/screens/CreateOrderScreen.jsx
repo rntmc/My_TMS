@@ -1,4 +1,5 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Form, Button, Row, Col, Card, FormGroup } from 'react-bootstrap';
 import { useCreateOrderMutation } from '../slices/ordersApiSlice';
 import { FaPlus } from "react-icons/fa"
@@ -27,18 +28,7 @@ const CreateOrderScreen = () => {
   const [length, setLength] = useState('')
   const [width, setWidth] = useState('')
   const [height, setHeight] = useState('')
-  const [volume, setVolume] = useState('')
   const [weight, setWeight] = useState('')
-  // const [packages, setPackages] = useState([
-  //   {
-  //     packageQty: 0,
-  //     length: 0,
-  //     width: 0,
-  //     height: 0,
-  //     volume: 0,
-  //     weight: 0
-  //   }
-  // ]);
   const [freightCost, setFreightCost] = useState('');
   const [productId, setProductId] = useState('');
   const [productQuantity, setProductQuantity] = useState(0);
@@ -46,21 +36,7 @@ const CreateOrderScreen = () => {
 
   const [createOrder] = useCreateOrderMutation();
 
-  // const [lastOrderId, setLastOrderId] = useState(10004); // Start from 10004 so first order is 10005
-
-  // const handleAddPackage = () => {
-  //   setPackages([
-  //     ...packages,
-  //     {
-  //       packageQty: 0,
-  //       length: 0,
-  //       width: 0,
-  //       height: 0,
-  //       volume: 0,
-  //       weight: 0,
-  //     }
-  //   ]);
-  // };
+  const navigate = useNavigate()
 
   const calculateVolume = () => {
     if (length && width && height) {
@@ -98,7 +74,6 @@ const CreateOrderScreen = () => {
           country: destinationCountry,
         },
       },
-      // packages: [],
       packageQty,
       length,
       width,
@@ -116,19 +91,11 @@ const CreateOrderScreen = () => {
     try {
       const data = await createOrder(orderData).unwrap();
       console.log('Order created:', data);
+      navigate('/bookings')
     } catch (error) {
       console.error('Error creating order:', error);
     }
   };
-
-  // Function to calculate total weight of orders
-  // const calculatelWeight = () => {
-  //   let totalWeight = 0;
-  //     totalWeight += parseFloat(weight);
-  //   return totalWeight.toFixed(2);
-  // };
-
-  // // Function to calculate total volume of packages in cubic meters
 
   return (
     <Form onSubmit={submitHandler}>

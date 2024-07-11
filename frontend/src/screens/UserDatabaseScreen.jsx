@@ -1,6 +1,6 @@
 import React from 'react';
 import { Table, Row, Col, Button, OverlayTrigger, Tooltip } from 'react-bootstrap';
-import { Link, useNavigate, useParams } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { MdOutlineEdit, MdClose } from "react-icons/md";
 import { IoMdAdd } from "react-icons/io";
 import { toast } from "react-toastify";
