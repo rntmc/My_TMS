@@ -9,6 +9,7 @@
 - [] User Database: active or inactive.
 - [] Perhaps add OrganizationID to userModel, so they are linked to that organization orders only
 - [] When updating an user, I want to see the current state of the name, email and role instead of Enter name,...
+- [] If an user/carrier/supplier is updated, my userInfo in Redux changes to the data I have updated
 
 - [] Supplier Database: adjust opening hours to accept blank days or create drop down list
 

@@ -23,6 +23,20 @@ export const suppliersApiSlice = apiSlice.injectEndpoints({ //endpoint: {{baseUR
         method: 'DELETE'
       })
     }),
+    getSupplier: builder.query({
+      query: () => ({
+        url: `${SUPPLIERS_URL}`,
+      }),
+      keepUnusedDataFor: 5,
+    }),
+    updateSupplier: builder.mutation({
+      query: (data) => ({
+        url: `${SUPPLIERS_URL}/${data.supplierId}`,
+        method: 'PUT',
+        body: data,
+      }),
+      invalidatesTags: ['Suppliers'],
+    }),
   }),
 })
 
@@ -30,4 +44,6 @@ export const {
   useAddSupplierMutation,
   useGetSuppliersQuery,
   useDeleteSupplierMutation,
+  useGetSupplierQuery,
+  useUpdateSupplierMutation,
 } = suppliersApiSlice;

@@ -79,8 +79,67 @@ const deleteSupplier = asyncHandler(async (req, res) => {
   }
 })
 
+// @Desc Get supplier by ID
+// @ route GET /api/suppliers/:id
+// @access Private/Admin
+const getSupplierById = asyncHandler(async (req, res) => {
+  const supplier = await Supplier.findById(req.params.id)
+
+  if(supplier) {
+    res.status(200).json(supplier);
+  } else {
+    res.status(404);
+    throw new Error('Supplier not found')
+  }
+})
+
+// @Desc update supplier
+// @ route PUT /api/suppliers/:id
+// @access Private/Admin
+const updateSupplier = asyncHandler(async (req, res) => {
+  const { id } = req.params;
+  const {
+    name,
+    supplierNumber,
+    location,
+    contactPerson,
+    phone,
+    email,
+    openingHours,
+  } = req.body;
+
+  try {
+    const supplier = await Supplier.findById(id);
+
+    if (supplier) {
+      supplier.name = name || supplier.name;
+      supplier.supplierNumber = supplierNumber || supplier.supplierNumber;
+      supplier.location.address = location?.address || supplier.location.address;
+      supplier.location.city = location?.city || supplier.location.city;
+      supplier.location.state = location?.state || supplier.location.state;
+      supplier.location.country = location?.country || supplier.location.country;
+      supplier.location.postcode = location?.postcode || supplier.location.postcode;
+      supplier.contactPerson = contactPerson || supplier.contactPerson;
+      supplier.phone = phone || supplier.phone;
+      supplier.email = email || supplier.email;
+      supplier.openingHours = openingHours || supplier.openingHours;
+
+      const updatedSupplier = await supplier.save();
+
+      res.status(200).json(updatedSupplier);
+    } else {
+      res.status(404);
+      throw new Error('Supplier not found');
+    }
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+});
+
 export {
   registerSupplier,
   getSuppliers,
   deleteSupplier,
+  getSupplierById,
+  updateSupplier,
 }

@@ -1,6 +1,6 @@
 import React from 'react';
 import { Table, Row, Col, Button, OverlayTrigger, Tooltip } from 'react-bootstrap';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { toast } from "react-toastify";
 import { MdOutlineEdit, MdClose } from "react-icons/md";
 import { IoMdAdd } from "react-icons/io";
@@ -10,6 +10,11 @@ const SupplierDatabaseScreen = () => {
   const { data: suppliers, isLoading, isError } = useGetSuppliersQuery();
   const [deleteSupplier] = useDeleteSupplierMutation()
 
+  const navigate = useNavigate()
+  
+  const navigateHandler = async (id) => {
+    navigate(`/database/editsupplier/${id}`)
+  } 
   
   if (isLoading) {
     return <p>Loading...</p>;
@@ -97,7 +102,9 @@ const SupplierDatabaseScreen = () => {
                           alignItems: 'center',
                           border: 'none',
                           borderRadius: '5px'
-                        }}>
+                        }}
+                        onClick={() => navigateHandler(supplier._id)}
+                        >
                         <MdOutlineEdit style={{ fontSize: '1rem' }}/>
                       </Button>
                     </OverlayTrigger>

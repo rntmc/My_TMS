@@ -12,6 +12,10 @@ const CarrierDatabaseScreen = () => {
 
   const navigate = useNavigate()
 
+  const navigateHandler = async (id) => {
+    navigate(`/database/editcarrier/${id}`)
+  }
+
   if (isLoading) {
     return <p>Loading...</p>;
   }
@@ -19,11 +23,6 @@ const CarrierDatabaseScreen = () => {
   if (isError) {
     return <p>Error fetching users.</p>;
   }
-
-  const navigateHandler = async (id) => {
-    navigate(`/database/editcarrier/${id}`)
-  }
-  
 
   const deleteCarrierHandler = async (id) => {
     const carrierToDelete = carriers.find(carrier => carrier._id === id);
