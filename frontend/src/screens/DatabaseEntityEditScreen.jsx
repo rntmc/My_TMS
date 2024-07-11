@@ -3,18 +3,18 @@ import { Form, Button, Row, Col } from 'react-bootstrap';
 import { useDispatch } from 'react-redux';
 import { useParams, useNavigate } from 'react-router-dom'; 
 import { toast } from 'react-toastify';
-import { useGetSupplierQuery, useUpdateSupplierMutation } from '../slices/suppliersApiSlice';
+import { useGetEntityQuery, useUpdateEntityMutation } from '../slices/entitiesApiSlice';
 import { setCredentials } from '../slices/authSlice';
 import Loader from '../components/Loader';
 
-const DatabaseSupplierEditScreen = () => {
-  const { id: supplierId } = useParams();
+const DatabaseEntityEditScreen = () => {
+  const { id: entityId } = useParams();
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
-  const { data: supplier, isLoading, isError } = useGetSupplierQuery(supplierId);
+  const { data: entity, isLoading, isError } = useGetEntityQuery(entityId);
 
-  const [supplierNumber, setSupplierNumber] = useState('');
+  const [entityNumber, setEntityNumber] = useState('');
   const [name, setName] = useState('');
   const [location, setLocation] = useState({
     address: '',
@@ -27,32 +27,32 @@ const DatabaseSupplierEditScreen = () => {
   const [email, setEmail] = useState('');
   const [phone, setPhone] = useState('');
 
-  const [updateCarrier, { isLoading: isUpdating }] = useUpdateSupplierMutation();
+  const [updateCarrier, { isLoading: isUpdating }] = useUpdateEntityMutation();
 
   useEffect(() => {
-    if (supplier) {
-      setSupplierNumber(supplier.supplierNumber || '');
-      setName(supplier.name || '');
-      setContactPerson(supplier.contactPerson || '');
-      setEmail(supplier.email || '');
-      setPhone(supplier.phone || '');
+    if (entity) {
+      setEntityNumber(entity.entityNumber || '');
+      setName(entity.name || '');
+      setContactPerson(entity.contactPerson || '');
+      setEmail(entity.email || '');
+      setPhone(entity.phone || '');
       setLocation({
-        address: supplier.location?.address || '',
-        city: supplier.address?.city || '',
-        state: supplier.address?.state || '',
-        country: supplier.address?.country || '',
-        postcode: supplier.address?.postcode || '',
+        address: entity.location?.address || '',
+        city: entity.address?.city || '',
+        state: entity.address?.state || '',
+        country: entity.address?.country || '',
+        postcode: entity.address?.postcode || '',
       });
     }
-  }, [supplier]);
+  }, [entity]);
 
   const submitHandler = async (e) => {
     e.preventDefault();
 
     try {
-      const updatedSupplier = await updateCarrier({
-        supplierId,
-        supplierNumber,
+      const updatedEntity = await updateCarrier({
+        entityId,
+        entityNumber,
         name,
         contactPerson,
         email,
@@ -60,9 +60,9 @@ const DatabaseSupplierEditScreen = () => {
         location,
       }).unwrap();
 
-      dispatch(setCredentials(updatedSupplier));
-      toast.success('Supplier updated successfully');
-      navigate('/database/suppliers');
+      dispatch(setCredentials(updatedEntity));
+      toast.success('Entity updated successfully');
+      navigate('/database/entities');
     } catch (error) {
       toast.error(error?.data?.message || error.error);
     }
@@ -73,14 +73,23 @@ const DatabaseSupplierEditScreen = () => {
   }
 
   if (isError) {
-    return <p>Error loading supplier details</p>;
+    return <p>Error loading Entity details</p>;
   }
 
   return (
     <Row>
       <Col md={6}>
-        <h2>Update Supplier</h2>
+        <h2>Update Entity</h2>
         <Form onSubmit={submitHandler}>
+          <FormGroup label="Entity Number" controlId="entityNumber">
+            <Form.Control
+              type='text'
+              placeholder='Enter entity number'
+              value={entityNumber}
+              onChange={(e) => setEntityNumber(e.target.value)}
+            />
+          </FormGroup>
+
           <FormGroup label="Name" controlId="name">
             <Form.Control
               type='text'
@@ -90,14 +99,6 @@ const DatabaseSupplierEditScreen = () => {
             />
           </FormGroup>
 
-          <FormGroup label="Supplier Number" controlId="supplierNumber">
-            <Form.Control
-              type='text'
-              placeholder='Enter supplier number'
-              value={supplierNumber}
-              onChange={(e) => setSupplierNumber(e.target.value)}
-            />
-          </FormGroup>
 
           <FormGroup label="Contact Person" controlId="contactPerson">
             <Form.Control
@@ -172,7 +173,7 @@ const DatabaseSupplierEditScreen = () => {
           </FormGroup>
 
           <Button type='submit' variant='primary' className='my-2'>
-            Update Supplier
+            Update Entity
           </Button>
         </Form>
       </Col>
@@ -187,4 +188,4 @@ const FormGroup = ({ label, controlId, children }) => (
   </Form.Group>
 );
 
-export default DatabaseSupplierEditScreen;
+export default DatabaseEntityEditScreen;

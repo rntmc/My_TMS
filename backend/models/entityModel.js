@@ -29,8 +29,8 @@ const openingHoursSchema = new mongoose.Schema({
   },
 });
 
-const supplierSchema = new mongoose.Schema({
-  supplierNumber: {
+const EntitySchema = new mongoose.Schema({
+  entityNumber: {
     type: Number,
     required: true, 
     unique: true,
@@ -57,6 +57,6 @@ const supplierSchema = new mongoose.Schema({
   timestamps: true,
 });
 
-const Supplier = mongoose.model('Supplier', supplierSchema);
+const Entity = mongoose.model('Entity', EntitySchema);
 
-export default Supplier;
+export default Entity;

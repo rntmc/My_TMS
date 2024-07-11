@@ -98,17 +98,17 @@ const OrderScreen = () => {
           <Row>
             <Col md={4}>
                 <strong>Origin:</strong> <br />
-                  {`${order.origin.supplierNumber} ${order.origin.supplierName}`}<br />
-                  {`${order.origin.supplierLocation.address}`}<br /> 
-                  {`${order.origin.supplierLocation.city}, ${order.origin.supplierLocation.state}`}<br />
-                  {`${order.origin.supplierLocation.postcode} - ${order.origin.supplierLocation.country}`}
+                  {`${order.origin.entityNumber} ${order.origin.entityName}`}<br />
+                  {`${order.origin.entityLocation.address}`}<br /> 
+                  {`${order.origin.entityLocation.city}, ${order.origin.entityLocation.state}`}<br />
+                  {`${order.origin.entityLocation.postcode} - ${order.origin.entityLocation.country}`}
             </Col>
             <Col md={4}>
               <strong>Destination:</strong> <br />
-                {`${order.destination.plantNumber} ${order.destination.plantName}`}<br />
-                {`${order.destination.plantLocation.address}`}<br /> 
-                 {`${order.destination.plantLocation.city}, ${order.destination.plantLocation.state}`}<br />
-                {`${order.destination.plantLocation.postcode} - ${order.destination.plantLocation.country}`}
+                {`${order.destination.entityNumber} ${order.destination.entityName}`}<br />
+                {`${order.destination.entityLocation.address}`}<br /> 
+                 {`${order.destination.entityLocation.city}, ${order.destination.entityLocation.state}`}<br />
+                {`${order.destination.entityLocation.postcode} - ${order.destination.entityLocation.country}`}
             </Col>
           </Row>
           <Row className='mt-2 mb-2'>    

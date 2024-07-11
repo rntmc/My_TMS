@@ -16,26 +16,26 @@ const orderSchema = new mongoose.Schema({
     required: true
   },
   origin: {
-    supplierNumber: {
+    entityNumber: {
       type: Number,
       required: true
     },
-    supplierName: {
+    entityName: {
       type: String,
       required: true
     },
-    supplierLocation: addressSchema
+    entityLocation: addressSchema
   },
   destination: {
-    plantNumber: {
+    entityNumber: {
       type: Number,
       required: true
     },
-    plantName: {
+    entityName: {
       type: String,
       required: true
     },
-    plantLocation: addressSchema
+    entityLocation: addressSchema
   },
   packageQty: {
     type: Number,

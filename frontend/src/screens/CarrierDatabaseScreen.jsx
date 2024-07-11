@@ -69,7 +69,7 @@ const CarrierDatabaseScreen = () => {
           <thead>
             <tr>
               <th>#</th>
-              <th>Carrier ID</th>
+              <th>Carrier Number</th>
               <th>Name</th>
               <th>Contact Person</th>
               <th>Postcode</th>

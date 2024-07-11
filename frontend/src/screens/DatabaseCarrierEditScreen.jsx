@@ -13,7 +13,9 @@ const DatabaseCarrierEditScreen = () => {
   const dispatch = useDispatch();
 
   const { data: carrier, isLoading, isError } = useGetCarrierQuery(carrierId);
+  console.log(carrier)
 
+  const [carrierNumber, setCarrierNumber] = useState('')
   const [name, setName] = useState('');
   const [contactPerson, setContactPerson] = useState('');
   const [contactEmail, setContactEmail] = useState('');
@@ -36,6 +38,7 @@ const DatabaseCarrierEditScreen = () => {
 
   useEffect(() => {
     if (carrier) {
+      setCarrierNumber(carrier.carrierNumber || '')
       setName(carrier.name || '');
       setContactPerson(carrier.contactPerson || '');
       setContactEmail(carrier.contactEmail || '');
@@ -62,6 +65,7 @@ const DatabaseCarrierEditScreen = () => {
     try {
       const updatedCarrier = await updateCarrier({
         carrierId,
+        carrierNumber,
         name,
         contactPerson,
         contactEmail,
@@ -93,6 +97,15 @@ const DatabaseCarrierEditScreen = () => {
       <Col md={6}>
         <h2>Update Carrier</h2>
         <Form onSubmit={submitHandler}>
+          <FormGroup label="Carrier Number" controlId="carrierNumber">
+            <Form.Control
+              type='number'
+              placeholder='Carrier Number'
+              value={carrierNumber}
+              onChange={(e) => setCarrierNumber(e.target.value)}
+            />
+          </FormGroup>
+
           <FormGroup label="Name" controlId="name">
             <Form.Control
               type='text'

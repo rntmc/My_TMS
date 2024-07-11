@@ -1,6 +1,6 @@
-const suppliers = [
+const entities = [
   {
-    supplierNumber: 557198,
+    entityNumber: 557198,
     name: 'Supplier one',
     location: {
       address: 'street 1',
@@ -22,4 +22,4 @@ const suppliers = [
   },
 ]
 
-export default suppliers;
+export default entities;

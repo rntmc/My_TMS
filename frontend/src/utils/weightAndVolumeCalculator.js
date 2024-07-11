@@ -18,5 +18,5 @@ export const calculateTotalVolume = (packages) => {
 };
 
 // Calculate total weight and volume
-calculateTotalWeight(orders);
-calculateTotalVolume(orders);
+// calculateTotalWeight(orders);
+// calculateTotalVolume(orders);

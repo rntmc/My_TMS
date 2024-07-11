@@ -53,22 +53,22 @@ const Order = () => {
               <td>
                 <div>
                   <div style={{ fontWeight: 'bold' }}>
-                    {order.origin.supplierNumber} {order.origin.supplierName}
+                    {order.origin.entityNumber} {order.origin.entityName}
                   </div> 
                   <div>
-                    {order.origin.supplierLocation.city}, {order.origin.supplierLocation.state}, {order.origin.supplierLocation.country}<br />
-                    {order.origin.supplierLocation.postcode}  
+                    {order.origin.entityLocation.city}, {order.origin.entityLocation.state}, {order.origin.entityLocation.country}<br />
+                    {order.origin.entityLocation.postcode}  
                   </div>             
                 </div>
               </td>
               <td>
                 <div>
                   <div style={{ fontWeight: 'bold' }}>
-                    {order.destination.plantNumber} {order.destination.plantName}
+                    {order.destination.entityNumber} {order.destination.entityName}
                   </div> 
                   <div>
-                    {order.destination.plantLocation.city}, {order.destination.plantLocation.state}, {order.destination.plantLocation.country}<br />
-                    {order.destination.plantLocation.postcode}  
+                    {order.destination.entityLocation.city}, {order.destination.entityLocation.state}, {order.destination.entityLocation.country}<br />
+                    {order.destination.entityLocation.postcode}  
                   </div>             
                 </div>
               </td>

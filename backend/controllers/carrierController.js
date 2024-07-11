@@ -109,6 +109,8 @@ const updateCarrier = asyncHandler(async (req, res) => {
   const carrier = await Carrier.findById(req.params.id);
 
   if (carrier) {
+
+    carrier.carrierNumber = req.body.carrierNumber || carrier.carrierNumber;
     carrier.name = req.body.name || carrier.name;
     carrier.contactPerson = req.body.contactPerson || carrier.contactPerson;
     carrier.contactEmail = req.body.contactEmail || carrier.contactEmail;
@@ -127,6 +129,7 @@ const updateCarrier = asyncHandler(async (req, res) => {
 
     res.status(200).json({
       _id: updatedCarrier._id,
+      carrierNumber: updatedCarrier.carrierNumber,
       name: updatedCarrier.name,
       contactPerson: updatedCarrier.contactPerson,
       contactEmail: updatedCarrier.contactEmail,

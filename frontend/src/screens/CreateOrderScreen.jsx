@@ -9,15 +9,15 @@ const CreateOrderScreen = () => {
   const [status, setStatus] = useState('open');
   const [pickupDate, setPickupDate] = useState('');
   const [deliveryDate, setDeliveryDate] = useState('');
-  const [originSupplierNumber, setOriginSupplierNumber] = useState('');
-  const [originSupplierName, setOriginSupplierName] = useState('');
+  const [originEntityNumber, setOriginEntityNumber] = useState('');
+  const [originEntityName, setOriginEntityName] = useState('');
   const [originAddress, setOriginAddress] = useState('');
   const [originCity, setOriginCity] = useState('');
   const [originState, setOriginState] = useState('');
   const [originPostcode, setOriginPostcode] = useState('');
   const [originCountry, setOriginCountry] = useState('');
-  const [destinationPlantNumber, setDestinationPlantNumber] = useState('');
-  const [destinationPlantName, setDestinationPlantName] = useState('');
+  const [destinationEntityNumber, setDestinationEntityNumber] = useState('');
+  const [destinationEntityName, setDestinationEntityName] = useState('');
   const [destinationAddress, setDestinationAddress] = useState('');
   const [destinationCity, setDestinationCity] = useState('');
   const [destinationState, setDestinationState] = useState('');
@@ -77,9 +77,9 @@ const CreateOrderScreen = () => {
       pickupDate,
       deliveryDate,
       origin: {
-        supplierNumber: originSupplierNumber,
-        supplierName: originSupplierName,
-        supplierLocation: {
+        entityNumber: originEntityNumber,
+        entityName: originEntityName,
+        entityLocation: {
           address: originAddress,
           city: originCity,
           state: originState,
@@ -88,9 +88,9 @@ const CreateOrderScreen = () => {
         },
       },
       destination: {
-        plantNumber: destinationPlantNumber,
-        plantName: destinationPlantName,
-        plantLocation: {
+        entityNumber: destinationEntityNumber,
+        entityName: destinationEntityName,
+        entityLocation: {
           address: destinationAddress,
           city: destinationCity,
           state: destinationState,
@@ -197,25 +197,25 @@ const CreateOrderScreen = () => {
       <Card className='mt-3 p-4'>
         <Row>
           <Col md={4}>
-            <Form.Group controlId='originSupplierNumber'>
-              <Form.Label>Supplier Number</Form.Label>
+            <Form.Group controlId='originEntityNumber'>
+              <Form.Label>Entity Number</Form.Label>
               <Form.Control
                 type='text'
-                placeholder='Enter supplier number'
-                value={originSupplierNumber}
-                onChange={(e) => setOriginSupplierNumber(e.target.value)}
+                placeholder='Enter Entity number'
+                value={originEntityNumber}
+                onChange={(e) => setOriginEntityNumber(e.target.value)}
               ></Form.Control>
             </Form.Group>
           </Col>
 
           <Col md={8}>
-            <Form.Group controlId='originSupplierName'>
-              <Form.Label>Supplier Name</Form.Label>
+            <Form.Group controlId='originEntityName'>
+              <Form.Label>Entity Name</Form.Label>
               <Form.Control
                 type='text'
-                placeholder='Enter supplier name'
-                value={originSupplierName}
-                onChange={(e) => setOriginSupplierName(e.target.value)}
+                placeholder='Enter Entity name'
+                value={originEntityName}
+                onChange={(e) => setOriginEntityName(e.target.value)}
               ></Form.Control>
             </Form.Group>
           </Col>
@@ -286,25 +286,25 @@ const CreateOrderScreen = () => {
         <Card className='mt-3 p-4'>
           <Row>
             <Col md={4}>
-              <Form.Group controlId='destinationPlantNumber'>
-                <Form.Label>Plant Number</Form.Label>
+              <Form.Group controlId='destinationEntityNumber'>
+                <Form.Label>Entity Number</Form.Label>
                 <Form.Control
                   type='text'
-                  placeholder='Enter plant number'
-                  value={destinationPlantNumber}
-                  onChange={(e) => setDestinationPlantNumber(e.target.value)}
+                  placeholder='Enter Entity number'
+                  value={destinationEntityNumber}
+                  onChange={(e) => setDestinationEntityNumber(e.target.value)}
                 ></Form.Control>
               </Form.Group>
             </Col>
 
             <Col md={8}>
-              <Form.Group controlId='destinationPlantName'>
-                <Form.Label>Plant Name</Form.Label>
+              <Form.Group controlId='destinationEntityName'>
+                <Form.Label>Entity Name</Form.Label>
                 <Form.Control
                   type='text'
-                  placeholder='Enter plant name'
-                  value={destinationPlantName}
-                  onChange={(e) => setDestinationPlantName(e.target.value)}
+                  placeholder='Enter Entity name'
+                  value={destinationEntityName}
+                  onChange={(e) => setDestinationEntityName(e.target.value)}
                 ></Form.Control>
               </Form.Group>
             </Col>

@@ -1,5 +1,6 @@
 const carriers = [
   {
+    carrierNumber: 55454,
     name: 'Great Forwarder',
     contactPerson: 'John Doe',
     contactInfo: { email: 'contact@example.com', phone: '123-456-7890' },
@@ -15,6 +16,7 @@ const carriers = [
   fleetInfo: { numberOfVehicles: 50, vehicleTypes: ['Truck', 'Van'] }
   },
   {
+    carrierNumber: 22000,
     name: 'Secondary Forwarder',
     contactPerson: 'John Smith',
     contactInfo: { email: 'john@example.com', phone: '123-456-7890' },
@@ -25,8 +27,8 @@ const carriers = [
       postcode: '99999',
       country: 'USA'
     },
-    servicesOffered: ['LTL', 'Milk Run'],
-    insuranceCoverage: 'Full Coverage',
+  servicesOffered: ['LTL', 'Milk Run'],
+  insuranceCoverage: 'Full Coverage',
   fleetInfo: { numberOfVehicles: 12, vehicleTypes: ['Truck'] }
   }
 ]

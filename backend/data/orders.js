@@ -5,9 +5,9 @@ const orders =
     pickupDate: '2024-05-01',
     deliveryDate: '2024-05-10',
     origin: {
-      supplierNumber:557198,
-      supplierName: 'Supplier One',
-      supplierLocation:{
+      entityNumber:557198,
+      entityName: 'Supplier One',
+      entityLocation:{
         address: 'street 1',
         city: 'Los Angeles',
         state: 'CA',
@@ -16,9 +16,9 @@ const orders =
       }
     },
     destination: {
-      plantNumber:100,
-      plantName: 'Plant One',
-      plantLocation: {
+      entityNumber:100,
+      entityName: 'Plant One',
+      entityLocation: {
         address: 'street 6',
         city: 'New York',
         state: 'NY',
@@ -44,9 +44,9 @@ const orders =
     pickupDate: '2024-05-02',
     deliveryDate: '2024-05-11',
     origin: {
-      supplierNumber:557198,
-      supplierName: 'Supplier Two',
-      supplierLocation: {
+      entityNumber:557198,
+      entityName: 'entity Two',
+      entityLocation: {
         address: 'street 2',
         city: 'San Francisco',
         state: 'CA',
@@ -55,9 +55,9 @@ const orders =
       }
     },
     destination: {
-      plantNumber: 557198,
-      plantName: 'Plant One',
-      plantLocation: {
+      entityNumber: 557198,
+      entityName: 'entity One',
+      entityLocation: {
         address: 'street 6',
         city: 'New York',
         state: 'NY',

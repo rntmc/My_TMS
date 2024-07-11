@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
 import { Form, Button, Row, Col } from 'react-bootstrap';
-import { useAddSupplierMutation } from '../slices/suppliersApiSlice';
+import { useAddEntityMutation } from '../slices/entitiesApiSlice';
 import { useNavigate } from 'react-router-dom';
 
-const SupplierDatabaseCreationScreen = () => {
-  const [supplierNumber, setSupplierNumber] = useState('');
+const EntityDatabaseCreationScreen = () => {
+  const [entityNumber, setEntityNumber] = useState('');
   const [name, setName] = useState('');
   const [location, setLocation] = useState({
     address: '',
@@ -27,7 +27,7 @@ const SupplierDatabaseCreationScreen = () => {
   ]);
 
   const navigate = useNavigate();
-  const [addSupplier, { isLoading }] = useAddSupplierMutation();
+  const [addEntity, { isLoading }] = useAddEntityMutation();
 
   const submitHandler = async (e) => {
     e.preventDefault();
@@ -36,8 +36,8 @@ const SupplierDatabaseCreationScreen = () => {
       open: day.open === '' ? '' : day.open,
       close: day.close === '' ? '' : day.close,
     }));
-    const supplierData = {
-      supplierNumber,
+    const entityData = {
+      entityNumber,
       name,
       location,
       contactPerson,
@@ -47,10 +47,10 @@ const SupplierDatabaseCreationScreen = () => {
     };
 
     try {
-      const response = await addSupplier(supplierData).unwrap();
-      console.log('Supplier created:', response);
+      const response = await addEntity(entityData).unwrap();
+      console.log('Entity created:', response);
       // Limpar os campos após a criação do fornecedor
-      setSupplierNumber('');
+      setEntityNumber('');
       setName('');
       setContactPerson('');
       setEmail('');
@@ -72,30 +72,30 @@ const SupplierDatabaseCreationScreen = () => {
         { day: 'Sunday', open: '', close: '' },
       ]);
       // Navegar de volta para a página de listagem de fornecedores após a criação
-      navigate('/database/suppliers');
+      navigate('/database/entities');
     } catch (err) {
-      console.error('Error creating supplier:', err);
+      console.error('Error creating entity:', err);
     }
   };
 
   return (
     <Row className="justify-content-md-center">
       <Col xs={12} md={8}>
-        <h1>Create Supplier</h1>
+        <h1>Create Entity</h1>
         <Form onSubmit={submitHandler}>
-          <Form.Group controlId="supplierNumber" className="mb-3">
-            <Form.Label>Supplier Number</Form.Label>
+          <Form.Group controlId="entityNumber" className="mb-3">
+            <Form.Label>Entity Number</Form.Label>
             <Form.Control
               type="text"
-              placeholder="Enter supplier number"
-              value={supplierNumber}
-              onChange={(e) => setSupplierNumber(e.target.value)}
+              placeholder="Enter entity number"
+              value={entityNumber}
+              onChange={(e) => setEntityNumber(e.target.value)}
               required
             />
           </Form.Group>
 
           <Form.Group controlId="name" className="mb-3">
-            <Form.Label>Supplier Name</Form.Label>
+            <Form.Label>Entity Name</Form.Label>
             <Form.Control
               type="text"
               placeholder="Enter name"
@@ -253,7 +253,7 @@ const SupplierDatabaseCreationScreen = () => {
           ))}
 
           <Button variant="primary" type="submit" disabled={isLoading}>
-            {isLoading ? 'Creating...' : 'Create Supplier'}
+            {isLoading ? 'Creating...' : 'Create Entity'}
           </Button>
         </Form>
       </Col>
@@ -261,4 +261,4 @@ const SupplierDatabaseCreationScreen = () => {
   );
 };
 
-export default SupplierDatabaseCreationScreen;
+export default EntityDatabaseCreationScreen;

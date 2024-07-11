@@ -8,7 +8,7 @@ import loadRoutes from './routes/loadRoutes.js'
 import orderRoutes from './routes/orderRoutes.js'
 import userRoutes from './routes/userRoutes.js'
 import carrierRoutes from './routes/carrierRoutes.js'
-import supplierRoutes from './routes/supplierRoutes.js'
+import entitiesRoutes from './routes/entityRoutes.js'
 
 const port = process.env.PORT || 5000;
 
@@ -30,7 +30,7 @@ app.use('/api/loads', loadRoutes)
 app.use('/api/users', userRoutes)
 app.use('/api/orders', orderRoutes)
 app.use('/api/carriers', carrierRoutes)
-app.use('/api/suppliers', supplierRoutes)
+app.use('/api/entities', entitiesRoutes)
 
 app.use(notFound)
 app.use(errorHandler)

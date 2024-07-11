@@ -2,17 +2,15 @@ import mongoose from "mongoose";
 import dotenv from 'dotenv';
 import colors from 'colors';
 import users from './data/users.js';
-import suppliers from './data/suppliers.js';
+import entities from './data/entities.js';
 import orders from './data/orders.js';
 import loads from './data/loads.js';
 import carriers from './data/carriers.js';
-import plants from './data/plants.js';
 import User from './models/userModel.js';
-import Supplier from './models/supplierModel.js';
+import Entity from './models/entityModel.js';
 import Order from './models/orderModel.js';
 import Carrier from './models/carrierModel.js';
 import Load from "./models/loadModel.js";
-import Plant from './models/plantModel.js';
 import connectDB from './config/db.js';
 
 dotenv.config();
@@ -24,13 +22,11 @@ const importData = async () => {
     await Order.deleteMany();
     await Carrier.deleteMany();
     await User.deleteMany();
-    await Supplier.deleteMany();
-    await Plant.deleteMany();
+    await Entity.deleteMany();
     await Load.deleteMany();
 
-    const createdSuppliers = await Supplier.insertMany(suppliers);
+    const createdEntities = await Entity.insertMany(entities);
     const createdUsers = await User.insertMany(users);
-    const createdPlants = await Plant.insertMany(plants); 
     const createdCarriers = await Carrier.insertMany(carriers);
     
     const adminUser = createdUsers.find(user => user.role[0]);
@@ -80,8 +76,7 @@ const destroyData = async () => {
     await Load.deleteMany();
     await User.deleteMany();
     await Carrier.deleteMany();
-    await Plant.deleteMany();
-    await Supplier.deleteMany();
+    await Entity.deleteMany();
 
     console.log('Data Destroyed!'.red.inverse);
     process.exit();

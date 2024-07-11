@@ -1,12 +1,12 @@
 import { useState, useEffect } from 'react'
-import {Table} from 'react-bootstrap'
+import {Table, OverlayTrigger, Tooltip} from 'react-bootstrap'
 import { Link } from 'react-router-dom'
 import axios from 'axios'
-
+import { CgDanger } from "react-icons/cg";
+import { FaCheck } from "react-icons/fa"
 
 const Load = () => {
   const [loads, setLoads] = useState([])
-
 
   useEffect(() => {
     const fetchLoads = async () => {
@@ -31,9 +31,11 @@ const Load = () => {
             <th>Origin</th>
             <th>Destination</th>
             <th>Orders</th>
+            <th>Total Cost</th>
+            <th>Total Volume</th>
+            <th>Total Weight</th>
             <th>Carrier</th>
             <th>Method</th>
-            <th>Price</th>
             <th>Status</th>
 
           </tr>
@@ -52,9 +54,11 @@ const Load = () => {
                   </span>
                 ))}
               </td>
+              <td>$ {load.totalFreightCost}</td>
+              <td>{load.totalWeight} kg</td>
+              <td>{load.totalVolume} m³</td>
               <td>{load.carrier}</td>
               <td>{load.transportType}</td>
-              <td>$ {load.totalFreightCost}</td>
               <td>{load.status}</td>
             </tr>
           ))}

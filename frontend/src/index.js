@@ -20,11 +20,11 @@ import UserDatabaseScreen from './screens/UserDatabaseScreen';
 import DatabaseScreen from './screens/DatabaseScreen';
 import CarrierDatabaseScreen from './screens/CarrierDatabaseScreen';
 import CarrierDatabaseCreationScreen from './screens/CarrierDatabaseCreationScreen';
-import SupplierDatabaseScreen from './screens/SupplierDatabaseScreen';
-import SupplierDatabaseCreationScreen from './screens/SupplierDatabaseCreationScreen';
+import EntityDatabaseScreen from './screens/EntityDatabaseScreen';
+import EntityDatabaseCreationScreen from './screens/EntityDatabaseCreationScreen';
 import DatabaseUserEditScreen from './screens/DatabaseUserEditScreen';
 import DatabaseCarrierEditScreen from './screens/DatabaseCarrierEditScreen';
-import DatabaseSupplierEditScreen from './screens/DatabaseSupplierEditScreen';
+import DatabaseEntityEditScreen from './screens/DatabaseEntityEditScreen';
 import ProfileScreen from './screens/ProfileScreen';
 
 const router = createBrowserRouter(
@@ -43,13 +43,13 @@ const router = createBrowserRouter(
         <Route path="/database/users" element={<UserDatabaseScreen/>}/> 
         <Route path="/database/carriercreation" element={<CarrierDatabaseCreationScreen/>}/> 
         <Route path="/database/carriers" element={<CarrierDatabaseScreen/>}/> 
-        <Route path="/database/suppliercreation" element={<SupplierDatabaseCreationScreen/>}/> 
-        <Route path="/database/suppliers" element={<SupplierDatabaseScreen/>}/> 
+        <Route path="/database/entitycreation" element={<EntityDatabaseCreationScreen/>}/> 
+        <Route path="/database/entities" element={<EntityDatabaseScreen/>}/> 
         <Route path="/profile" element={<ProfileScreen/>}/> 
         <Route path="/Bookings" element={<Bookings/>}/> 
         <Route path="/database/edituser/:id" element={<DatabaseUserEditScreen/>}/> 
         <Route path="/database/editcarrier/:id" element={<DatabaseCarrierEditScreen/>}/> 
-        <Route path="/database/editsupplier/:id" element={<DatabaseSupplierEditScreen/>}/> 
+        <Route path="/database/editentity/:id" element={<DatabaseEntityEditScreen/>}/> 
       </Route>
     </Route>
   )
