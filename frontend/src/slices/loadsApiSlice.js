@@ -22,6 +22,13 @@ export const loadsApiSlice = apiSlice.injectEndpoints({
         body: {...load},
       })
     }),
+    updateLoadStatus: builder.mutation({
+      query: ({ loadId, status }) => ({
+        url: `${LOADS_URL}/${loadId}`,
+        method: 'PATCH',
+        body: {status},
+      })
+    }),
   }),
 })
 
@@ -29,4 +36,5 @@ export const {
   useGetLoadsQuery, 
   useGetLoadDetailsQuery,
   useCreateLoadMutation,
+  useUpdateLoadStatusMutation
 } = loadsApiSlice;

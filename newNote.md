@@ -18,3 +18,5 @@
 - [] add distance and freight cost to Orders
 - [] Add Product quantity rows
 - [] Add measurements rows
+
+- [] The status should change once the button "check" is clicked. We need to refresh the page to work

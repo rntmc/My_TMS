@@ -1,13 +1,15 @@
 import { useState, useEffect } from 'react'
-import {Table, OverlayTrigger, Tooltip} from 'react-bootstrap'
+import {Table, OverlayTrigger, Tooltip, Button} from 'react-bootstrap'
 import { Link } from 'react-router-dom'
 import axios from 'axios'
 import { CgDanger } from "react-icons/cg";
 import { FaCheck } from "react-icons/fa"
+import {useUpdateLoadStatusMutation} from '../slices/loadsApiSlice'
 
 const Load = () => {
   const [loads, setLoads] = useState([])
   const [orders, setOrders] = useState([])
+  const [updateLoadStatus] = useUpdateLoadStatusMutation()
 
   useEffect(() => {
     const fetchLoads = async () => {
@@ -27,6 +29,24 @@ const Load = () => {
 
   const findOrderById = (orderId) => {
     return orders.find(order => order.orderId === orderId);
+  };
+
+  const handleStatus = async (loadId) => {
+    try {
+      // Send the updated status to the server
+      await updateLoadStatus({ loadId, status: 'confirmed' });
+      
+      // Update the status in the local state
+      setOrders((prevLoads) =>
+        prevLoads.map((load) =>
+          load._id === loadId ? { ...load, status: 'confirmed' } : load
+        )
+      );
+
+
+    } catch (error) {
+      console.error('Error updating load status:', error);
+    }
   };
 
   return (
@@ -89,7 +109,32 @@ const Load = () => {
               <td>{load.totalVolume} m³</td>
               <td>{load.carrierName}</td>
               <td>{load.transportType}</td>
-              <td>{load.status}</td>
+              <td>{load.status}
+                <div style={{ display: 'flex', flexDirection: 'row', gap: '0.5rem', justifyContent: 'center' }}>
+                  {load.status === "open" ? (
+                    <OverlayTrigger
+                      placement="top"
+                      overlay={<Tooltip id={`tooltip-confirm-${load._id}`}>Confirm</Tooltip>}
+                    >
+                      <Button 
+                        style={{
+                          padding: '0.3rem',
+                          backgroundColor: '#a5a9ad',
+                          color: 'white',
+                          display: 'flex',
+                          justifyContent: 'center',
+                          alignItems: 'center',
+                          border: 'none',
+                          borderRadius: '5px'
+                        }}
+                        onClick={() => handleStatus(load._id)}
+                      >
+                        <FaCheck style={{ fontSize: '1rem', color: "green" }}/>
+                      </Button>
+                    </OverlayTrigger>
+                  ) : ("")}
+                </div>
+              </td>
             </tr>
           ))}
         </tbody>

@@ -25,6 +25,7 @@ router.route('/:id')
   .get(protect, getUserById)
   .put(protect, updateUser)
   
+  
 router.post('/logout', logoutUser);
 router.post('/auth', authUser);
 

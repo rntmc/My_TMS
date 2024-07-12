@@ -83,5 +83,28 @@ const createLoad = asyncHandler(async (req, res) => {
   res.status(201).json(createdLoad)
 })
 
+// @Desc get carriers loads ***CHECK***
+// @ route PATCH /api/loads/:id
+// @access User/carrier
+const updateLoadStatus = async (req, res) => {
+  const { id } = req.params;
+  const { status } = req.body;
 
-export {getLoadsById, getLoads, createLoad}
+  try {
+    const load = await Load.findById(id);
+
+    if (!load) {
+      return res.status(404).json({ message: 'Load not found' });
+    }
+
+    load.status = status;
+    await load.save();
+
+    res.status(200).json({ message: 'Load status updated', load });
+  } catch (error) {
+    res.status(500).json({ message: 'Server error', error });
+  }
+};
+
+
+export {getLoadsById, getLoads, createLoad, updateLoadStatus}
