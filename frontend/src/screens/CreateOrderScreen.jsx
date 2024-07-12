@@ -97,6 +97,7 @@ const CreateOrderScreen = () => {
 
   return (
     <Form onSubmit={submitHandler}>
+      <Button onClick={() => navigate('/bookings')} >Back</Button>
       <Row>
         <Col md={3}>
         <Form.Group controlId='orderId'>

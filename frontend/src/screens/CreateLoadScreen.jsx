@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Form, Button, Row, Col, Card, ListGroup } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
+import { MdDelete } from "react-icons/md";
 import { useCreateLoadMutation } from '../slices/loadsApiSlice';
 import { useGetOrdersQuery } from '../slices/ordersApiSlice';
 
@@ -116,13 +117,13 @@ const CreateLoadScreen = () => {
 
   return (
     <Form onSubmit={submitHandler}>
-      <Button onClick={() => navigate('/bookings')}>Back to Bookings</Button>
+      <Button onClick={() => navigate('/bookings')} >Back</Button>
       <Row>
         {/* Load ID and Status */}
         <Col md={3}>
           <Form.Group controlId='loadId'>
             <Form.Label>Load ID</Form.Label>
-            <Form.Control
+            <Form.Control 
               type='text'
               placeholder='Enter Load ID'
               value={loadId}
@@ -133,7 +134,7 @@ const CreateLoadScreen = () => {
         <Col md={3}>
           <Form.Group controlId='status'>
             <Form.Label>Status</Form.Label>
-            <Form.Control
+            <Form.Control style={{backgroundColor: '#cdcaca5f'}}
               type='text'
               readOnly
               value={status}
@@ -349,137 +350,168 @@ const CreateLoadScreen = () => {
       </Row>
 
       {/* Orders List */}
-      <Row className='mt-4'>
-        <Col md={6}>
-          <Card className='p-3'>
-            <h4>Orders</h4>
-            <Form.Group controlId='orderToAdd'>
+      <Row>
+        <Col md={3} className='mt-3'>
+        <Card className='p-3'>
+          <h4>Orders</h4>
+            <Form.Group controlId='orderToAdd' >
               <Form.Label>Add Order by ID</Form.Label>
-              <Row>
-                <Col md={8}>
-                  <Form.Control
+              <Row >
+                <Col md={6} >
+                  <Form.Control 
                     type='number'
                     placeholder='Enter Order ID'
                     value={orderToAdd}
                     onChange={(e) => setOrderToAdd(e.target.value)}
                   />
                 </Col>
-                <Col md={4}>
+                <Col md={6}>
                   <Button variant='primary' onClick={addOrder}>
                     Add
                   </Button>
                 </Col>
-              </Row>
-            </Form.Group>
+            </Row>
+          </Form.Group>
+        </Card>
+        </Col>
 
-            <ListGroup>
-              {orders.map((order) => (
-                <ListGroup.Item key={order.orderId}>
-                  <Row>
-                    <Col>{order.orderId}</Col>
-                    <Col>{order.description}</Col>
-                    <Col>
-                      <Button
-                        variant='danger'
-                        size='sm'
-                        onClick={() => removeOrder(order.orderId)}
-                      >
-                        Remove
-                      </Button>
-                    </Col>
-                  </Row>
-                </ListGroup.Item>
-              ))}
-            </ListGroup>
+        <Col md={9} className='mt-3'>
+          <Card className='p-3'>
+            <h4>Orders in the load</h4>
+            <Form.Label>Orders</Form.Label>
+              <ListGroup className='d-flex flex-wrap list-group-horizontal border-0'>
+                {orders.map((order) => (
+                  <ListGroup.Item key={order.orderId} className='align-items-center square rounded' style={{ padding: '8px 12px' }}>
+                    <Row>
+                      <Col>{order.orderId}</Col>
+                      <Col>
+                        <Button
+                          size='sm'
+                          onClick={() => removeOrder(order.orderId)}
+                          style={{backgroundColor:'lightgray', border:'0'}}
+                        >
+                        <MdDelete style={{color: 'black'}}fontSize={'16px'}/> 
+                        </Button>
+                      </Col>
+                    </Row>
+                  </ListGroup.Item>
+                ))}
+              </ListGroup>
           </Card>
         </Col>
       </Row>
 
       {/* Additional Load Details */}
-      <Row className='mt-4'>
-        <Col md={6}>
-          <Card className='p-3'>
-            <h4>Additional Details</h4>
 
-            <Form.Group controlId='totalVolume'>
-              <Form.Label>Total Volume</Form.Label>
-              <Form.Control
-                type='text'
-                placeholder='Enter Total Volume'
-                value={totalVolume}
-                onChange={(e) => setTotalVolume(e.target.value)}
-              />
-            </Form.Group>
+        <Card className='p-3 mt-3'>
+          <h4>Additional Details</h4>
+            <Row>
+              <Col md={4}>
+                <Form.Group controlId='totalVolume'>
+                  <Form.Label>Total Volume</Form.Label>
+                  <Form.Control
+                    type='text'
+                    placeholder='Enter Total Volume'
+                    value={totalVolume}
+                    onChange={(e) => setTotalVolume(e.target.value)}
+                  />
+                </Form.Group>
+              </Col>
+              <Col md={4}>
+                <Form.Group controlId='totalWeight'>
+                  <Form.Label>Total Weight</Form.Label>
+                  <Form.Control
+                    type='text'
+                    placeholder='Enter Total Weight'
+                    value={totalWeight}
+                    onChange={(e) => setTotalWeight(e.target.value)}
+                    />
+                </Form.Group>
+              </Col>
+              
+              <Col md={4}>
+                <Form.Group controlId='totalFreightCost'>
+                  <Form.Label>Total Freight Cost</Form.Label>
+                  <Form.Control
+                    type='text'
+                    placeholder='Enter Total Freight Cost'
+                    value={totalFreightCost}
+                    onChange={(e) => setTotalFreightCost(e.target.value)}
+                    />
+                </Form.Group>
+              </Col>
+            </Row>
 
-            <Form.Group controlId='totalWeight'>
-              <Form.Label>Total Weight</Form.Label>
-              <Form.Control
-                type='text'
-                placeholder='Enter Total Weight'
-                value={totalWeight}
-                onChange={(e) => setTotalWeight(e.target.value)}
-              />
-            </Form.Group>
+            <Row>
+              <Col md={3}>
+                <Form.Group controlId='carrierName'>
+                  <Form.Label>Carrier Name</Form.Label>
+                  <Form.Control
+                    type='text'
+                    placeholder='Enter Carrier Name'
+                    value={carrierName}
+                    onChange={(e) => setCarrierName(e.target.value)}
+                  />
+                </Form.Group>
+              </Col>
 
-            <Form.Group controlId='totalFreightCost'>
-              <Form.Label>Total Freight Cost</Form.Label>
-              <Form.Control
-                type='text'
-                placeholder='Enter Total Freight Cost'
-                value={totalFreightCost}
-                onChange={(e) => setTotalFreightCost(e.target.value)}
-              />
-            </Form.Group>
+              <Col md={1}>
+                <Form.Group controlId='transportType'>
+                  <Form.Label>Type</Form.Label>
+                  <Form.Control
+                    as='select'
+                    value={transportType}
+                    onChange={(e) => setTransportType(e.target.value)}
+                  >
+                    <option value=''>Select Type</option>
+                    <option value='LTL'>LTL</option>
+                    <option value='FTL'>FTL</option>
+                    <option value='MilkRun'>MilkRun</option>
+                    <option value='AIR'>AIR</option>
+                    <option value='Rail'>Rail</option>
+                  </Form.Control>
+                </Form.Group>
+              </Col>
 
-            <Form.Group controlId='carrierName'>
-              <Form.Label>Carrier Name</Form.Label>
-              <Form.Control
-                type='text'
-                placeholder='Enter Carrier Name'
-                value={carrierName}
-                onChange={(e) => setCarrierName(e.target.value)}
-              />
-            </Form.Group>
+              <Col md={2}>
+                <Form.Group controlId='licensePlate'>
+                  <Form.Label>License Plate</Form.Label>
+                  <Form.Control
+                    type='text'
+                    placeholder='Enter License Plate'
+                    value={licensePlate}
+                    onChange={(e) => setLicensePlate(e.target.value)}
+                  />
+                </Form.Group>
+              </Col>
 
-            <Form.Group controlId='transportType'>
-              <Form.Label>Transport Type</Form.Label>
-              <Form.Control
-                type='text'
-                placeholder='Enter Transport Type'
-                value={transportType}
-                onChange={(e) => setTransportType(e.target.value)}
-              />
-            </Form.Group>
+              <Col md={4}>
+                <Form.Group controlId='driver'>
+                  <Form.Label>Driver</Form.Label>
+                  <Form.Control
+                    type='text'
+                    placeholder='Driver Name'
+                    value={driver}
+                    onChange={(e) => setDriver(e.target.value)}
+                  />
+                </Form.Group>
+              </Col>
 
-            <Form.Group controlId='licensePlate'>
-              <Form.Label>License Plate</Form.Label>
-              <Form.Control
-                type='text'
-                placeholder='Enter License Plate'
-                value={licensePlate}
-                onChange={(e) => setLicensePlate(e.target.value)}
-              />
-            </Form.Group>
+              <Col md={2}>
+                <Form.Group controlId='insurance'>
+                  <Form.Label>Insurance</Form.Label>
+                  <Form.Control
+                    type='text'
+                    placeholder='Enter Insurance'
+                    value={insurance}
+                    onChange={(e) => setInsurance(e.target.value)}
+                  />
+                </Form.Group>
+              </Col>
+            </Row>
 
-            <Form.Group controlId='driver'>
-              <Form.Label>Driver</Form.Label>
-              <Form.Control
-                type='text'
-                placeholder='Enter Driver'
-                value={driver}
-                onChange={(e) => setDriver(e.target.value)}
-              />
-            </Form.Group>
 
-            <Form.Group controlId='insurance'>
-              <Form.Label>Insurance</Form.Label>
-              <Form.Control
-                type='text'
-                placeholder='Enter Insurance'
-                value={insurance}
-                onChange={(e) => setInsurance(e.target.value)}
-              />
-            </Form.Group>
+
 
             <Form.Group controlId='storageAndTransportConditions'>
               <Form.Label>Storage and Transport Conditions</Form.Label>
@@ -505,8 +537,6 @@ const CreateLoadScreen = () => {
               />
             </Form.Group>
           </Card>
-        </Col>
-      </Row>
 
       {/* Submit Button */}
       <Row className='mt-4'>
