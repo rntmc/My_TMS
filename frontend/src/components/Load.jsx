@@ -50,25 +50,35 @@ const Load = () => {
         <tbody style={{ fontSize: '12px' }}>
           {loads.map((load) => (
             <tr key={load.loadId}>
-              <td><Link to={`/load/${load._id}`}>{load.loadId}</Link></td>
               <td>
+                <Link to={`/load/${load._id}`}>{load.loadId}</Link>
+              </td>
+              <td>
+                <div style={{ fontWeight: 'bold' }}>
+                  {load.origin.supplierNumber} {load.origin.supplierName}
+                </div>
                 <div className='disp'>
                   {load.origin.city}, {load.origin.state} <br />
-                  {load.origin.country} - {load.origin.postcode}          
+                  {load.origin.country} - {load.origin.postcode}
                 </div>
               </td>
               <td>
+                <div style={{ fontWeight: 'bold' }}>
+                  {load.destination.supplierNumber} {load.destination.supplierName}
+                </div>
                 <div className='disp'>
                   {load.destination.city}, {load.destination.state} <br />
-                  {load.destination.country} - {load.destination.postcode}          
+                  {load.destination.country} - {load.destination.postcode}
                 </div>
               </td>
               <td>
                 {load.orders.map((orderId, index) => {
                   const order = findOrderById(orderId);
+                  if (!order) return null; // If order is not found, skip rendering
+
                   return (
-                    <span key={index}>
-                      {order && <Link to={`/order/${order._id}`}>{order.orderId}</Link>}
+                    <span key={order._id}>
+                      <Link to={`/order/${order._id}`}>{order.orderId}</Link>
                       {index !== load.orders.length - 1 && ', '}
                     </span>
                   );

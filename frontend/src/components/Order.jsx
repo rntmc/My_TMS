@@ -72,8 +72,8 @@ const Order = () => {
                     {order.origin.entityNumber} {order.origin.entityName}
                   </div> 
                   <div>
-                    {order.origin.entityLocation.city}, {order.origin.entityLocation.state}, {order.origin.entityLocation.country}<br />
-                    {order.origin.entityLocation.postcode}  
+                    {order.origin.entityLocation.city}, {order.origin.entityLocation.state} <br />
+                    {order.origin.entityLocation.country} - {order.origin.entityLocation.postcode}  
                   </div>             
                 </div>
               </td>
