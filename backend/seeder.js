@@ -46,7 +46,7 @@ const importData = async () => {
 
     
     const sampleLoads = loads.map((load) => {
-      const carrier = createdCarriers.find(carrier => carrier.name === load.carrier);
+      const carrier = createdCarriers.find(carrier => carrier.carrierNumber === load.carrierNumber);
       const orderIds = load.orders.map(orderId => {
         const order = createdOrders.find(order => order.orderId[0] === orderId[0]);
         return order.orderId;

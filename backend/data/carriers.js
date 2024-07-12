@@ -1,7 +1,7 @@
 const carriers = [
   {
     carrierNumber: 55454,
-    name: 'Great Forwarder',
+    carrierName: 'Great Forwarder',
     contactPerson: 'John Doe',
     contactInfo: { email: 'contact@example.com', phone: '123-456-7890' },
     address: {
@@ -17,7 +17,7 @@ const carriers = [
   },
   {
     carrierNumber: 22000,
-    name: 'Secondary Forwarder',
+    carrierName: 'Secondary Forwarder',
     contactPerson: 'John Smith',
     contactInfo: { email: 'john@example.com', phone: '123-456-7890' },
     address: {

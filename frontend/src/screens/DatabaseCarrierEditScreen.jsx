@@ -16,7 +16,7 @@ const DatabaseCarrierEditScreen = () => {
   console.log(carrier)
 
   const [carrierNumber, setCarrierNumber] = useState('')
-  const [name, setName] = useState('');
+  const [carrierName, setCarrierName] = useState('');
   const [contactPerson, setContactPerson] = useState('');
   const [contactEmail, setContactEmail] = useState('');
   const [contactPhone, setContactPhone] = useState('');
@@ -39,7 +39,7 @@ const DatabaseCarrierEditScreen = () => {
   useEffect(() => {
     if (carrier) {
       setCarrierNumber(carrier.carrierNumber || '')
-      setName(carrier.name || '');
+      setCarrierName(carrier.carrierName || '');
       setContactPerson(carrier.contactPerson || '');
       setContactEmail(carrier.contactEmail || '');
       setContactPhone(carrier.contactPhone || '');
@@ -66,7 +66,7 @@ const DatabaseCarrierEditScreen = () => {
       const updatedCarrier = await updateCarrier({
         carrierId,
         carrierNumber,
-        name,
+        carrierName,
         contactPerson,
         contactEmail,
         contactPhone,
@@ -106,12 +106,12 @@ const DatabaseCarrierEditScreen = () => {
             />
           </FormGroup>
 
-          <FormGroup label="Name" controlId="name">
+          <FormGroup label="Carrier Name" controlId="name">
             <Form.Control
               type='text'
               placeholder='Enter name'
-              value={name}
-              onChange={(e) => setName(e.target.value)}
+              value={carrierName}
+              onChange={(e) => setCarrierName(e.target.value)}
             />
           </FormGroup>
 

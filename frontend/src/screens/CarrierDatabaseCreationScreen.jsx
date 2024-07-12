@@ -5,7 +5,7 @@ import { useNavigate } from 'react-router-dom';
 
 const CarrierDatabaseCreationScreen = () => {
   const [carrierNumber, setCarrierNumber] = useState('');
-  const [name, setName] = useState('');
+  const [carrierName, setCarrierName] = useState('');
   const [contactPerson, setContactPerson] = useState('');
   const [contactEmail, setContactEmail] = useState('');
   const [contactPhone, setContactPhone] = useState('');
@@ -31,7 +31,7 @@ const CarrierDatabaseCreationScreen = () => {
     e.preventDefault();
     const carrierData = {
       carrierNumber,
-      name,
+      carrierName,
       contactPerson,
       contactInfo: { email: contactEmail, phone: contactPhone },
       address,
@@ -48,7 +48,7 @@ const CarrierDatabaseCreationScreen = () => {
       console.log('Carrier created:', response);
       // Clear form fields or perform additional actions upon successful user creation
       setCarrierNumber('');
-      setName('');
+      setCarrierName('');
       setContactPerson('');
       setContactEmail('');
       setContactPhone('');
@@ -91,8 +91,8 @@ const CarrierDatabaseCreationScreen = () => {
             <Form.Control
               type="text"
               placeholder="Enter name"
-              value={name}
-              onChange={(e) => setName(e.target.value)}
+              value={carrierName}
+              onChange={(e) => setCarrierName(e.target.value)}
               required
             />
           </Form.Group>

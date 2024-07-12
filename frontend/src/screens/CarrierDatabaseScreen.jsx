@@ -70,7 +70,7 @@ const CarrierDatabaseScreen = () => {
             <tr>
               <th>#</th>
               <th>Carrier Number</th>
-              <th>Name</th>
+              <th>Carrier Name</th>
               <th>Contact Person</th>
               <th>Postcode</th>
               <th>Country</th>
@@ -83,7 +83,7 @@ const CarrierDatabaseScreen = () => {
               <tr key={carrier._id} style={{ height: '2rem' }}>
                 <td>{index + 1}</td>
                 <td>{carrier.carrierNumber}</td>
-                <td>{carrier.name}</td>
+                <td>{carrier.carrierName}</td>
                 <td>{carrier.contactPerson}</td>
                 <td>{carrier.address.postcode}</td>
                 <td>{carrier.address.country}</td>

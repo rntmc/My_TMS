@@ -7,7 +7,7 @@ const carrierSchema = new mongoose.Schema({
     required: true, 
     unique: true,
   },
-  name: {
+  carrierName: {
     type: String,
     required: true,
   },

@@ -1,11 +1,12 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Form, Button, Row, Col, Card, ListGroup } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
 import { useCreateLoadMutation } from '../slices/loadsApiSlice';
+import { useGetOrdersQuery } from '../slices/ordersApiSlice';
 
 const CreateLoadScreen = () => {
   const [loadId, setLoadId] = useState('');
-  const [carrier, setCarrier] = useState('');
+  const [carrierName, setCarrierName] = useState('');
   const [status, setStatus] = useState('open');
   const [pickupDate, setPickupDate] = useState('');
   const [deliveryDate, setDeliveryDate] = useState('');
@@ -28,32 +29,45 @@ const CreateLoadScreen = () => {
   const [totalFreightCost, setTotalFreightCost] = useState('');
   const [orders, setOrders] = useState([]);
   const [orderToAdd, setOrderToAdd] = useState('');
+  const [transportType, setTransportType] = useState('');
+  const [licensePlate, setLicensePlate] = useState('');
+  const [driver, setDriver] = useState('');
+  const [insurance, setInsurance] = useState('');
+  const [storageAndTransportConditions, setStorageAndTransportConditions] = useState('');
+  const [specialNotes, setSpecialNotes] = useState('');
 
-  const [createLoad] = useCreateLoadMutation();
+  const [createLoad, { isLoading: createLoadLoading }] = useCreateLoadMutation();
+  const { data: ordersData, refetch: refetchOrders } = useGetOrdersQuery();
   const navigate = useNavigate();
 
+  useEffect(() => {
+    refetchOrders();
+  }, []);
+
   const addOrder = () => {
-    if (orderToAdd.trim() !== '') {
-      setOrders([...orders, {description: orderToAdd.trim(), isChecked:false}]);
+    if (orderToAdd.trim() === '') {
+      return;
+    }
+    const order = ordersData.find((o) => o.orderId === parseInt(orderToAdd));
+    if (order && !orders.find((o) => o.orderId === order.orderId)) {
+      setOrders([...orders, order]);
       setOrderToAdd('');
     }
   };
 
-  const removeCheckedOrders = () => {
-    const updatedOrders = orders.filter((order) => !order.isChecked);
-    setOrders(updatedOrders);
-  };
-
-  const toggleOrderCheck = (index) => {
-    const updatedOrders = [...orders];
-    updatedOrders[index].isChecked = !updatedOrders[index].isChecked;
+  const removeOrder = (orderId) => {
+    const updatedOrders = orders.filter((order) => order.orderId !== orderId);
     setOrders(updatedOrders);
   };
 
   const submitHandler = async (e) => {
     e.preventDefault();
+
+  // Transform orders to an array of order IDs
+    const orderIds = orders.map(order => order.orderId);
     const loadData = {
       loadId,
+      status,
       pickupDate,
       deliveryDate,
       origin: {
@@ -81,13 +95,14 @@ const CreateLoadScreen = () => {
       totalVolume,
       totalWeight,
       totalFreightCost,
-      carrier,
-      status,
-      orders: orders.map((order, index) => ({
-        orderId: `Order${index + 1}`,
-        description: order.description,
-        isChecked: order.isChecked,
-      })),
+      carrierName,
+      orders: orderIds,
+      transportType,
+      licensePlate,
+      driver,
+      insurance,
+      storageAndTransportConditions,
+      specialNotes,
     };
 
     try {
@@ -100,9 +115,10 @@ const CreateLoadScreen = () => {
   };
 
   return (
- 
     <Form onSubmit={submitHandler}>
+      <Button onClick={() => navigate('/bookings')}>Back to Bookings</Button>
       <Row>
+        {/* Load ID and Status */}
         <Col md={3}>
           <Form.Group controlId='loadId'>
             <Form.Label>Load ID</Form.Label>
@@ -119,7 +135,7 @@ const CreateLoadScreen = () => {
             <Form.Label>Status</Form.Label>
             <Form.Control
               type='text'
-              placeholder='status'
+              readOnly
               value={status}
               onChange={(e) => setStatus(e.target.value)}
             />
@@ -127,6 +143,7 @@ const CreateLoadScreen = () => {
         </Col>
       </Row>
 
+      {/* Pickup Date and Delivery Date */}
       <Row>
         <Col md={3}>
           <Form.Group controlId='pickupDate'>
@@ -148,262 +165,358 @@ const CreateLoadScreen = () => {
             />
           </Form.Group>
         </Col>
+      </Row>
+
+      {/* Origin and Destination Details */}
+      <Row>
+        {/* Origin Details */}
         <Col md={6}>
-          <Form.Group controlId='carrier'>
-            <Form.Label>Carrier</Form.Label>
-            <Form.Control
-              type='text'
-              value={carrier}
-              onChange={(e) => setCarrier(e.target.value)}
-            />
-          </Form.Group>
+          <Card className='mt-3 p-4'>
+            <h4>Origin</h4>
+            <Row>
+              <Col md={4}>
+                <Form.Group controlId='originEntityNumber'>
+                  <Form.Label>Entity Number</Form.Label>
+                  <Form.Control
+                    type='text'
+                    placeholder='Enter Entity Number'
+                    value={originEntityNumber}
+                    onChange={(e) => setOriginEntityNumber(e.target.value)}
+                  />
+                </Form.Group>
+              </Col>
+              <Col md={8}>
+                <Form.Group controlId='originEntityName'>
+                  <Form.Label>Entity Name</Form.Label>
+                  <Form.Control
+                    type='text'
+                    placeholder='Enter Entity Name'
+                    value={originEntityName}
+                    onChange={(e) => setOriginEntityName(e.target.value)}
+                  />
+                </Form.Group>
+              </Col>
+            </Row>
+
+            <Form.Group controlId='originAddress'>
+              <Form.Label>Address</Form.Label>
+              <Form.Control
+                type='text'
+                placeholder='Enter Address'
+                value={originAddress}
+                onChange={(e) => setOriginAddress(e.target.value)}
+              />
+            </Form.Group>
+            <Row>
+              <Col md={8}>
+                <Form.Group controlId='originCity'>
+                  <Form.Label>City</Form.Label>
+                  <Form.Control
+                    type='text'
+                    placeholder='Enter City'
+                    value={originCity}
+                    onChange={(e) => setOriginCity(e.target.value)}
+                  />
+                </Form.Group>
+              </Col>
+              <Col md={4}>
+                <Form.Group controlId='originState'>
+                  <Form.Label>State</Form.Label>
+                  <Form.Control
+                    type='text'
+                    placeholder='Enter State'
+                    value={originState}
+                    onChange={(e) => setOriginState(e.target.value)}
+                  />
+                </Form.Group>
+              </Col>
+            </Row>
+            <Row>
+              <Col md={8}>
+                <Form.Group controlId='originPostcode'>
+                  <Form.Label>Postcode</Form.Label>
+                  <Form.Control
+                    type='text'
+                    placeholder='Enter Postcode'
+                    value={originPostcode}
+                    onChange={(e) => setOriginPostcode(e.target.value)}
+                  />
+                </Form.Group>
+              </Col>
+              <Col md={4}>
+                <Form.Group controlId='originCountry'>
+                  <Form.Label>Country</Form.Label>
+                  <Form.Control
+                    type='text'
+                    placeholder='Enter Country'
+                    value={originCountry}
+                    onChange={(e) => setOriginCountry(e.target.value)}
+                  />
+                </Form.Group>
+              </Col>
+            </Row>
+          </Card>
+        </Col>
+
+        {/* Destination Details */}
+        <Col md={6}>
+          <Card className='mt-3 p-4'>
+            <h4>Destination</h4>
+            <Row>
+              <Col md={4}>
+                <Form.Group controlId='destinationEntityNumber'>
+                  <Form.Label>Entity Number</Form.Label>
+                  <Form.Control
+                    type='text'
+                    placeholder='Enter Entity Number'
+                    value={destinationEntityNumber}
+                    onChange={(e) => setDestinationEntityNumber(e.target.value)}
+                  />
+                </Form.Group>
+              </Col>
+              <Col md={8}>
+                <Form.Group controlId='destinationEntityName'>
+                  <Form.Label>Entity Name</Form.Label>
+                  <Form.Control
+                    type='text'
+                    placeholder='Enter Entity Name'
+                    value={destinationEntityName}
+                    onChange={(e) => setDestinationEntityName(e.target.value)}
+                  />
+                </Form.Group>
+              </Col>
+            </Row>
+
+            <Form.Group controlId='destinationAddress'>
+              <Form.Label>Address</Form.Label>
+              <Form.Control
+                type='text'
+                placeholder='Enter Address'
+                value={destinationAddress}
+                onChange={(e) => setDestinationAddress(e.target.value)}
+              />
+            </Form.Group>
+            <Row>
+              <Col md={8}>
+                <Form.Group controlId='destinationCity'>
+                  <Form.Label>City</Form.Label>
+                  <Form.Control
+                    type='text'
+                    placeholder='Enter City'
+                    value={destinationCity}
+                    onChange={(e) => setDestinationCity(e.target.value)}
+                  />
+                </Form.Group>
+              </Col>
+              <Col md={4}>
+                <Form.Group controlId='destinationState'>
+                  <Form.Label>State</Form.Label>
+                  <Form.Control
+                    type='text'
+                    placeholder='Enter State'
+                    value={destinationState}
+                    onChange={(e) => setDestinationState(e.target.value)}
+                  />
+                </Form.Group>
+              </Col>
+            </Row>
+            <Row>
+              <Col md={8}>
+                <Form.Group controlId='destinationPostcode'>
+                  <Form.Label>Postcode</Form.Label>
+                  <Form.Control
+                    type='text'
+                    placeholder='Enter Postcode'
+                    value={destinationPostcode}
+                    onChange={(e) => setDestinationPostcode(e.target.value)}
+                  />
+                </Form.Group>
+              </Col>
+              <Col md={4}>
+                <Form.Group controlId='destinationCountry'>
+                  <Form.Label>Country</Form.Label>
+                  <Form.Control
+                    type='text'
+                    placeholder='Enter Country'
+                    value={destinationCountry}
+                    onChange={(e) => setDestinationCountry(e.target.value)}
+                  />
+                </Form.Group>
+              </Col>
+            </Row>
+          </Card>
         </Col>
       </Row>
 
-      <Row>
-
-      <Col md={6}>
-        <Card className='mt-3 p-4'>
-        <h4>Origin</h4>
-          <Row>
-            <Col md={4}>
-              <Form.Group controlId='originEntityNumber'>
-                <Form.Label>Entity Number</Form.Label>
-                <Form.Control
-                  type='text'
-                  placeholder='Enter Entity Number'
-                  value={originEntityNumber}
-                  onChange={(e) => setOriginEntityNumber(e.target.value)}
-                />
-              </Form.Group>
-            </Col>
-            <Col md={8}>
-              <Form.Group controlId='originEntityName'>
-                <Form.Label>Entity Name</Form.Label>
-                <Form.Control
-                  type='text'
-                  placeholder='Enter Entity Name'
-                  value={originEntityName}
-                  onChange={(e) => setOriginEntityName(e.target.value)}
-                />
-              </Form.Group>
-            </Col>
-          </Row>
-
-          <Form.Group controlId='originAddress'>
-            <Form.Label>Address</Form.Label>
-            <Form.Control
-              type='text'
-              placeholder='Enter Address'
-              value={originAddress}
-              onChange={(e) => setOriginAddress(e.target.value)}
-            />
-          </Form.Group>
-          <Row>
-            <Col md={8}>
-              <Form.Group controlId='originCity'>
-                <Form.Label>City</Form.Label>
-                <Form.Control
-                  type='text'
-                  placeholder='Enter City'
-                  value={originCity}
-                  onChange={(e) => setOriginCity(e.target.value)}
-                />
-              </Form.Group>
-            </Col>
-            <Col md={4}>
-              <Form.Group controlId='originState'>
-                <Form.Label>State</Form.Label>
-                <Form.Control
-                  type='text'
-                  placeholder='Enter State'
-                  value={originState}
-                  onChange={(e) => setOriginState(e.target.value)}
-                />
-              </Form.Group>
-            </Col>
-          </Row>
-          <Row>
-            <Col md={8}>
-              <Form.Group controlId='originPostcode'>
-                <Form.Label>Postcode</Form.Label>
-                <Form.Control
-                  type='text'
-                  placeholder='Enter Postcode'
-                  value={originPostcode}
-                  onChange={(e) => setOriginPostcode(e.target.value)}
+      {/* Orders List */}
+      <Row className='mt-4'>
+        <Col md={6}>
+          <Card className='p-3'>
+            <h4>Orders</h4>
+            <Form.Group controlId='orderToAdd'>
+              <Form.Label>Add Order by ID</Form.Label>
+              <Row>
+                <Col md={8}>
+                  <Form.Control
+                    type='number'
+                    placeholder='Enter Order ID'
+                    value={orderToAdd}
+                    onChange={(e) => setOrderToAdd(e.target.value)}
                   />
-              </Form.Group>
-            </Col>
-            <Col md={4}>
-              <Form.Group controlId='originCountry'>
-                <Form.Label>Country</Form.Label>
-                <Form.Control
-                  type='text'
-                  placeholder='Enter Country'
-                  value={originCountry}
-                  onChange={(e) => setOriginCountry(e.target.value)}
-                />
-              </Form.Group>
-            </Col>
-          </Row>
-        </Card>
-      </Col>
-      
-      {/* Destination Details */}
-      <Col md={6}>
-        <Card className='mt-3 p-4'>
-        <h4>Destination</h4>
-          <Row>
-            <Col md={4}>
-              <Form.Group controlId='destinationEntityNumber'>
-                <Form.Label>Entity Number</Form.Label>
-                <Form.Control
-                  type='text'
-                  placeholder='Enter Entity Number'
-                  value={destinationEntityNumber}
-                  onChange={(e) => setDestinationEntityNumber(e.target.value)}
-                />
-              </Form.Group>
-            </Col>
-            <Col md={8}>
-              <Form.Group controlId='destinationEntityName'>
-                <Form.Label>Entity Name</Form.Label>
-                <Form.Control
-                  type='text'
-                  placeholder='Enter Entity Name'
-                  value={destinationEntityName}
-                  onChange={(e) => setDestinationEntityName(e.target.value)}
-                />
-              </Form.Group>
-            </Col>
-          </Row>
+                </Col>
+                <Col md={4}>
+                  <Button variant='primary' onClick={addOrder}>
+                    Add
+                  </Button>
+                </Col>
+              </Row>
+            </Form.Group>
 
-          <Form.Group controlId='destinationAddress'>
-            <Form.Label>Address</Form.Label>
-            <Form.Control
-              type='text'
-              placeholder='Enter Address'
-              value={destinationAddress}
-              onChange={(e) => setDestinationAddress(e.target.value)}
-            />
-          </Form.Group>
-          <Row>
-            <Col md={8}>
-              <Form.Group controlId='destinationCity'>
-                <Form.Label>City</Form.Label>
-                <Form.Control
-                  type='text'
-                  placeholder='Enter City'
-                  value={destinationCity}
-                  onChange={(e) => setDestinationCity(e.target.value)}
-                />
-              </Form.Group>
-            </Col>
-            <Col md={4}>
-              <Form.Group controlId='destinationState'>
-                <Form.Label>State</Form.Label>
-                <Form.Control
-                  type='text'
-                  placeholder='Enter State'
-                  value={destinationState}
-                  onChange={(e) => setDestinationState(e.target.value)}
-                />
-              </Form.Group>
-            </Col>
-          </Row>
-          <Row>
-            <Col md={8}>
-              <Form.Group controlId='destinationPostcode'>
-                <Form.Label>Postcode</Form.Label>
-                <Form.Control
-                  type='text'
-                  placeholder='Enter Postcode'
-                  value={destinationPostcode}
-                  onChange={(e) => setDestinationPostcode(e.target.value)}
-                  />
-              </Form.Group>
-            </Col>
-            <Col md={4}>
-              <Form.Group controlId='destinationCountry'>
-                <Form.Label>Country</Form.Label>
-                <Form.Control
-                  type='text'
-                  placeholder='Enter Country'
-                  value={destinationCountry}
-                  onChange={(e) => setDestinationCountry(e.target.value)}
-                />
-              </Form.Group>
-            </Col>
-          </Row>
-        </Card>
-      </Col>
+            <ListGroup>
+              {orders.map((order) => (
+                <ListGroup.Item key={order.orderId}>
+                  <Row>
+                    <Col>{order.orderId}</Col>
+                    <Col>{order.description}</Col>
+                    <Col>
+                      <Button
+                        variant='danger'
+                        size='sm'
+                        onClick={() => removeOrder(order.orderId)}
+                      >
+                        Remove
+                      </Button>
+                    </Col>
+                  </Row>
+                </ListGroup.Item>
+              ))}
+            </ListGroup>
+          </Card>
+        </Col>
       </Row>
 
-    {/* Orders List */}
-      <Row>
-      <Col md={3}>
-        <Card className='mt-3 p-4'>
-          <h4>Add Orders</h4>
-          <Form.Group controlId='orderToAdd' className='mb-0'>
-            <Form.Control
-              type='number'
-              placeholder='Enter Order Number'
-              value={orderToAdd}
-              onChange={(e) => setOrderToAdd(e.target.value)}
-              className='mb-0'
-            />
-          </Form.Group>
-          <Button variant='primary' className='mt-3' onClick={addOrder}>
-            Add
+      {/* Additional Load Details */}
+      <Row className='mt-4'>
+        <Col md={6}>
+          <Card className='p-3'>
+            <h4>Additional Details</h4>
+
+            <Form.Group controlId='totalVolume'>
+              <Form.Label>Total Volume</Form.Label>
+              <Form.Control
+                type='text'
+                placeholder='Enter Total Volume'
+                value={totalVolume}
+                onChange={(e) => setTotalVolume(e.target.value)}
+              />
+            </Form.Group>
+
+            <Form.Group controlId='totalWeight'>
+              <Form.Label>Total Weight</Form.Label>
+              <Form.Control
+                type='text'
+                placeholder='Enter Total Weight'
+                value={totalWeight}
+                onChange={(e) => setTotalWeight(e.target.value)}
+              />
+            </Form.Group>
+
+            <Form.Group controlId='totalFreightCost'>
+              <Form.Label>Total Freight Cost</Form.Label>
+              <Form.Control
+                type='text'
+                placeholder='Enter Total Freight Cost'
+                value={totalFreightCost}
+                onChange={(e) => setTotalFreightCost(e.target.value)}
+              />
+            </Form.Group>
+
+            <Form.Group controlId='carrierName'>
+              <Form.Label>Carrier Name</Form.Label>
+              <Form.Control
+                type='text'
+                placeholder='Enter Carrier Name'
+                value={carrierName}
+                onChange={(e) => setCarrierName(e.target.value)}
+              />
+            </Form.Group>
+
+            <Form.Group controlId='transportType'>
+              <Form.Label>Transport Type</Form.Label>
+              <Form.Control
+                type='text'
+                placeholder='Enter Transport Type'
+                value={transportType}
+                onChange={(e) => setTransportType(e.target.value)}
+              />
+            </Form.Group>
+
+            <Form.Group controlId='licensePlate'>
+              <Form.Label>License Plate</Form.Label>
+              <Form.Control
+                type='text'
+                placeholder='Enter License Plate'
+                value={licensePlate}
+                onChange={(e) => setLicensePlate(e.target.value)}
+              />
+            </Form.Group>
+
+            <Form.Group controlId='driver'>
+              <Form.Label>Driver</Form.Label>
+              <Form.Control
+                type='text'
+                placeholder='Enter Driver'
+                value={driver}
+                onChange={(e) => setDriver(e.target.value)}
+              />
+            </Form.Group>
+
+            <Form.Group controlId='insurance'>
+              <Form.Label>Insurance</Form.Label>
+              <Form.Control
+                type='text'
+                placeholder='Enter Insurance'
+                value={insurance}
+                onChange={(e) => setInsurance(e.target.value)}
+              />
+            </Form.Group>
+
+            <Form.Group controlId='storageAndTransportConditions'>
+              <Form.Label>Storage and Transport Conditions</Form.Label>
+              <Form.Control
+                as='textarea'
+                rows={3}
+                placeholder='Enter Storage and Transport Conditions'
+                value={storageAndTransportConditions}
+                onChange={(e) =>
+                  setStorageAndTransportConditions(e.target.value)
+                }
+              />
+            </Form.Group>
+
+            <Form.Group controlId='specialNotes'>
+              <Form.Label>Special Notes</Form.Label>
+              <Form.Control
+                as='textarea'
+                rows={3}
+                placeholder='Enter Special Notes'
+                value={specialNotes}
+                onChange={(e) => setSpecialNotes(e.target.value)}
+              />
+            </Form.Group>
+          </Card>
+        </Col>
+      </Row>
+
+      {/* Submit Button */}
+      <Row className='mt-4'>
+        <Col>
+          <Button type='submit' variant='primary' disabled={createLoadLoading}>
+            {createLoadLoading ? 'Creating...' : 'Create Load'}
           </Button>
-        </Card>
-      </Col>
-
-      <Col md={9}>
-        <Card className='mt-3 p-4 '>
-          <h4>Orders List</h4>
-          <ListGroup className='d-flex flex-wrap list-group-horizontal border-0'>
-            {orders.map((order, index) => (
-              <Col md={2} >
-                <ListGroup.Item
-                  key={index}
-                  className='align-items-center square rounded'
-                  style={{ padding: '10px 15px' }}
-                >
-                  <Form.Check
-                    type='checkbox'
-                    label={order.description}
-                    checked={order.isChecked}
-                    onChange={() => toggleOrderCheck(index)}
-                    className='mb-0'
-                  />
-                </ListGroup.Item>
-              </Col>
-            ))}
-          </ListGroup>
-          <Button
-            variant='danger'
-            className='mt-3'
-            onClick={removeCheckedOrders}
-            disabled={orders.every((order) => !order.isChecked)}
-          >
-            Remove Checked
-          </Button>
-        </Card>
-      </Col>
-    </Row>
-
-        <Row>
-          <Col md={2}>
-            <Button variant='primary' type='submit' className='mt-2'>
-              Create Load
-            </Button>
-          </Col>
-        </Row>
-
-          {/* Submit Button */}
-      </Form>
+        </Col>
+      </Row>
+    </Form>
   );
 };
 

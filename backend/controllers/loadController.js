@@ -30,30 +30,32 @@ const createLoad = asyncHandler(async (req, res) => {
 
   const {  
     loadId,
-    packageQty,
+    status,
+    carrierName,
     pickupDate,
     deliveryDate,
     origin,
     destination,
-    carrier,
     transportType,
     orders,
     totalFreightCost,
     totalVolume,
     totalWeight,
     licensePlate,
+    packageQty,
     driver,
     insurance,
     storageAndTransportConditions,
     specialNotes,
-    status,
+    user
   } = req.body;
 
   console.log('req:', req);
 
   const load = new Load({
     loadId,
-    packageQty,
+    status,
+    carrierName,
     pickupDate,
     deliveryDate,
     origin: {
@@ -62,8 +64,8 @@ const createLoad = asyncHandler(async (req, res) => {
     destination: {
       ...destination
     },
-    carrier,
     transportType,
+    packageQty,
     orders,
     totalFreightCost,
     totalVolume,
@@ -73,7 +75,6 @@ const createLoad = asyncHandler(async (req, res) => {
     insurance,
     storageAndTransportConditions,
     specialNotes,
-    status,
     user: req.user._id,
   })
 

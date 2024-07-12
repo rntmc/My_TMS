@@ -7,6 +7,9 @@ const orderSchema = new mongoose.Schema({
     unique: true,
     required: true,
   },
+  status: {
+    type: String,
+  },
   pickupDate: {
     type: Date,
     required: true
@@ -37,6 +40,14 @@ const orderSchema = new mongoose.Schema({
     },
     entityLocation: addressSchema
   },
+  productId: {
+    type: String,
+    required: true
+  },
+  productQuantity: {
+    type: Number,
+    required: true
+  },
   packageQty: {
     type: Number,
     required: true
@@ -65,20 +76,9 @@ const orderSchema = new mongoose.Schema({
     type: Number,
     required: true
   },
-  productId: {
-    type: String,
-    required: true
-  },
-  productQuantity: {
-    type: Number,
-    required: true
-  },
   dangerousGoods: {
     type: Boolean,
     default: false
-  },
-  status: {
-    type: String,
   },
   user: {
     type: mongoose.Schema.Types.ObjectId,

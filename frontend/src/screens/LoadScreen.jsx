@@ -63,7 +63,7 @@ const LoadScreen = () => {
           <Row className="mb-3">
             <Col md={4}>
               <ListGroup.Item style={{ fontSize: '0.875rem' }}>
-                <strong>Carrier:</strong> {load.carrier || 'N/A'}
+                <strong>Carrier:</strong> {load.carrierNumber || 'N/A'} {load.carrierName || 'N/A'}
               </ListGroup.Item>
             </Col>
             <Col md={4}>

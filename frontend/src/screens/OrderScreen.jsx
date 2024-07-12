@@ -126,7 +126,7 @@ const OrderScreen = () => {
           <Row className="mb-2">
             <Col md={4}>
               <ListGroup.Item style={{ fontSize: '0.875rem' }}>
-                <strong>Carrier:</strong> {order.carrier || 'N/A'}
+                <strong>Carrier:</strong>{order.carrierNumber || 'N/A'} {order.carrierName || 'N/A'}
               </ListGroup.Item>
             </Col>
             <Col md={4}>

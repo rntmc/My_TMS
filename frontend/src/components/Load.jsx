@@ -55,20 +55,20 @@ const Load = () => {
               </td>
               <td>
                 <div style={{ fontWeight: 'bold' }}>
-                  {load.origin.supplierNumber} {load.origin.supplierName}
+                  {load.origin.entityNumber} {load.origin.entityName}
                 </div>
                 <div className='disp'>
-                  {load.origin.city}, {load.origin.state} <br />
-                  {load.origin.country} - {load.origin.postcode}
+                  {load.origin.entityLocation.city}, {load.origin.entityLocation.state} <br />
+                  {load.origin.entityLocation.country} - {load.origin.entityLocation.postcode}
                 </div>
               </td>
               <td>
                 <div style={{ fontWeight: 'bold' }}>
-                  {load.destination.supplierNumber} {load.destination.supplierName}
+                  {load.destination.entityNumber} {load.destination.entityName}
                 </div>
                 <div className='disp'>
-                  {load.destination.city}, {load.destination.state} <br />
-                  {load.destination.country} - {load.destination.postcode}
+                  {load.destination.entityLocation.city}, {load.destination.entityLocation.state} <br />
+                  {load.destination.entityLocation.country} - {load.destination.entityLocation.postcode}
                 </div>
               </td>
               <td>
@@ -87,7 +87,7 @@ const Load = () => {
               <td>$ {load.totalFreightCost}</td>
               <td>{load.totalWeight} kg</td>
               <td>{load.totalVolume} m³</td>
-              <td>{load.carrier}</td>
+              <td>{load.carrierName}</td>
               <td>{load.transportType}</td>
               <td>{load.status}</td>
             </tr>

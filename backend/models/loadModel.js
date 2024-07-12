@@ -15,11 +15,33 @@ const loadSchema = new mongoose.Schema({
     type: Date,
     required: true
   },
-  origin: addressSchema,
-  destination: addressSchema,
-  carrier: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'Carrier',
+  origin: {
+    entityNumber: {
+      type: Number,
+      required: true
+    },
+    entityName: {
+      type: String,
+      required: true
+    },
+    entityLocation: addressSchema
+  },
+  destination: {
+    entityNumber: {
+      type: Number,
+      required: true
+    },
+    entityName: {
+      type: String,
+      required: true
+    },
+    entityLocation: addressSchema
+  },
+  carrierNumber: {
+    type: Number,
+  },
+  carrierName: {
+    type: String,
     required: true
   },
   transportType: {

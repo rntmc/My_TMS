@@ -7,7 +7,7 @@ import Carrier from '../models/carrierModel.js'
 const registerCarrier = asyncHandler(async (req, res) => {
   const {
     carrierNumber,
-    name, 
+    carrierName, 
     contactPerson, 
     contactInfo: { email, phone }, 
     address: { address, city, state, postcode, country },
@@ -16,7 +16,7 @@ const registerCarrier = asyncHandler(async (req, res) => {
     fleetInfo: { numberOfVehicles, vehicleTypes }
   } = req.body;
 
-  const carrierExist = await Carrier.findOne({ name })
+  const carrierExist = await Carrier.findOne({ carrierName })
 
   if (carrierExist) {
     res.status(400);
@@ -25,7 +25,7 @@ const registerCarrier = asyncHandler(async (req, res) => {
 
   const carrier = await Carrier.create({
     carrierNumber,
-    name, 
+    carrierName, 
     contactPerson, 
     contactInfo: {
       email,
@@ -51,7 +51,7 @@ const registerCarrier = asyncHandler(async (req, res) => {
     res.status(201).json({
       _id: carrier._id,
       carrierNumber: carrier.carrierNumber,
-      name: carrier.name,
+      carrierName: carrier.carrierName,
       contactPerson: carrier.contactPerson,
       contactInfo: carrier.contactInfo,
       address: carrier.address,
@@ -111,7 +111,7 @@ const updateCarrier = asyncHandler(async (req, res) => {
   if (carrier) {
 
     carrier.carrierNumber = req.body.carrierNumber || carrier.carrierNumber;
-    carrier.name = req.body.name || carrier.name;
+    carrier.carrierName = req.body.carrierName || carrier.carrierName;
     carrier.contactPerson = req.body.contactPerson || carrier.contactPerson;
     carrier.contactEmail = req.body.contactEmail || carrier.contactEmail;
     carrier.contactPhone = req.body.contactPhone || carrier.contactPhone;
@@ -130,7 +130,7 @@ const updateCarrier = asyncHandler(async (req, res) => {
     res.status(200).json({
       _id: updatedCarrier._id,
       carrierNumber: updatedCarrier.carrierNumber,
-      name: updatedCarrier.name,
+      carrierName: updatedCarrier.carrierName,
       contactPerson: updatedCarrier.contactPerson,
       contactEmail: updatedCarrier.contactEmail,
       contactPhone: updatedCarrier.contactPhone,
