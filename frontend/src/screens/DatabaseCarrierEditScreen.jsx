@@ -12,14 +12,14 @@ const DatabaseCarrierEditScreen = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
-  const { data: carrier, isLoading, isError } = useGetCarrierQuery(carrierId);
+  const { data: carrier, isLoading, isError, refetch } = useGetCarrierQuery(carrierId);
   console.log(carrier)
 
   const [carrierNumber, setCarrierNumber] = useState('')
   const [carrierName, setCarrierName] = useState('');
   const [contactPerson, setContactPerson] = useState('');
-  const [contactEmail, setContactEmail] = useState('');
-  const [contactPhone, setContactPhone] = useState('');
+  const [email, setEmail] = useState('');
+  const [phone, setPhone] = useState('');
   const [address, setAddress] = useState({
     address: '',
     city: '',
@@ -41,8 +41,8 @@ const DatabaseCarrierEditScreen = () => {
       setCarrierNumber(carrier.carrierNumber || '')
       setCarrierName(carrier.carrierName || '');
       setContactPerson(carrier.contactPerson || '');
-      setContactEmail(carrier.contactEmail || '');
-      setContactPhone(carrier.contactPhone || '');
+      setEmail(carrier.contactInfo.email || '');
+      setPhone(carrier.contactInfo.phone || '');
       setAddress({
         address: carrier.address?.address || '',
         city: carrier.address?.city || '',
@@ -68,8 +68,8 @@ const DatabaseCarrierEditScreen = () => {
         carrierNumber,
         carrierName,
         contactPerson,
-        contactEmail,
-        contactPhone,
+        email,
+        phone,
         address,
         servicesOffered,
         insuranceCoverage,
@@ -78,6 +78,7 @@ const DatabaseCarrierEditScreen = () => {
 
       dispatch(setCredentials(updatedCarrier));
       toast.success('Carrier updated successfully');
+      refetch();
       navigate('/database/carriers');
     } catch (error) {
       toast.error(error?.data?.message || error.error);
@@ -128,8 +129,8 @@ const DatabaseCarrierEditScreen = () => {
             <Form.Control
               type='email'
               placeholder='Enter contact email'
-              value={contactEmail}
-              onChange={(e) => setContactEmail(e.target.value)}
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
             />
           </FormGroup>
 
@@ -137,8 +138,8 @@ const DatabaseCarrierEditScreen = () => {
             <Form.Control
               type='text'
               placeholder='Enter contact phone'
-              value={contactPhone}
-              onChange={(e) => setContactPhone(e.target.value)}
+              value={phone}
+              onChange={(e) => setPhone(e.target.value)}
             />
           </FormGroup>
 

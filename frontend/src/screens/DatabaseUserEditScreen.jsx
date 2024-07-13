@@ -12,13 +12,13 @@ const DatabaseUserEditScreen = () => {
   const navigate = useNavigate()
   const dispatch = useDispatch();
 
-  const {data: user} = useGetUserProfileQuery();
+  const {data: user, isLoading, isError, refetch} = useGetUserProfileQuery(userId);
 
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [role, setRole] = useState('')
 
-  const [updateUser, {isLoading, isError, refetch}] = useUpdateUserMutation();
+  const [updateUser] = useUpdateUserMutation(userId);
 
   useEffect(() => {
     if (user) {
@@ -40,6 +40,7 @@ const DatabaseUserEditScreen = () => {
       }).unwrap();
       dispatch(setCredentials(updatedUser));
       toast.success('Profile updated successfully');
+      refetch();
       navigate('/database/users')
     } catch (error) {
       toast.error(error?.data?.message || error.error);

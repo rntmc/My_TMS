@@ -12,7 +12,7 @@ const DatabaseEntityEditScreen = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
-  const { data: entity, isLoading, isError } = useGetEntityQuery(entityId);
+  const { data: entity, isLoading, isError, refetch } = useGetEntityQuery(entityId);
 
   const [entityNumber, setEntityNumber] = useState('');
   const [name, setName] = useState('');
@@ -37,11 +37,11 @@ const DatabaseEntityEditScreen = () => {
       setEmail(entity.email || '');
       setPhone(entity.phone || '');
       setLocation({
-        address: entity.location?.address || '',
-        city: entity.address?.city || '',
-        state: entity.address?.state || '',
-        country: entity.address?.country || '',
-        postcode: entity.address?.postcode || '',
+        address: entity.location.address || '',
+        city: entity.location.city || '',
+        state: entity.location.state || '',
+        country: entity.location.country || '',
+        postcode: entity.location.postcode || '',
       });
     }
   }, [entity]);
@@ -62,6 +62,7 @@ const DatabaseEntityEditScreen = () => {
 
       dispatch(setCredentials(updatedEntity));
       toast.success('Entity updated successfully');
+      refetch()
       navigate('/database/entities');
     } catch (error) {
       toast.error(error?.data?.message || error.error);

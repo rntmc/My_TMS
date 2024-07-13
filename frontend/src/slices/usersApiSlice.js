@@ -46,10 +46,11 @@ export const usersApiSlice = apiSlice.injectEndpoints({ //endpoint: {{baseURL}}/
       invalidatesTags: ['Users'],
     }),
     getUserProfile: builder.query({
-      query: () => ({
-        url: `${USERS_URL}`,
+      query: (userId) => ({
+        url: `${USERS_URL}/${userId}`,
       }),
       keepUnusedDataFor: 5,
+      providesTags: ['Users'],
     }),
     profile: builder.mutation({
       query: (data) => ({
