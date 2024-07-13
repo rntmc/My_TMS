@@ -8,16 +8,17 @@
 
 - [] User Database: active or inactive.
 - [] Perhaps add OrganizationID to userModel, so they are linked to that organization orders only
-- [] When updating an user, I want to see the current state of the name, email and role instead of Enter name,...
-- [] If an user/carrier/supplier is updated, my userInfo in Redux changes to the data I have updated
+- [x] When updating an user, I want to see the current state of the name, email and role instead of Enter name.
+- [x] If an user/carrier/supplier is updated, my userInfo in Redux changes to the data I have updated. Correct this.
 
 - [] Supplier Database: adjust opening hours to accept blank days or create drop down list
 
 - [] automatically generate order ID
 - [] implement googleAPI to validate address
-- [] Order Component: if status is Open, show confirm button(carrier & admin only)
+- [x] Order Component: if status is Open, show confirm button(carrier & admin only)
 - [] add distance and freight cost to Orders
 - [] Add Product quantity rows
 - [] Add measurements rows
 
 - [] The status should change once the button "check" is clicked. We need to refresh the page to work
+- [] Only Carrier and Admin should be able to change orders/load status

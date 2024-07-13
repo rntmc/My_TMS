@@ -1,8 +1,9 @@
 import { useParams } from 'react-router-dom';
 import { Link } from 'react-router-dom';
-import { Row, Col, ListGroup, Card, Form } from 'react-bootstrap';
+import { Row, Col, ListGroup, Card, Form, Button, OverlayTrigger, Tooltip } from 'react-bootstrap';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
+import { MdOutlineEdit, MdClose  } from "react-icons/md";
 import Loader from '../components/Loader'
 import Message from '../components/Message'
 import { useGetLoadDetailsQuery } from '../slices/loadsApiSlice';
@@ -28,9 +29,48 @@ const LoadScreen = () => {
       ) : (
         <>
         <Row className="my-3">
+          <Col md={6}>
             <ListGroup style={{ fontSize: '0.875rem' }}>
               <h3>Load Number: {load.loadId}</h3>
             </ListGroup>
+            </Col>
+            <Col md={2} className="text-end">
+              <div style={{ display: 'flex', flexDirection: 'row', gap: '0.25rem', justifyContent: 'flex-end' }}>
+                <OverlayTrigger
+                  placement="top"
+                  overlay={<Tooltip id={`tooltip-edit-${load.loadId}`}>Editar</Tooltip>}
+                >
+                  <Button
+                    style={{
+                      padding: '0.3rem',
+                      backgroundColor: '#a5a9ad',
+                      color: 'white',
+                      display: 'flex',
+                      alignItems: 'center',
+                    }}
+                  >
+                    <MdOutlineEdit style={{ fontSize: '1rem' }} />
+                  </Button>
+                </OverlayTrigger>
+
+                <OverlayTrigger
+                  placement="top"
+                  overlay={<Tooltip id={`tooltip-delete-${load.loadId}`}>Cancelar</Tooltip>}
+                >
+                  <Button
+                    style={{
+                      padding: '0.3rem',
+                      backgroundColor: '#a5a9ad',
+                      color: 'white',
+                      display: 'flex',
+                      alignItems: 'center',
+                    }}
+                  >
+                    <MdClose style={{ fontSize: '1rem', color: 'red' }} />
+                  </Button>
+                </OverlayTrigger>
+              </div>
+            </Col>
           </Row>
           <Row className="mb-3">
             <Col md={4}>
@@ -50,20 +90,24 @@ const LoadScreen = () => {
           </Row>
           <Row className="mb-3">
             <Col md={4}>
-              <ListGroup.Item style={{ fontSize: '0.875rem' }}>
-                <strong>Origin:</strong> {`${load.origin.address}, ${load.origin.city}, ${load.origin.state}`}
-              </ListGroup.Item>
+              <strong>Origin:</strong> <br />
+                {`${load.origin.entityNumber} ${load.origin.entityName}`}<br />
+                {`${load.origin.entityLocation.address}`}<br /> 
+                {`${load.origin.entityLocation.city}, ${load.origin.entityLocation.state}`}<br />
+                {`${load.origin.entityLocation.postcode} - ${load.origin.entityLocation.country}`}
             </Col>
             <Col md={4}>
-              <ListGroup.Item style={{ fontSize: '0.875rem' }}>
-                <strong>Destination:</strong> {`${load.destination.address}, ${load.destination.city}, ${load.destination.state}`}
-              </ListGroup.Item>
+              <strong>Destination:</strong> <br />
+                {`${load.destination.entityNumber} ${load.destination.entityName}`}<br />
+                {`${load.destination.entityLocation.address}`}<br /> 
+                {`${load.destination.entityLocation.city}, ${load.destination.entityLocation.state}`}<br />
+                {`${load.destination.entityLocation.postcode} - ${load.destination.entityLocation.country}`}
             </Col>
           </Row>
           <Row className="mb-3">
             <Col md={4}>
               <ListGroup.Item style={{ fontSize: '0.875rem' }}>
-                <strong>Carrier:</strong> {load.carrierNumber || 'N/A'} {load.carrierName || 'N/A'}
+                <strong>Carrier:</strong> {load.carrierName || 'N/A'}
               </ListGroup.Item>
             </Col>
             <Col md={4}>
@@ -92,12 +136,12 @@ const LoadScreen = () => {
           <Row className="mb-3">
             <Col md={4}>
               <ListGroup.Item style={{ fontSize: '0.875rem' }}>
-                <strong>Total Volume:</strong> {load.totalVolume || 'N/A'}
+                <strong>Total Volume:</strong> {load.totalVolume || 'N/A'} m³
               </ListGroup.Item>
             </Col>
             <Col md={4}>
               <ListGroup.Item style={{ fontSize: '0.875rem' }}>
-                <strong>Total Weight:</strong> {load.totalWeight || 'N/A'}
+                <strong>Total Weight:</strong> {load.totalWeight || 'N/A'} kg
               </ListGroup.Item>
             </Col>
           </Row>
