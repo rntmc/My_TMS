@@ -19,6 +19,7 @@
 - [] add distance and freight cost to Orders
 - [] Add Product quantity rows
 - [] Add measurements rows
+- [] Add possibility to attach docs to Orders and Loads
 
 - [] The status should change once the button "check" is clicked. We need to refresh the page to work
 - [] Only Carrier and Admin should be able to change orders/load status
