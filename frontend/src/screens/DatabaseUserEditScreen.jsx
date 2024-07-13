@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Form, Button, Row, Col } from 'react-bootstrap';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { useParams, useNavigate } from 'react-router-dom'; 
 import { toast } from 'react-toastify';
 import { useUpdateUserMutation, useGetUserProfileQuery } from '../slices/usersApiSlice';
@@ -12,13 +12,14 @@ const DatabaseUserEditScreen = () => {
   const navigate = useNavigate()
   const dispatch = useDispatch();
 
+  const { userInfo } = useSelector((state) => state.auth);
   const {data: user, isLoading, isError, refetch} = useGetUserProfileQuery(userId);
 
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [role, setRole] = useState('')
 
-  const [updateUser] = useUpdateUserMutation(userId);
+  const [updateUser] = useUpdateUserMutation();
 
   useEffect(() => {
     if (user) {
@@ -38,7 +39,12 @@ const DatabaseUserEditScreen = () => {
         email,
         role,
       }).unwrap();
-      dispatch(setCredentials(updatedUser));
+
+      // Verifica se o usuário atualizado é o mesmo que está logado
+      if (userInfo && user && userInfo._id === user._id) {
+        dispatch(setCredentials(updatedUser));
+      }
+
       toast.success('Profile updated successfully');
       refetch();
       navigate('/database/users')

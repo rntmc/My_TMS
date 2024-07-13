@@ -75,8 +75,6 @@ const DatabaseCarrierEditScreen = () => {
         insuranceCoverage,
         fleetInfo,
       }).unwrap();
-
-      dispatch(setCredentials(updatedCarrier));
       toast.success('Carrier updated successfully');
       refetch();
       navigate('/database/carriers');

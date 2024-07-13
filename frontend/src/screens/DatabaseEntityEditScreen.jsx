@@ -59,8 +59,6 @@ const DatabaseEntityEditScreen = () => {
         phone,
         location,
       }).unwrap();
-
-      dispatch(setCredentials(updatedEntity));
       toast.success('Entity updated successfully');
       refetch()
       navigate('/database/entities');

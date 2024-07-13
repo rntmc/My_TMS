@@ -33,11 +33,12 @@ const ProfileScreen = () => {
     }
 
     try {
-      const updatedUser = await updateProfile({
-        name,
-        email,
-        password,
-      }).unwrap();
+      const updatedFields = {};
+      if (name !== userInfo.name) updatedFields.name = name;
+      if (email !== userInfo.email) updatedFields.email = email;
+      if (password) updatedFields.password = password;
+
+      const updatedUser = await updateProfile(updatedFields).unwrap();
       dispatch(setCredentials(updatedUser));
       toast.success('Profile updated successfully');
       refetch();
