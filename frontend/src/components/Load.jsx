@@ -73,21 +73,19 @@ const Load = () => {
               <td>
                 <Link to={`/load/${load._id}`}>{load.loadId}</Link>
               </td>
-              <td>
+              <td  style={{fontSize:'10px'}}>
                 <div style={{ fontWeight: 'bold' }}>
                   {load.origin.entityNumber} {load.origin.entityName}
                 </div>
                 <div className='disp'>
-                  {load.origin.entityLocation.city}, {load.origin.entityLocation.state} <br />
                   {load.origin.entityLocation.country} - {load.origin.entityLocation.postcode}
                 </div>
               </td>
-              <td>
+              <td style={{fontSize:'10px'}}>
                 <div style={{ fontWeight: 'bold' }}>
                   {load.destination.entityNumber} {load.destination.entityName}
                 </div>
                 <div className='disp'>
-                  {load.destination.entityLocation.city}, {load.destination.entityLocation.state} <br />
                   {load.destination.entityLocation.country} - {load.destination.entityLocation.postcode}
                 </div>
               </td>

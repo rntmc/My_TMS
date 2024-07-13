@@ -66,29 +66,27 @@ const Order = () => {
                 <Link to={`/order/${order._id}`}>{order.orderId}</Link>
                 {' '}{order.dangerousGoods ? <CgDanger style={{color:"lightsalmon"}}/> : ''}
               </td>
-              <td>
+              <td style={{fontSize:'10px'}}>
                 <div>
                   <div style={{ fontWeight: 'bold' }}>
                     {order.origin.entityNumber} {order.origin.entityName}
                   </div> 
                   <div>
-                    {order.origin.entityLocation.city}, {order.origin.entityLocation.state} <br />
                     {order.origin.entityLocation.country} - {order.origin.entityLocation.postcode}  
                   </div>             
                 </div>
               </td>
-              <td>
+              <td style={{fontSize:'10px'}}>
                 <div>
                   <div style={{ fontWeight: 'bold' }}>
                     {order.destination.entityNumber} {order.destination.entityName}
                   </div> 
                   <div>
-                    {order.destination.entityLocation.city}, {order.destination.entityLocation.state}, {order.destination.entityLocation.country}<br />
-                    {order.destination.entityLocation.postcode}  
+                    {order.destination.entityLocation.country} - {order.destination.entityLocation.postcode}  
                   </div>             
                 </div>
               </td>
-              <td>
+              <td style={{fontSize:'10px'}}>
                 <div>{order.pickupDate}</div>
                 <div>{order.deliveryDate}</div>
               </td>
