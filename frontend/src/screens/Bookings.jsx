@@ -22,21 +22,11 @@ const Bookings = () => {
         </Message>
       ) : (
         <>
-          <Row className="mb-4">
+          <Row>
             <Col md={10}>
-              <h1>Loads</h1>
+              <h3>Loads</h3>
             </Col>
-            <Col md={1}>
-              <OverlayTrigger placement="top" overlay={<Tooltip>Add Order</Tooltip>}>
-                <Link to='/createorder' style={{ textDecoration: 'none' }}>
-                  <Button style={{padding: '0.5rem 1rem',backgroundColor: '#677074',color: '#fff',textDecoration: 'none',display: 'flex',justifyContent: 'center',alignItems: 'center',border: 'none'}}>
-                    Order
-                    <IoMdAdd style={{fontSize: '1.5rem',marginLeft: '0.5rem',}} />
-                  </Button>
-                </Link>
-              </OverlayTrigger>
-            </Col>
-            <Col md={1}>
+            <Col md={2} className='d-flex justify-content-end'>
               <OverlayTrigger placement="top" overlay={<Tooltip>Add Load</Tooltip>}>
                 <Link to='/createload' style={{ textDecoration: 'none' }}>
                   <Button style={{padding: '0.5rem 1rem',backgroundColor: '#677074',color: '#fff',textDecoration: 'none',display: 'flex',justifyContent: 'center',alignItems: 'center',border: 'none'}}>
@@ -50,7 +40,21 @@ const Bookings = () => {
           <Row>
             <Load loads={loads} />
           </Row>
-          <h1>Orders</h1>
+          <Row className='mt-2'>
+            <Col md={10}>
+              <h3>Orders</h3>
+            </Col>
+            <Col md={2} className='d-flex justify-content-end'>
+                <OverlayTrigger placement="top" overlay={<Tooltip>Add Order</Tooltip>}>
+                  <Link to='/createorder' style={{ textDecoration: 'none' }}>
+                    <Button style={{padding: '0.5rem 1rem',backgroundColor: '#677074',color: '#fff',textDecoration: 'none',display: 'flex',justifyContent: 'center',alignItems: 'center',border: 'none'}}>
+                      Order
+                      <IoMdAdd style={{fontSize: '1.5rem',marginLeft: '0.5rem',}} />
+                    </Button>
+                  </Link>
+                </OverlayTrigger>
+              </Col>
+          </Row>
           <Row>
             <Order orders={orders} />
           </Row>

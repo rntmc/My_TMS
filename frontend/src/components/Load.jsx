@@ -52,7 +52,7 @@ const Load = () => {
   return (
     <>
       <Table striped hover responsive className='table-sm'>
-        <thead>
+        <thead style={{ fontSize: '12px' }}>
           <tr>
             <th>Load #</th>
             <th>Origin</th>
