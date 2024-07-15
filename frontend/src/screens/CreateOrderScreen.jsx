@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { Form, Button, Row, Col, Card, FormGroup } from 'react-bootstrap';
 import { useCreateOrderMutation } from '../slices/ordersApiSlice';
 import { FaPlus } from "react-icons/fa"
+import calculateSingleVolume from '../utils/calculateSingleVolume';
 
 const CreateOrderScreen = () => {
   const [orderId, setOrderId] = useState('');
@@ -37,16 +38,9 @@ const CreateOrderScreen = () => {
 
   const navigate = useNavigate()
 
-  const calculateVolume = () => {
-    if (length && width && height) {
-      return (parseFloat(packageQty) * (parseFloat(length) / 100) * (parseFloat(width) / 100) * (parseFloat(height) / 100)).toFixed(2);
-    }
-    return '';
-  };
-
   const submitHandler = async (e) => {
     e.preventDefault();
-    const volume = calculateVolume();
+    const volume = calculateSingleVolume(packageQty, length, width, height);
     const orderData = {
       orderId,
       pickupDate,
@@ -451,7 +445,7 @@ const CreateOrderScreen = () => {
         <Form.Control
           type='number'
           readOnly
-          value={calculateVolume()}
+          value={calculateSingleVolume(packageQty, length, width, height)}
           placeholder='Volume'
         />
       </FormGroup>

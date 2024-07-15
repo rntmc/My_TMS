@@ -1,5 +1,5 @@
-import { useParams } from 'react-router-dom';
-import { Link } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
+import { Link  } from 'react-router-dom';
 import { Row, Col, ListGroup, Form, Button, OverlayTrigger, Tooltip  } from 'react-bootstrap';
 import { MdOutlineEdit, MdClose  } from "react-icons/md";
 import DatePicker from 'react-datepicker';
@@ -11,9 +11,9 @@ import { useGetOrderDetailsQuery, useDeleteOrCancelOrderMutation } from '../slic
 
 const OrderScreen = () => {
   const { id: orderId } = useParams();
+  const navigate = useNavigate()
 
   const { data: order, isLoading, error} = useGetOrderDetailsQuery(orderId);
-  console.log(order)
 
   const [deleteOrCancelOrder] = useDeleteOrCancelOrderMutation()
 
@@ -26,17 +26,23 @@ const OrderScreen = () => {
       return;
     }
   
-    if (orderToDeleteOrCancel.status === 'Delivered' || orderToDeleteOrCancel === 'Collected') {
-      toast.error('Cannot delete Delivered or Collected Orders');
+    if (orderToDeleteOrCancel.status === 'delivered' || orderToDeleteOrCancel === 'collected') {
+      toast.error('Cannot delete orders marked as collected or delivered');
+      return;
+    }
+
+    if (orderToDeleteOrCancel.status === 'cancelled') {
+      toast.error('This order is already cancelled');
       return;
     }
   
-    if (window.confirm('Are you sure?')) {
+    if (window.confirm(`Delete order ${order.orderId} ?`)) {
       try {
         console.log(`Attempting to delete order with id: ${id}`);
         const response = await deleteOrCancelOrder(id);
-        console.log(`User deleted response:`, response);
-        toast.success('Order deleted')
+        console.log(`Order deleted response:`, response);
+        toast.success(`Order ${order.orderId} deleted`)
+        navigate('/bookings')
       } catch(error) {
         console.error('Error deleting order:', error);
         toast.error(error?.data?.message || error.error)
