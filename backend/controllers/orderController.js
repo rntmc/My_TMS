@@ -87,24 +87,47 @@ const getMyOrders = asyncHandler(async (req, res) => {
 // @Desc get carriers orders ***CHECK***
 // @ route PATCH /api/orders/:id
 // @access User/carrier
-const updateOrderStatus = async (req, res) => {
+const updateOrderStatus = asyncHandler(async (req, res) => {
   const { id } = req.params;
   const { status } = req.body;
 
-  try {
-    const order = await Order.findById(id);
+  const order = await Order.findById(id);
 
-    if (!order) {
-      return res.status(404).json({ message: 'Order not found' });
-    }
+  if (!order) {
+    return res.status(404).json({ message: 'Order not found' });
+  }
 
+  if (status === "confirmed" || status === "open") {
     order.status = status;
     await order.save();
-
     res.status(200).json({ message: 'Order status updated', order });
-  } catch (error) {
-    res.status(500).json({ message: 'Server error', error });
+  } else {
+    res.status(400).json({ message: 'Invalid status' });
   }
-};
+});
 
-export {getOrderById, getOrders, createOrder, getMyOrders, updateOrderStatus}
+// @Desc Delete/Cancel order
+// @ route DELETE /api/orders/:id
+// @access Private
+const cancelOrDeleteOrder = asyncHandler(async (req, res) => {
+  const order = await Order.findById(req.params.id);
+
+  if (!order) {
+    res.status(404);
+    throw new Error('Order not found');
+  }
+
+  if (order.status === "delivered" || order.status === "collected") {
+    order.status = "cancelled";
+    await order.save();
+    res.status(200).json({ message: 'Order cancelled successfully', order });
+  } else if (order.status === "confirmed" || order.status === "open") {
+    await Order.deleteOne({ _id: order._id });
+    res.status(200).json({ message: 'Order deleted successfully' });
+  } else {
+    res.status(400);
+    throw new Error('Invalid order status for cancellation or deletion');
+  }
+});
+
+export {getOrderById, getOrders, createOrder, getMyOrders, updateOrderStatus, cancelOrDeleteOrder}

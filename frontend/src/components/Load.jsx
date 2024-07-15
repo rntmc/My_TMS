@@ -71,7 +71,7 @@ const Load = () => {
           {loads.map((load) => (
             <tr key={load.loadId}>
               <td>
-                <Link to={`/load/${load._id}`}>{load.loadId}</Link>
+                <Link to={`/load/${load._id}`} style={{color:'blue'}}>{load.loadId}</Link>
               </td>
               <td  style={{fontSize:'10px'}}>
                 <div style={{ fontWeight: 'bold' }}>
@@ -96,7 +96,7 @@ const Load = () => {
 
                   return (
                     <span key={order._id}>
-                      <Link to={`/order/${order._id}`}>{order.orderId}</Link>
+                      <Link to={`/order/${order._id}`} style={{color:'blue'}}>{order.orderId}</Link>
                       {index !== load.orders.length - 1 && ', '}
                     </span>
                   );

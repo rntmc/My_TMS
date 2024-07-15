@@ -4,15 +4,45 @@ import { Row, Col, ListGroup, Form, Button, OverlayTrigger, Tooltip  } from 'rea
 import { MdOutlineEdit, MdClose  } from "react-icons/md";
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
+import { toast } from "react-toastify";
 import Loader from '../components/Loader'
 import Message from '../components/Message'
-import { useGetOrderDetailsQuery } from '../slices/ordersApiSlice';
+import { useGetOrderDetailsQuery, useDeleteOrCancelOrderMutation } from '../slices/ordersApiSlice';
 
 const OrderScreen = () => {
   const { id: orderId } = useParams();
 
   const { data: order, isLoading, error} = useGetOrderDetailsQuery(orderId);
   console.log(order)
+
+  const [deleteOrCancelOrder] = useDeleteOrCancelOrderMutation()
+
+  const cancelDeleteHandler = async (id) => {
+    console.log(`Deleting order with id: ${id}`);
+    const orderToDeleteOrCancel = order;
+  
+    if (!orderToDeleteOrCancel) {
+      toast.error('Order not found');
+      return;
+    }
+  
+    if (orderToDeleteOrCancel.status === 'Delivered' || orderToDeleteOrCancel === 'Collected') {
+      toast.error('Cannot delete Delivered or Collected Orders');
+      return;
+    }
+  
+    if (window.confirm('Are you sure?')) {
+      try {
+        console.log(`Attempting to delete order with id: ${id}`);
+        const response = await deleteOrCancelOrder(id);
+        console.log(`User deleted response:`, response);
+        toast.success('Order deleted')
+      } catch(error) {
+        console.error('Error deleting order:', error);
+        toast.error(error?.data?.message || error.error)
+      }
+    }
+  }
 
   return (
     <>
@@ -38,7 +68,7 @@ const OrderScreen = () => {
               <div style={{ display: 'flex', flexDirection: 'row', gap: '0.25rem', justifyContent: 'flex-end' }}>
                 <OverlayTrigger
                   placement="top"
-                  overlay={<Tooltip id={`tooltip-edit-${order.orderId}`}>Editar</Tooltip>}
+                  overlay={<Tooltip id={`tooltip-edit-${order.orderId}`}>Edit</Tooltip>}
                 >
                   <Button
                     style={{
@@ -55,7 +85,7 @@ const OrderScreen = () => {
 
                 <OverlayTrigger
                   placement="top"
-                  overlay={<Tooltip id={`tooltip-delete-${order.orderId}`}>Cancelar</Tooltip>}
+                  overlay={<Tooltip id={`tooltip-delete-${order.orderId}`}>Cancel/Delete</Tooltip>}
                 >
                   <Button
                     style={{
@@ -65,6 +95,7 @@ const OrderScreen = () => {
                       display: 'flex',
                       alignItems: 'center',
                     }}
+                    onClick={() => cancelDeleteHandler(order._id)}
                   >
                     <MdClose style={{ fontSize: '1rem', color: 'red' }} />
                   </Button>

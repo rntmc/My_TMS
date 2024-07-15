@@ -25,3 +25,5 @@
 
 - [] The status should change once the button "check" is clicked. We need to refresh the page to work
 - [] Only Carrier and Admin should be able to change orders/load status
+
+- [] Carrier address should be udpated to location
