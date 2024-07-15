@@ -63,7 +63,7 @@ const Order = () => {
           {orders.map((order) => (
             <tr key={order._id}>
               <td>
-                <Link to={`/order/${order._id}`} style={{color:'blue'}}>{order.orderId}</Link>
+                <Link to={`/order/${order._id}`} style={{color:'blue'}}>{order.orderNumber}</Link>
                 {' '}{order.dangerousGoods ? <CgDanger style={{color:"lightsalmon"}}/> : ''}
               </td>
               <td style={{fontSize:'10px'}}>

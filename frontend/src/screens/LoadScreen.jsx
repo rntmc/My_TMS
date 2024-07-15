@@ -31,14 +31,14 @@ const LoadScreen = () => {
         <Row className="my-3">
           <Col md={6}>
             <ListGroup style={{ fontSize: '0.875rem' }}>
-              <h3>Load Number: {load.loadId}</h3>
+              <h3>Load Number: {load.loadNumber}</h3>
             </ListGroup>
             </Col>
             <Col md={2} className="text-end">
               <div style={{ display: 'flex', flexDirection: 'row', gap: '0.25rem', justifyContent: 'flex-end' }}>
                 <OverlayTrigger
                   placement="top"
-                  overlay={<Tooltip id={`tooltip-edit-${load.loadId}`}>Editar</Tooltip>}
+                  overlay={<Tooltip id={`tooltip-edit-${load.loadNumber}`}>Editar</Tooltip>}
                 >
                   <Button
                     style={{
@@ -55,7 +55,7 @@ const LoadScreen = () => {
 
                 <OverlayTrigger
                   placement="top"
-                  overlay={<Tooltip id={`tooltip-delete-${load.loadId}`}>Cancelar</Tooltip>}
+                  overlay={<Tooltip id={`tooltip-delete-${load.loadNumber}`}>Cancelar</Tooltip>}
                 >
                   <Button
                     style={{

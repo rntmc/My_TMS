@@ -28,7 +28,7 @@ const Load = () => {
   }, [])
 
   const findOrderById = (orderId) => {
-    return orders.find(order => order.orderId === orderId);
+    return orders.find(order => order.orderNumber === orderId);
   };
 
   const handleStatus = async (loadId) => {
@@ -64,14 +64,13 @@ const Load = () => {
             <th>Carrier</th>
             <th>Method</th>
             <th>Status</th>
-
           </tr>
         </thead>
         <tbody style={{ fontSize: '12px' }}>
           {loads.map((load) => (
-            <tr key={load.loadId}>
+            <tr key={load._id}>
               <td>
-                <Link to={`/load/${load._id}`} style={{color:'blue'}}>{load.loadId}</Link>
+                <Link to={`/load/${load._id}`} style={{color:'blue'}}>{load.loadNumber}</Link>
               </td>
               <td  style={{fontSize:'10px'}}>
                 <div style={{ fontWeight: 'bold' }}>
@@ -90,13 +89,13 @@ const Load = () => {
                 </div>
               </td>
               <td>
-                {load.orders.map((orderId, index) => {
-                  const order = findOrderById(orderId);
-                  if (!order) return null; // If order is not found, skip rendering
+                {load.orders.map((orderNumber, index) => {
+                  const order = findOrderById(orderNumber);
+                  if (!order) return null;
 
                   return (
                     <span key={order._id}>
-                      <Link to={`/order/${order._id}`} style={{color:'blue'}}>{order.orderId}</Link>
+                      <Link to={`/order/${order._id}`} style={{color:'blue'}}>{order.orderNumber}</Link>
                       {index !== load.orders.length - 1 && ', '}
                     </span>
                   );

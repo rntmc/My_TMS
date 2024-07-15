@@ -29,7 +29,7 @@ const getOrderById = asyncHandler(async (req, res) => {
 const createOrder = asyncHandler(async (req, res) => {
 
   const {  
-    orderId,
+    orderNumber,
     status,
     pickupDate,
     deliveryDate,
@@ -48,7 +48,7 @@ const createOrder = asyncHandler(async (req, res) => {
   } = req.body;
 
   const order = new Order({
-    orderId,
+    orderNumber,
     packageQty,
     length,
     width,
@@ -138,6 +138,7 @@ const updateOrder = asyncHandler(async (req, res) => {
 
   if (order) {
 
+    order.orderNumber = req.body.orderNumber || order.orderNumber;
     order.status = req.body.status || order.status;
     order.pickupDate = req.body.pickupDate || order.pickupDate;
     order.deliveryDate = req.body.deliveryDate || order.deliveryDate;

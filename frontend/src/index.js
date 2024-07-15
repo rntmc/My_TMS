@@ -27,6 +27,7 @@ import DatabaseUserEditScreen from './screens/DatabaseUserEditScreen';
 import DatabaseCarrierEditScreen from './screens/DatabaseCarrierEditScreen';
 import DatabaseEntityEditScreen from './screens/DatabaseEntityEditScreen';
 import ProfileScreen from './screens/ProfileScreen';
+import EditOrderScreen from './screens/EditOrderScreen';
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -52,6 +53,7 @@ const router = createBrowserRouter(
         <Route path="/database/edituser/:id" element={<DatabaseUserEditScreen/>}/> 
         <Route path="/database/editcarrier/:id" element={<DatabaseCarrierEditScreen/>}/> 
         <Route path="/database/editentity/:id" element={<DatabaseEntityEditScreen/>}/> 
+        <Route path="/editorder/:id" element={<EditOrderScreen/>}/> 
       </Route>
     </Route>
   )

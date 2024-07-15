@@ -36,6 +36,14 @@ export const ordersApiSlice = apiSlice.injectEndpoints({
       }),
       invalidatesTags: ['Orders'], 
     }),
+    updateOrder: builder.mutation({
+      query: (data) => ({
+        url: `${ORDERS_URL}/${data.orderId}`,
+        method: 'PUT',
+        body: data,
+      }),
+      invalidatesTags: ['Orders'],
+    }),
   }),
 })
 
@@ -45,4 +53,5 @@ export const {
   useGetOrderDetailsQuery,
   useUpdateOrderStatusMutation,
   useDeleteOrCancelOrderMutation,
+  useUpdateOrderMutation,
 } = ordersApiSlice;

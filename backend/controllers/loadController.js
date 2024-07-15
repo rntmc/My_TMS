@@ -29,7 +29,7 @@ const getLoadsById = asyncHandler(async (req, res) => {
 const createLoad = asyncHandler(async (req, res) => {
 
   const {  
-    loadId,
+    loadNumber,
     status,
     carrierName,
     pickupDate,
@@ -53,7 +53,7 @@ const createLoad = asyncHandler(async (req, res) => {
   console.log('req:', req);
 
   const load = new Load({
-    loadId,
+    loadNumber,
     status,
     carrierName,
     pickupDate,

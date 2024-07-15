@@ -22,6 +22,7 @@
 - [] Add measurements rows
 - [] Add possibility to attach docs to Orders and Loads
 - [] checkbox next to "open" orders so they can be cancelled easily ('/bookings')
+- [] update dangerousGoods so the icon changes in the bookings page
 
 - [] The status should change once the button "check" is clicked. We need to refresh the page to work
 - [] Only Carrier and Admin should be able to change orders/load status

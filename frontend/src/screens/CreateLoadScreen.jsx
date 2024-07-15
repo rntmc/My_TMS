@@ -6,7 +6,7 @@ import { useCreateLoadMutation } from '../slices/loadsApiSlice';
 import { useGetOrdersQuery } from '../slices/ordersApiSlice';
 
 const CreateLoadScreen = () => {
-  const [loadId, setLoadId] = useState('');
+  const [loadNumber, setLoadNumber] = useState('');
   const [carrierName, setCarrierName] = useState('');
   const [status, setStatus] = useState('open');
   const [pickupDate, setPickupDate] = useState('');
@@ -49,15 +49,15 @@ const CreateLoadScreen = () => {
     if (orderToAdd.trim() === '') {
       return;
     }
-    const order = ordersData.find((o) => o.orderId === parseInt(orderToAdd));
-    if (order && !orders.find((o) => o.orderId === order.orderId)) {
+    const order = ordersData.find((o) => o.orderNumber === parseInt(orderToAdd));
+    if (order && !orders.find((o) => o.orderNumber === order.orderNumber)) {
       setOrders([...orders, order]);
       setOrderToAdd('');
     }
   };
 
-  const removeOrder = (orderId) => {
-    const updatedOrders = orders.filter((order) => order.orderId !== orderId);
+  const removeOrder = (orderNumber) => {
+    const updatedOrders = orders.filter((order) => order.orderNumber !== orderNumber);
     setOrders(updatedOrders);
   };
 
@@ -65,9 +65,9 @@ const CreateLoadScreen = () => {
     e.preventDefault();
 
   // Transform orders to an array of order IDs
-    const orderIds = orders.map(order => order.orderId);
+    const orderIds = orders.map(order => order.orderNumber);
     const loadData = {
-      loadId,
+      loadNumber,
       status,
       pickupDate,
       deliveryDate,
@@ -121,13 +121,13 @@ const CreateLoadScreen = () => {
       <Row>
         {/* Load ID and Status */}
         <Col md={3}>
-          <Form.Group controlId='loadId'>
+          <Form.Group controlId='loadNumber'>
             <Form.Label>Load ID</Form.Label>
             <Form.Control 
               type='text'
               placeholder='Enter Load ID'
-              value={loadId}
-              onChange={(e) => setLoadId(e.target.value)}
+              value={loadNumber}
+              onChange={(e) => setLoadNumber(e.target.value)}
             />
           </Form.Group>
         </Col>
@@ -381,13 +381,13 @@ const CreateLoadScreen = () => {
             <Form.Label>Orders</Form.Label>
               <ListGroup className='d-flex flex-wrap list-group-horizontal border-0'>
                 {orders.map((order) => (
-                  <ListGroup.Item key={order.orderId} className='align-items-center square rounded' style={{ padding: '8px 12px' }}>
+                  <ListGroup.Item key={order._id} className='align-items-center square rounded' style={{ padding: '8px 12px' }}>
                     <Row>
-                      <Col>{order.orderId}</Col>
+                      <Col>{order.orderNumber}</Col>
                       <Col>
                         <Button
                           size='sm'
-                          onClick={() => removeOrder(order.orderId)}
+                          onClick={() => removeOrder(order.orderNumber)}
                           style={{backgroundColor:'lightgray', border:'0'}}
                         >
                         <MdDelete style={{color: 'black'}}fontSize={'16px'}/> 

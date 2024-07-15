@@ -2,7 +2,7 @@ import mongoose from "mongoose";
 import addressSchema from './addressModel.js';
 
 const orderSchema = new mongoose.Schema({
-  orderId: {
+  orderNumber: {
     type: Number,
     unique: true,
     required: true,
@@ -79,6 +79,9 @@ const orderSchema = new mongoose.Schema({
   dangerousGoods: {
     type: Boolean,
     default: false
+  },
+  document: {
+    type: String, 
   },
   user: {
     type: mongoose.Schema.Types.ObjectId,

@@ -43,13 +43,12 @@ const importData = async () => {
     })
     
     const createdOrders = await Order.insertMany(sampleOrders);
-
     
     const sampleLoads = loads.map((load) => {
       const carrier = createdCarriers.find(carrier => carrier.carrierNumber === load.carrierNumber);
-      const orderIds = load.orders.map(orderId => {
-        const order = createdOrders.find(order => order.orderId[0] === orderId[0]);
-        return order.orderId;
+      const orderIds = load.orders.map(OrderNumber => {
+        const order = createdOrders.find(order => order.orderNumber[0] === OrderNumber[0]);
+        return order.orderNumber;
       });
 
       return {

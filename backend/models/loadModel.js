@@ -2,7 +2,7 @@ import mongoose from "mongoose";
 import addressSchema from './addressModel.js';
 
 const loadSchema = new mongoose.Schema({
-  loadId: {
+  loadNumber: {
     type: Number,
     unique: true,
     required: true,
@@ -86,6 +86,9 @@ const loadSchema = new mongoose.Schema({
   },
   trackingInfo: { //status isDelivered?
     type: String,
+  },
+  document: {
+    type: String, 
   },
   user: {
     type: mongoose.Schema.Types.ObjectId,

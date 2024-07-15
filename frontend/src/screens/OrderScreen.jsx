@@ -36,18 +36,20 @@ const OrderScreen = () => {
       return;
     }
   
-    if (window.confirm(`Delete order ${order.orderId} ?`)) {
+    if (window.confirm(`Delete order ${order.orderNumber} ?`)) {
       try {
-        console.log(`Attempting to delete order with id: ${id}`);
-        const response = await deleteOrCancelOrder(id);
-        console.log(`Order deleted response:`, response);
-        toast.success(`Order ${order.orderId} deleted`)
+        await deleteOrCancelOrder(id);
+        toast.success(`Order ${order.orderNumber} deleted`)
         navigate('/bookings')
       } catch(error) {
         console.error('Error deleting order:', error);
         toast.error(error?.data?.message || error.error)
       }
     }
+  }
+
+  const editOrderNavigator = () => {
+    navigate(`/editorder/${order._id}`)
   }
 
   return (
@@ -67,14 +69,14 @@ const OrderScreen = () => {
           <Row className="my-2">
             <Col md={6} >
               <ListGroup style={{ fontSize: '0.875rem' }}>
-                <h3>Order Number: {order.orderId}</h3>
+                <h3>Order Number: {order.orderNumber}</h3>
               </ListGroup>
             </Col>
             <Col md={2} className="text-end">
               <div style={{ display: 'flex', flexDirection: 'row', gap: '0.25rem', justifyContent: 'flex-end' }}>
                 <OverlayTrigger
                   placement="top"
-                  overlay={<Tooltip id={`tooltip-edit-${order.orderId}`}>Edit</Tooltip>}
+                  overlay={<Tooltip id={`tooltip-edit-${order.orderNumber}`}>Edit</Tooltip>}
                 >
                   <Button
                     style={{
@@ -84,6 +86,7 @@ const OrderScreen = () => {
                       display: 'flex',
                       alignItems: 'center',
                     }}
+                    onClick={() => editOrderNavigator(order._id)}
                   >
                     <MdOutlineEdit style={{ fontSize: '1rem' }} />
                   </Button>
@@ -91,7 +94,7 @@ const OrderScreen = () => {
 
                 <OverlayTrigger
                   placement="top"
-                  overlay={<Tooltip id={`tooltip-delete-${order.orderId}`}>Cancel/Delete</Tooltip>}
+                  overlay={<Tooltip id={`tooltip-delete-${order.orderNumber}`}>Cancel/Delete</Tooltip>}
                 >
                   <Button
                     style={{
@@ -184,7 +187,12 @@ const OrderScreen = () => {
               </ListGroup.Item>
             </Col>
           </Row>
-          <Row className="mb-2">
+          <Row>
+            <Col md={4}>
+              <strong>Dangerous goods:</strong> {order.dangerousGoods ? 'Yes' : 'No'}
+            </Col>
+          </Row>
+          <Row className="mb-2 mt-2">
             <Col md={4}>
               <ListGroup.Item style={{ fontSize: '0.875rem' }}>
                 <strong>Special Notes:</strong>

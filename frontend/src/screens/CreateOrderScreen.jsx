@@ -6,7 +6,7 @@ import { FaPlus } from "react-icons/fa"
 import calculateSingleVolume from '../utils/calculateSingleVolume';
 
 const CreateOrderScreen = () => {
-  const [orderId, setOrderId] = useState('');
+  const [orderNumber, setOrderNumber] = useState('');
   const [status, setStatus] = useState('open');
   const [pickupDate, setPickupDate] = useState('');
   const [deliveryDate, setDeliveryDate] = useState('');
@@ -42,7 +42,7 @@ const CreateOrderScreen = () => {
     e.preventDefault();
     const volume = calculateSingleVolume(packageQty, length, width, height);
     const orderData = {
-      orderId,
+      orderNumber,
       pickupDate,
       deliveryDate,
       origin: {
@@ -94,13 +94,13 @@ const CreateOrderScreen = () => {
       <Button onClick={() => navigate('/bookings')} >Back</Button>
       <Row>
         <Col md={3}>
-        <Form.Group controlId='orderId'>
+        <Form.Group controlId='orderNumber'>
           <Form.Label>Order ID</Form.Label>
           <Form.Control
             type='number'
             placeholder='Automatically generated'
-            value={orderId}
-            onChange={(e) => setOrderId(e.target.value)}
+            value={orderNumber}
+            onChange={(e) => setOrderNumber(e.target.value)}
           ></Form.Control>
         </Form.Group>
         </Col>

@@ -1,7 +1,7 @@
 const orders = 
 [
   {
-    orderId:10000,
+    orderNumber:10000,
     pickupDate: '2024-05-01',
     deliveryDate: '2024-05-10',
     origin: {
@@ -37,10 +37,11 @@ const orders =
     freightCost: 500,
     dangerousGoods: false,
     carrier: 'Great Forwarder',
+    document: 'image.jpg',
     status: 'confirmed',
   },
   {
-    orderId:10001,
+    orderNumber:10001,
     pickupDate: '2024-05-02',
     deliveryDate: '2024-05-11',
     origin: {
@@ -76,6 +77,7 @@ const orders =
     productQuantity: 100,
     dangerousGoods: true,
     carrier: 'Great Forwarder',
+    document: 'image.jpg',
     status: 'delivered'
   },
 ]

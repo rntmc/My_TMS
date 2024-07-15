@@ -1,6 +1,6 @@
 const loads = [
   {
-    loadId: 1,
+    loadNumber: 1,
     pickupDate: '01/05/2024',
     deliveryDate: '10/05/2024',
     origin: {
@@ -37,10 +37,11 @@ const loads = [
     insurance: 'JLT',
     storageAndTransportConditions: 'regular',
     specialNotes: 'Expected to be delivered on time',
+    document: 'image.jpg',
     status: 'Collected'
   },
   {
-    loadId: 2,
+    loadNumber: 2,
     pickupDate: '05/05/2024',
     deliveryDate: '10/05/2024',
     origin: {
@@ -77,6 +78,7 @@ const loads = [
     insurance: 'IAC',
     storageAndTransportConditions: 'regular',
     specialNotes: 'Delivered as expected',
+    document: 'image.jpg',
     status: 'Delivered'
   },
 ]
