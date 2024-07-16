@@ -12,11 +12,17 @@ const Order = () => {
 
   useEffect(() => {
     if (ordersData) {
-      const formattedOrders = ordersData.map(order => ({
-        ...order,
-        pickupDate: new Date(order.pickupDate).toLocaleDateString(),
-        deliveryDate: new Date(order.deliveryDate).toLocaleDateString(),
-      }));
+      const formattedOrders = ordersData.map(order => {
+        const totalVolume = order.packages.reduce((sum, pkg) => sum + pkg.volume, 0);
+        const totalWeight = order.packages.reduce((sum, pkg) => sum + pkg.weight, 0);
+        return {
+          ...order,
+          pickupDate: new Date(order.pickupDate).toLocaleDateString(),
+          deliveryDate: new Date(order.deliveryDate).toLocaleDateString(),
+          totalVolume,
+          totalWeight,
+        };
+      });
       setOrders(formattedOrders);
     }
   }, [ordersData]);
@@ -90,8 +96,8 @@ const Order = () => {
                 <div>{order.pickupDate}</div>
                 <div>{order.deliveryDate}</div>
               </td>
-              <td>{order.volume} m&#179;</td>
-              <td>{order.weight} kg</td>
+              <td>{order.totalVolume} m&#179;</td>
+              <td>{order.totalWeight} kg</td>
               <td>$ {order.freightCost}</td>
               <td>{order.status}
                 <div style={{ display: 'flex', flexDirection: 'row', gap: '0.5rem', justifyContent: 'center' }}>
