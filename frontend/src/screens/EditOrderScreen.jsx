@@ -2,13 +2,14 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { Form, Button, Row, Col, Card, FormGroup } from 'react-bootstrap';
 import { useGetOrderDetailsQuery, useUpdateOrderMutation } from '../slices/ordersApiSlice';
-import { FaPlus } from "react-icons/fa";
+import { FaPlus, FaMinus } from "react-icons/fa";
 import calculateSingleVolume from '../utils/calculateSingleVolume';
 
 const EditOrderScreen = () => {
   const { id: orderId } = useParams();
   const { data: order, isLoading, isError } = useGetOrderDetailsQuery(orderId);
   const [updateOrder] = useUpdateOrderMutation();
+  const navigate = useNavigate();
   console.log(order)
 
   const [status, setStatus] = useState('');
@@ -28,17 +29,16 @@ const EditOrderScreen = () => {
   const [destinationState, setDestinationState] = useState('');
   const [destinationPostcode, setDestinationPostcode] = useState('');
   const [destinationCountry, setDestinationCountry] = useState('');
-  const [packageQty, setPackageQty] = useState('');
-  const [length, setLength] = useState('');
-  const [width, setWidth] = useState('');
-  const [height, setHeight] = useState('');
-  const [weight, setWeight] = useState('');
+  const [products, setProducts] = useState([
+    { productId: '', productQuantity: '' }
+  ]);
+  const [packages, setPackages] = useState([
+    { packageQty: '', length: '', width: '', height: '', weight: '', volume: '' }
+  ]);
   const [freightCost, setFreightCost] = useState('');
-  const [productId, setProductId] = useState('');
-  const [productQuantity, setProductQuantity] = useState(0);
   const [dangerousGoods, setDangerousGoods] = useState(false);
+  const [document, setDocument] = useState('');
 
-  const navigate = useNavigate();
 
   useEffect(() => {
     if (order) {
@@ -59,23 +59,54 @@ const EditOrderScreen = () => {
       setDestinationState(order.destination.entityLocation.state);
       setDestinationPostcode(order.destination.entityLocation.postcode);
       setDestinationCountry(order.destination.entityLocation.country);
-      setPackageQty(order.packageQty);
-      setLength(order.length);
-      setWidth(order.width);
-      setHeight(order.height);
-      setWeight(order.weight);
+      setProducts(order.products || [{ productId: '', productQuantity: '' }]);
+      setPackages(order.packages || [{ packageQty: '', length: '', width: '', height: '', weight: '', volume: '' }]);
       setFreightCost(order.freightCost);
-      setProductId(order.productId);
-      setProductQuantity(order.productQuantity);
       setDangerousGoods(order.dangerousGoods);
+      setDocument(order.document || '');
     }
   }, [order]);
 
+  const handleProductChange = (index, field, value) => {
+    const updatedProducts = [...products];
+    updatedProducts[index][field] = value;
+    setProducts(updatedProducts);
+  };
+
+  const addProduct = () => {
+    setProducts([...products, { productId: '', productQuantity: '' }]);
+  };
+
+  const removeProduct = (index) => {
+    const updatedProducts = [...products];
+    updatedProducts.splice(index, 1);
+    setProducts(updatedProducts);
+  };
+
+  const handlePackageChange = (index, field, value) => {
+    const updatedPackages = [...packages];
+    updatedPackages[index][field] = value;
+    updatedPackages[index]['volume'] = calculateSingleVolume(updatedPackages[index].packageQty, updatedPackages[index].length, updatedPackages[index].width, updatedPackages[index].height);
+    setPackages(updatedPackages);
+  };
+
+
+  const addPackage = () => {
+    setPackages([...packages, { packageQty: '', length: '', width: '', height: '', weight: '', volume: '' }]);
+  };
+
+  const removePackage = (index) => {
+    const updatedPackages = [...packages];
+    updatedPackages.splice(index, 1);
+    setPackages(updatedPackages);
+  };
+
   const submitHandler = async (e) => {
     e.preventDefault();
-    const volume = calculateSingleVolume(packageQty, length, width, height);
+    const volume = calculateSingleVolume(packages.packageQty, packages.length, packages.width, packages.height);
     const updatedOrderData = {
       orderId,
+      status,
       pickupDate,
       deliveryDate,
       origin: {
@@ -100,17 +131,12 @@ const EditOrderScreen = () => {
           country: destinationCountry,
         },
       },
-      packageQty,
-      length,
-      width,
-      height,
+      products,
+      packages,
       volume,
-      weight,
       freightCost,
-      productId,
-      productQuantity,
       dangerousGoods,
-      status,
+      document,
     };
 
     try {
@@ -364,169 +390,174 @@ const EditOrderScreen = () => {
         </Col>
       </Row>
 
-      <Row className='mt-2'>
-      <Col md={1} className='d-flex justify-content-start align-items-start'>
-      <Button
-        style={{
-          padding: '0.3rem',
-          backgroundColor: '#a5a9ad',
-          color: 'white',
-          display: 'flex',
-          alignItems: 'start',
-        }}
+      <Row>
+  <Col md={12} >
+    <Card className='mt-3 p-4'>
+      <Card.Title>Products</Card.Title>
+      <Row className='p-2 mt-2'>
+        <Col md={12}>
+          <Button onClick={addProduct} className='d-flex flex-row align-items-center' style={{ fontSize: '10px' }}>
+            <FaPlus style={{ marginRight: '5px' }} />Add product
+          </Button>
+        </Col>
+        <Row className='p-2'>
+          <Col md={1}>Qty</Col>
+          <Col md={2}>Product ID</Col>
+        </Row>
+        {products.map((product, index) => (
+          <Row className='px-2' key={index}>
+            <Col md={1}>
+              <Form.Control
+                type='number'
+                placeholder='Qty'
+                value={product.productQuantity}
+                onChange={(e) => handleProductChange(index, 'productQuantity', e.target.value)}
+              />
+            </Col>
+            <Col md={2}>
+              <Form.Control
+                type='text'
+                placeholder='Enter Product ID'
+                value={product.productId}
+                onChange={(e) => handleProductChange(index, 'productId', e.target.value)}
+              />
+            </Col>
+            {index > 0 && (
+              <Col md={1}>
+                <Button onClick={() => removeProduct(index)}>
+                  <FaMinus />
+                </Button>
+              </Col>
+            )}
+          </Row>
+        ))}
+      </Row>
+    </Card>
+  </Col>
+</Row>
 
-      >
-        <FaPlus style={{ fontSize: '1rem' }} />
-      </Button>
-      </Col>
-        <Col md={1}>
-          <Form.Group controlId='productQuantity'>
-            <Form.Label>Product Qty</Form.Label>
+<Row>
+        <Col md={12}>
+          <Card className='mt-3 p-4'>
+            <Card.Title>Packages</Card.Title>
+            <Row className='p-2 mt-2'>
+              <Col md={12}>
+                <Button onClick={addPackage} className='d-flex flex-row align-items-center'style={{fontSize: '10px'}}>
+                  <FaPlus style={{ marginRight: '5px' }}/>Add package
+                </Button>
+              </Col>
+              <Row className='p-2 mt-2'>
+                <Col md={1}>Qty</Col>
+                <Col md={2}>Length (cm)</Col>
+                <Col md={2}>Width (cm)</Col>
+                <Col md={2}>Height (cm)</Col>
+                <Col md={2}>Volume (m³)</Col>
+                <Col md={2}>Weight (kg)</Col>
+                <Col md={1}></Col>
+              </Row>
+              {packages.map((pkg, index) => (
+                <Row key={index} className='px-2'>
+                  <Col md={1}>
+                    <Form.Control
+                      type='number'
+                      placeholder='Qty'
+                      value={pkg.packageQty}
+                      onChange={(e) => handlePackageChange(index, 'packageQty', e.target.value)}
+                    />
+                  </Col>
+                  <Col md={2}>
+                    <Form.Control
+                      type='number'
+                      placeholder='Enter length'
+                      value={pkg.length}
+                      onChange={(e) => handlePackageChange(index, 'length', e.target.value)}
+                    />
+                  </Col>
+                  <Col md={2}>
+                    <Form.Control
+                      type='number'
+                      placeholder='Enter width'
+                      value={pkg.width}
+                      onChange={(e) => handlePackageChange(index, 'width', e.target.value)}
+                    />
+                  </Col>
+                  <Col md={2}>
+                    <Form.Control
+                      type='number'
+                      placeholder='Enter height'
+                      value={pkg.height}
+                      onChange={(e) => handlePackageChange(index, 'height', e.target.value)}
+                      />
+                  </Col>
+                  <Col md={2}>
+                    <Form.Control
+                      type='text'
+                      placeholder='Auto-calculated'
+                      readOnly
+                      value={pkg.volume}
+                      />
+                  </Col>
+                  <Col md={2}>
+                    <Form.Control
+                      type='number'
+                      placeholder='Enter weight'
+                      value={pkg.weight}
+                      onChange={(e) => handlePackageChange(index, 'weight', e.target.value)}
+                      />
+                  </Col>
+                  {index > 0 && (
+                    <Col md={1}>
+                      <Button onClick={() => removePackage(index)}>
+                        <FaMinus />
+                      </Button>
+                    </Col>
+                  )}
+                </Row>
+              ))}
+            </Row>
+          </Card>
+        </Col>
+      </Row>
+
+      <Row className='mt-3'>
+        <Col md={3}>
+          <Form.Group controlId='freightCost'>
+            <Form.Label>Freight Cost</Form.Label>
             <Form.Control
               type='number'
-              placeholder='Enter product quantity'
-              value={productQuantity}
-              onChange={(e) => setProductQuantity(e.target.value)}
-            ></Form.Control>
-          </Form.Group>
-        </Col>
-        <Col md ={2}>
-          <Form.Group controlId='productId'>
-            <Form.Label>Product ID</Form.Label>
-            <Form.Control
-              type='text'
-              placeholder='Enter product ID'
-              value={productId}
-              onChange={(e) => setProductId(e.target.value)}
+              placeholder='Enter Freight Cost'
+              value={freightCost}
+              onChange={(e) => setFreightCost(e.target.value)}
             />
           </Form.Group>
         </Col>
-    </Row>
 
+        <Col md={3}>
+          <Form.Group controlId='dangerousGoods'>
+            <Form.Label>Dangerous Goods</Form.Label>
+            <Form.Check
+              type='checkbox'
+              checked={dangerousGoods}
+              onChange={(e) => setDangerousGoods(e.target.checked)}
+            />
+          </Form.Group>
+        </Col>
 
-  <React.Fragment>
-  <Row >
-    <Col md={1} className='d-flex justify-content-start align-items-start'>
-    <Button
-      style={{
-        padding: '0.3rem',
-        backgroundColor: '#a5a9ad',
-        color: 'white',
-        display: 'flex',
-        alignItems: 'start',
-      }}
-
-    >
-      <FaPlus style={{ fontSize: '1rem' }} />
-    </Button>
-    </Col>
-    <Col md={1}>
-      <Form.Label>Nº PCs</Form.Label>
-    </Col>
-    <Col md={1}>
-      <Form.Label>Length (cm)</Form.Label>
-    </Col>
-    <Col md={1}>
-      <Form.Label>Width (cm)</Form.Label>
-    </Col>
-    <Col md={1}>
-      <Form.Label>Height (cm)</Form.Label>
-    </Col>
-    <Col md={2}>
-      <Form.Label>Total Volume (m³)</Form.Label>
-    </Col>
-    <Col md={2}>
-      <Form.Label>Weight (kg)</Form.Label>
-    </Col>
-  </Row>
-  <Row>
-    <Col md={1}>
-    </Col>
-    <Col md={1}>
-      <FormGroup>
-        <Form.Control
-          type='number'
-          placeholder='0'
-          value={packageQty}
-          onChange={(e) => setPackageQty(e.target.value)}
-        ></Form.Control>
-      </FormGroup>
-    </Col>
-    <Col md={1}>
-      <FormGroup>
-        <Form.Control
-          type='number'
-          placeholder='0'
-          value={length}
-          onChange={(e) => setLength(e.target.value)}
-        ></Form.Control>
-      </FormGroup>
-    </Col>
-    <Col md={1}>
-      <FormGroup>
-        <Form.Control
-          type='number'
-          placeholder='0'
-          value={width}
-          onChange={(e) => setWidth(e.target.value)}
-        ></Form.Control>
-      </FormGroup>
-    </Col>
-    <Col md={1}>
-      <FormGroup>
-        <Form.Control
-          type='number'
-          placeholder='0'
-          value={height}
-          onChange={(e) => setHeight(e.target.value)}
-        ></Form.Control>
-      </FormGroup>
-    </Col>
-    <Col md={2}>
-      <FormGroup>
-        <Form.Control style={{backgroundColor: '#cdcaca5f'}}
-          type='number'
-          readOnly
-          value={calculateSingleVolume(packageQty, length, width, height)}
-          placeholder='Volume'
-        />
-      </FormGroup>
-    </Col>
-    <Col md={2}>
-      <FormGroup>
-        <Form.Control
-          type='number'
-          placeholder='0'
-          value={weight}
-          onChange={(e) => setWeight(e.target.value)}
-        ></Form.Control>
-      </FormGroup>
-    </Col>
-
-  </Row>
-</React.Fragment>
-
-      <Form.Group controlId='dangerousGoods' className='mt-2'>
-        <Form.Check
-          type='checkbox'
-          label='Dangerous Goods'
-          checked={dangerousGoods}
-          onChange={(e) => setDangerousGoods(e.target.checked)}
-        ></Form.Check>
-      </Form.Group>
-
-      <Form.Group controlId='freightCost'>
-        <Form.Label>Freight Cost</Form.Label>
-        <Form.Control
-          type='number'
-          placeholder='Enter freight cost'
-          value={freightCost}
-          onChange={(e) => setFreightCost(e.target.value)}
-        ></Form.Control>
-      </Form.Group>
+        <Col md={3}>
+          <Form.Group controlId='document'>
+            <Form.Label>Document</Form.Label>
+            <Form.Control
+              type='text'
+              placeholder='Enter Document'
+              value={document}
+              onChange={(e) => setDocument(e.target.value)}
+            />
+          </Form.Group>
+        </Col>
+      </Row>
 
       <Button type='submit' className='mt-3'>
-        Update Order <FaPlus />
+        Update Order
       </Button>
     </Form>
   );
