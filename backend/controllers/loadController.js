@@ -65,9 +65,8 @@ const createLoad = asyncHandler(async (req, res) => {
     },
     transportType,
     orders: orders.map(order => ({
-      orderId: order.orderId,
       orderNumber: order.orderNumber,
-      packages: order.packages,
+      packages: order.packages
     })),
     totalFreightCost,
     totalVolume,

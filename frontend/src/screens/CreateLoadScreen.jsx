@@ -51,7 +51,7 @@ const CreateLoadScreen = () => {
     }
     const order = ordersData.find((o) => o.orderNumber === parseInt(orderToAdd));
     if (order && !orders.find((o) => o.orderNumber === order.orderNumber)) {
-      setOrders([...orders, order]);
+      setOrders([...orders, order]); // Aqui estamos criando um novo array com todas as orders existentes mais a nova order
       setOrderToAdd('');
     }
   };
@@ -60,12 +60,20 @@ const CreateLoadScreen = () => {
     const updatedOrders = orders.filter((order) => order.orderNumber !== orderNumber);
     setOrders(updatedOrders);
   };
-
+  
   const submitHandler = async (e) => {
     e.preventDefault();
 
   // Transform orders to an array of order IDs
     const orderIds = orders.map(order => order.orderNumber);
+    console.log(orderIds)
+    const packages = orders.reduce((acc, order) => {
+      acc.push(...order.packages);
+      return acc;
+    }, []);
+
+    console.log('Orders antes do envio:', orders);
+    
     const loadData = {
       loadNumber,
       status,
@@ -97,7 +105,17 @@ const CreateLoadScreen = () => {
       totalWeight,
       totalFreightCost,
       carrierName,
-      orders: orderIds,
+      orders: orders.map(order => ({
+        orderNumber: order.orderNumber,
+        packages: order.packages.map(pkg => ({
+          packageQty: pkg.packageQty,
+          length: pkg.length,
+          width: pkg.width,
+          height: pkg.height,
+          volume: pkg.volume,
+          weight: pkg.weight
+        }))
+      })),
       transportType,
       licensePlate,
       driver,
@@ -109,6 +127,7 @@ const CreateLoadScreen = () => {
     try {
       const data = await createLoad(loadData).unwrap();
       console.log('Load created:', data);
+      setOrders([]);
       navigate('/bookings');
     } catch (error) {
       console.error('Error creating load:', error);
@@ -123,7 +142,7 @@ const CreateLoadScreen = () => {
         <Col md={3}>
           <Form.Group controlId='loadNumber'>
             <Form.Label>Load ID</Form.Label>
-            <Form.Control 
+            <Form.Control style={{backgroundColor: '#cdcaca5f'}}
               type='text'
               placeholder='Enter Load ID'
               value={loadNumber}

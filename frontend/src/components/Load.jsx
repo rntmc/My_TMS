@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import {Table, OverlayTrigger, Tooltip, Button} from 'react-bootstrap'
+import {Table, OverlayTrigger, Tooltip, Button, Row} from 'react-bootstrap'
 import { Link } from 'react-router-dom'
 import axios from 'axios'
 import { CgDanger } from "react-icons/cg";
@@ -14,8 +14,8 @@ const Load = () => {
   useEffect(() => {
     const fetchLoads = async () => {
       try {
-        const {data: loads} = await axios.get('/api/loads');
-        setLoads(loads); 
+        const {data: loadsData } = await axios.get('/api/loads');
+        setLoads(loadsData ); 
 
         const {data: ordersData} = await axios.get('/api/orders');
         setOrders(ordersData);
@@ -28,7 +28,7 @@ const Load = () => {
   }, [])
 
   const findOrderById = (orderId) => {
-    return orders.find(order => order.orderNumber === orderId);
+    return orders.find(order => order._id === orderId);
   };
 
   const handleStatus = async (loadId) => {
@@ -70,7 +70,9 @@ const Load = () => {
           {loads.map((load) => (
             <tr key={load._id}>
               <td>
-                <Link to={`/load/${load._id}`} style={{color:'blue'}}>{load.loadNumber}</Link>
+                <Row>
+                  <Link to={`/load/${load._id}`} style={{color:'blue'}}>{load.loadNumber}</Link>
+                </Row>
               </td>
               <td  style={{fontSize:'10px'}}>
                 <div style={{ fontWeight: 'bold' }}>
@@ -89,17 +91,21 @@ const Load = () => {
                 </div>
               </td>
               <td>
-                {load.orders.map((orderNumber, index) => {
-                  const order = findOrderById(orderNumber);
-                  if (!order) return null;
-
-                  return (
-                    <span key={order._id}>
-                      <Link to={`/order/${order._id}`} style={{color:'blue'}}>{order.orderNumber}</Link>
-                      {index !== load.orders.length - 1 && ', '}
-                    </span>
-                  );
-                })}
+                {load.orders.length > 0 && (
+                  <>
+                    {load.orders.map(order => (
+                      <div key={order._id}>
+                        {order.orderNumber.map((number, index) => (
+                          <span key={`${order._id}-${index}`}>
+                            <Link to={`/order/${order._id}`} style={{ color: 'blue' }}>{number}</Link>
+                            {index !== order.orderNumber.length - 1 && ', '}
+                          </span>
+                        ))}
+                      </div>
+                    ))}
+                  </>
+                )}
+                {load.orders.length === 0 && <p>Loading orders...</p>}
               </td>
               <td>$ {load.totalFreightCost}</td>
               <td>{load.totalWeight} kg</td>
