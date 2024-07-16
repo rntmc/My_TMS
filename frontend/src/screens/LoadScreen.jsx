@@ -121,7 +121,7 @@ const LoadScreen = () => {
               <ListGroup.Item style={{ fontSize: '0.875rem' }}>
                 <strong>Orders Included:</strong> {load.orders.map((order, index) => (
                   <span key={index}>
-                    <Link to={`/load/${order}`}>{order}</Link>
+                    <Link to={`/load/${order._id}`}>{order.orderNumber}</Link>
                     {index !== load.orders.length - 1 && ', '}
                   </span>
                 ))}
