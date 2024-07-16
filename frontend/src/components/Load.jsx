@@ -91,21 +91,24 @@ const Load = () => {
                 </div>
               </td>
               <td>
-                {load.orders.length > 0 && (
-                  <>
-                    {load.orders.map(order => (
+                {load.orders.length > 0 ? (
+                  load.orders.map((order) => {
+                    const orderData = orders.find((o) => o.orderNumber === order.orderNumber[0]);
+                    return (
                       <div key={order._id}>
-                        {order.orderNumber.map((number, index) => (
-                          <span key={`${order._id}-${index}`}>
-                            <Link to={`/order/${order._id}`} style={{ color: 'blue' }}>{number}</Link>
-                            {index !== order.orderNumber.length - 1 && ', '}
-                          </span>
-                        ))}
+                        {orderData ? (
+                          <Link to={`/order/${orderData._id}`} style={{ color: 'blue' }}>
+                            {order.orderNumber.join(', ')}
+                          </Link>
+                        ) : (
+                          <span>Loading orders...</span>
+                        )}
                       </div>
-                    ))}
-                  </>
+                    );
+                  })
+                ) : (
+                  <p>Loading orders...</p>
                 )}
-                {load.orders.length === 0 && <p>Loading orders...</p>}
               </td>
               <td>$ {load.totalFreightCost}</td>
               <td>{load.totalWeight} kg</td>
