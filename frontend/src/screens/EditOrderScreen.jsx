@@ -9,6 +9,7 @@ const EditOrderScreen = () => {
   const { id: orderId } = useParams();
   const { data: order, isLoading, isError } = useGetOrderDetailsQuery(orderId);
   const [updateOrder] = useUpdateOrderMutation();
+  console.log(order)
 
   const [status, setStatus] = useState('');
   const [pickupDate, setPickupDate] = useState('');
@@ -42,8 +43,8 @@ const EditOrderScreen = () => {
   useEffect(() => {
     if (order) {
       setStatus(order.status);
-      setPickupDate(order.pickupDate);
-      setDeliveryDate(order.deliveryDate);
+      setPickupDate(order.pickupDate ? order.pickupDate.split('T')[0] : '');
+      setDeliveryDate(order.deliveryDate ? order.deliveryDate.split('T')[0] : '');
       setOriginEntityNumber(order.origin.entityNumber);
       setOriginEntityName(order.origin.entityName);
       setOriginAddress(order.origin.entityLocation.address);
@@ -136,9 +137,9 @@ const EditOrderScreen = () => {
         <Col md={3}>
           <Form.Group controlId='orderId'>
             <Form.Label>Order ID</Form.Label>
-            <Form.Control
+            <Form.Control style={{backgroundColor: '#cdcaca5f'}}
               type='text'
-              value={order.orderId}
+              value={order.orderNumber}
               readOnly
             />
           </Form.Group>
@@ -146,11 +147,15 @@ const EditOrderScreen = () => {
         <Col md={3}>
           <Form.Group controlId='status'>
             <Form.Label>Status</Form.Label>
-            <Form.Control
-              type='text'
+            <Form.Select
               value={status}
               onChange={(e) => setStatus(e.target.value)}
-            />
+            >
+              <option value='confirmed'>Confirmed</option>
+              <option value='collected'>Collected</option>
+              <option value='delivered'>Delivered</option>
+              <option value='cancelled'>Cancelled</option>
+            </Form.Select>
           </Form.Group>
         </Col>
       </Row>
@@ -359,82 +364,33 @@ const EditOrderScreen = () => {
         </Col>
       </Row>
 
-      <Row>
-        <Col md={3}>
-          <Form.Group controlId='packageQty'>
-            <Form.Label>Package Quantity</Form.Label>
+      <Row className='mt-2'>
+      <Col md={1} className='d-flex justify-content-start align-items-start'>
+      <Button
+        style={{
+          padding: '0.3rem',
+          backgroundColor: '#a5a9ad',
+          color: 'white',
+          display: 'flex',
+          alignItems: 'start',
+        }}
+
+      >
+        <FaPlus style={{ fontSize: '1rem' }} />
+      </Button>
+      </Col>
+        <Col md={1}>
+          <Form.Group controlId='productQuantity'>
+            <Form.Label>Product Qty</Form.Label>
             <Form.Control
               type='number'
-              placeholder='Enter package quantity'
-              value={packageQty}
-              onChange={(e) => setPackageQty(e.target.value)}
-            />
+              placeholder='Enter product quantity'
+              value={productQuantity}
+              onChange={(e) => setProductQuantity(e.target.value)}
+            ></Form.Control>
           </Form.Group>
         </Col>
-
-        <Col md={3}>
-          <Form.Group controlId='length'>
-            <Form.Label>Length</Form.Label>
-            <Form.Control
-              type='number'
-              placeholder='Enter length'
-              value={length}
-              onChange={(e) => setLength(e.target.value)}
-            />
-          </Form.Group>
-        </Col>
-
-        <Col md={3}>
-          <Form.Group controlId='width'>
-            <Form.Label>Width</Form.Label>
-            <Form.Control
-              type='number'
-              placeholder='Enter width'
-              value={width}
-              onChange={(e) => setWidth(e.target.value)}
-            />
-          </Form.Group>
-        </Col>
-
-        <Col md={3}>
-          <Form.Group controlId='height'>
-            <Form.Label>Height</Form.Label>
-            <Form.Control
-              type='number'
-              placeholder='Enter height'
-              value={height}
-              onChange={(e) => setHeight(e.target.value)}
-            />
-          </Form.Group>
-        </Col>
-      </Row>
-
-      <Row>
-        <Col md={3}>
-          <Form.Group controlId='weight'>
-            <Form.Label>Weight</Form.Label>
-            <Form.Control
-              type='number'
-              placeholder='Enter weight'
-              value={weight}
-              onChange={(e) => setWeight(e.target.value)}
-            />
-          </Form.Group>
-        </Col>
-
-        <Col md={3}>
-          <Form.Group controlId='freightCost'>
-            <Form.Label>Freight Cost</Form.Label>
-            <Form.Control
-              type='number'
-              placeholder='Enter freight cost'
-              value={freightCost}
-              onChange={(e) => setFreightCost(e.target.value)}
-            />
-          </Form.Group>
-        </Col>
-
-        <Col md={3}>
+        <Col md ={2}>
           <Form.Group controlId='productId'>
             <Form.Label>Product ID</Form.Label>
             <Form.Control
@@ -445,32 +401,129 @@ const EditOrderScreen = () => {
             />
           </Form.Group>
         </Col>
+    </Row>
 
-        <Col md={3}>
-          <Form.Group controlId='productQuantity'>
-            <Form.Label>Product Quantity</Form.Label>
-            <Form.Control
-              type='number'
-              placeholder='Enter product quantity'
-              value={productQuantity}
-              onChange={(e) => setProductQuantity(e.target.value)}
-            />
-          </Form.Group>
-        </Col>
-      </Row>
 
-      <Row>
-        <Col md={3}>
-          <Form.Group controlId='dangerousGoods'>
-            <Form.Check
-              type='checkbox'
-              label='Dangerous Goods'
-              checked={dangerousGoods}
-              onChange={(e) => setDangerousGoods(e.target.checked)}
-            />
-          </Form.Group>
-        </Col>
-      </Row>
+  <React.Fragment>
+  <Row >
+    <Col md={1} className='d-flex justify-content-start align-items-start'>
+    <Button
+      style={{
+        padding: '0.3rem',
+        backgroundColor: '#a5a9ad',
+        color: 'white',
+        display: 'flex',
+        alignItems: 'start',
+      }}
+
+    >
+      <FaPlus style={{ fontSize: '1rem' }} />
+    </Button>
+    </Col>
+    <Col md={1}>
+      <Form.Label>Nº PCs</Form.Label>
+    </Col>
+    <Col md={1}>
+      <Form.Label>Length (cm)</Form.Label>
+    </Col>
+    <Col md={1}>
+      <Form.Label>Width (cm)</Form.Label>
+    </Col>
+    <Col md={1}>
+      <Form.Label>Height (cm)</Form.Label>
+    </Col>
+    <Col md={2}>
+      <Form.Label>Total Volume (m³)</Form.Label>
+    </Col>
+    <Col md={2}>
+      <Form.Label>Weight (kg)</Form.Label>
+    </Col>
+  </Row>
+  <Row>
+    <Col md={1}>
+    </Col>
+    <Col md={1}>
+      <FormGroup>
+        <Form.Control
+          type='number'
+          placeholder='0'
+          value={packageQty}
+          onChange={(e) => setPackageQty(e.target.value)}
+        ></Form.Control>
+      </FormGroup>
+    </Col>
+    <Col md={1}>
+      <FormGroup>
+        <Form.Control
+          type='number'
+          placeholder='0'
+          value={length}
+          onChange={(e) => setLength(e.target.value)}
+        ></Form.Control>
+      </FormGroup>
+    </Col>
+    <Col md={1}>
+      <FormGroup>
+        <Form.Control
+          type='number'
+          placeholder='0'
+          value={width}
+          onChange={(e) => setWidth(e.target.value)}
+        ></Form.Control>
+      </FormGroup>
+    </Col>
+    <Col md={1}>
+      <FormGroup>
+        <Form.Control
+          type='number'
+          placeholder='0'
+          value={height}
+          onChange={(e) => setHeight(e.target.value)}
+        ></Form.Control>
+      </FormGroup>
+    </Col>
+    <Col md={2}>
+      <FormGroup>
+        <Form.Control style={{backgroundColor: '#cdcaca5f'}}
+          type='number'
+          readOnly
+          value={calculateSingleVolume(packageQty, length, width, height)}
+          placeholder='Volume'
+        />
+      </FormGroup>
+    </Col>
+    <Col md={2}>
+      <FormGroup>
+        <Form.Control
+          type='number'
+          placeholder='0'
+          value={weight}
+          onChange={(e) => setWeight(e.target.value)}
+        ></Form.Control>
+      </FormGroup>
+    </Col>
+
+  </Row>
+</React.Fragment>
+
+      <Form.Group controlId='dangerousGoods' className='mt-2'>
+        <Form.Check
+          type='checkbox'
+          label='Dangerous Goods'
+          checked={dangerousGoods}
+          onChange={(e) => setDangerousGoods(e.target.checked)}
+        ></Form.Check>
+      </Form.Group>
+
+      <Form.Group controlId='freightCost'>
+        <Form.Label>Freight Cost</Form.Label>
+        <Form.Control
+          type='number'
+          placeholder='Enter freight cost'
+          value={freightCost}
+          onChange={(e) => setFreightCost(e.target.value)}
+        ></Form.Control>
+      </Form.Group>
 
       <Button type='submit' className='mt-3'>
         Update Order <FaPlus />
