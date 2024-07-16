@@ -5,7 +5,7 @@ import Order from '../models/orderModel.js'
 // @ route GET /api/orders
 // @access Public
 const getOrders = asyncHandler(async (req, res) => {
-  const orders = await Order.find({})
+  const orders = await Order.find({}).populate('packages');
   res.json(orders)
 })
 
@@ -13,7 +13,7 @@ const getOrders = asyncHandler(async (req, res) => {
 // @ route GET /api/loads/:id
 // @access Public
 const getOrderById = asyncHandler(async (req, res) => {
-  const order = await Order.findById(req.params.id)
+  const order = await Order.findById(req.params.id).populate('packages');
 
   if(order) {
     res.json(order)
@@ -35,26 +35,15 @@ const createOrder = asyncHandler(async (req, res) => {
     deliveryDate,
     origin,
     destination,
-    volume,
-    weight,
+    products,
+    packages,
     freightCost,
-    productId,
-    productQuantity,
-    packageQty,
-    length, 
-    width, 
-    height,
     dangerousGoods,
   } = req.body;
 
   const order = new Order({
     orderNumber,
-    packageQty,
-    length,
-    width,
-    height,
-    volume,
-    weight,
+    status,
     pickupDate,
     deliveryDate,
     origin: {
@@ -63,11 +52,10 @@ const createOrder = asyncHandler(async (req, res) => {
     destination: {
       ...destination
     },
+    products,
+    packages,
     freightCost,
-    productId,
-    productQuantity,
     dangerousGoods,
-    status,
     user: req.user._id,
   })
 
@@ -134,45 +122,30 @@ const cancelOrDeleteOrder = asyncHandler(async (req, res) => {
 // @ route PUT /api/orders/:id
 // @access Private/Admin
 const updateOrder = asyncHandler(async (req, res) => {
-  const order = await Order.findById(req.params.id);
+  const order = await Order.findById(req.params.id)
 
   if (order) {
-
+    console.log('Found order:', order);
+    // Atualiza os campos da ordem com os dados do corpo da requisição
     order.orderNumber = req.body.orderNumber || order.orderNumber;
     order.status = req.body.status || order.status;
     order.pickupDate = req.body.pickupDate || order.pickupDate;
     order.deliveryDate = req.body.deliveryDate || order.deliveryDate;
-    order.origin.entityNumber = req.body.origin.entityNumber || order.origin.entityNumber;
-    order.origin.entityName = req.body.origin.entityName || order.origin.entityName;
-    order.origin.entityLocation.address = req.body.origin?.entityLocation?.address || order.origin.entityLocation.address;
-    order.origin.entityLocation.city = req.body.origin?.entityLocation?.city || order.origin.entityLocation.city;
-    order.origin.entityLocation.state = req.body.origin?.entityLocation?.state || order.origin.entityLocation.state;
-    order.origin.entityLocation.postcode = req.body.origin?.entityLocation?.postcode || order.origin.entityLocation.postcode;
-    order.origin.entityLocation.country = req.body.origin?.entityLocation?.country || order.origin.entityLocation.country;
-    order.destination.entityNumber = req.body.destination.entityNumber || order.destination.entityNumber;
-    order.destination.entityName = req.body.destination.entityName || order.destination.entityName;
-    order.destination.entityLocation.address = req.body.destination?.entityLocation?.address || order.destination.entityLocation.address;
-    order.destination.entityLocation.city = req.body.destination?.entityLocation?.city || order.destination.entityLocation.city;
-    order.destination.entityLocation.state = req.body.destination?.entityLocation?.state || order.destination.entityLocation.state;
-    order.destination.entityLocation.postcode = req.body.destination?.entityLocation?.postcode || order.destination.entityLocation.postcode;
-    order.destination.entityLocation.country = req.body.destination?.entityLocation?.country || order.destination.entityLocation.country;
-    order.productId = req.body.productId || order.productId;
-    order.productQuantity = req.body.productQuantity || order.productQuantity;
-    order.packageQty = req.body.packageQty || order.packageQty;
-    order.length = req.body.length || order.length;
-    order.width = req.body.width || order.width;
-    order.height = req.body.height || order.height;
-    order.weight = req.body.weight || order.weight;
-    order.volume = req.body.volume || order.volume;
+    order.origin = { ...order.origin, ...req.body.origin };
+    order.destination = { ...order.destination, ...req.body.destination };
+    order.products = req.body.products || order.products;
+    order.packages = req.body.packages || order.packages;
     order.freightCost = req.body.freightCost || order.freightCost;
     order.dangerousGoods = req.body.dangerousGoods !== undefined ? req.body.dangerousGoods : order.dangerousGoods;
 
+    // Salva a ordem atualizada no banco de dados
     const updatedOrder = await order.save();
 
+    // Responde com a ordem atualizada
     res.status(200).json(updatedOrder);
   } else {
-    res.status(404);
-    throw new Error('Order not found');
+    // Se a ordem não foi encontrada, retorna um erro 404
+    res.status(404).json({ message: 'Order not found' });
   }
 });
 

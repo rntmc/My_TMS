@@ -13,7 +13,7 @@ const getLoads = asyncHandler(async (req, res) => {
 // @ route GET /api/loads/:id
 // @access Public
 const getLoadsById = asyncHandler(async (req, res) => {
-  const load = await Load.findById(req.params.id)
+  const load = await Load.findById(req.params.id).populate('orders.orderId');
 
   if(load) {
     res.json(load)
@@ -42,7 +42,6 @@ const createLoad = asyncHandler(async (req, res) => {
     totalVolume,
     totalWeight,
     licensePlate,
-    packageQty,
     driver,
     insurance,
     storageAndTransportConditions,
@@ -65,8 +64,11 @@ const createLoad = asyncHandler(async (req, res) => {
       ...destination
     },
     transportType,
-    packageQty,
-    orders,
+    orders: orders.map(order => ({
+      orderId: order.orderId,
+      orderNumber: order.orderNumber,
+      packages: order.packages,
+    })),
     totalFreightCost,
     totalVolume,
     totalWeight,

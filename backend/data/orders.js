@@ -28,12 +28,30 @@ const orders =
     },
     productId: 'P12345',
     productQuantity: 50,
-    packageQty: 2,
-    length: 10,
-    width: 1,
-    height: 1,
-    volume: 10,
-    weight: 2500,
+    packages: [
+      {
+        packageQty: 2,
+        length: 100,
+        width: 100,
+        height: 100,
+        volume: 1,
+        weight: 2500
+      },
+      {
+        packageQty: 1,
+        length: 100,
+        width: 100,
+        height: 100,
+        volume: 1,
+        weight: 1500
+      }
+    ],
+    products: [
+      {
+        productId: 'P12345',
+        productQuantity: 50
+      }
+    ],
     freightCost: 500,
     dangerousGoods: false,
     carrier: 'Great Forwarder',
@@ -46,7 +64,7 @@ const orders =
     deliveryDate: '2024-05-11',
     origin: {
       entityNumber:557198,
-      entityName: 'entity Two',
+      entityName: 'Entity Two',
       entityLocation: {
         address: 'street 2',
         city: 'San Francisco',
@@ -57,7 +75,7 @@ const orders =
     },
     destination: {
       entityNumber: 557198,
-      entityName: 'entity One',
+      entityName: 'Entity One',
       entityLocation: {
         address: 'street 6',
         city: 'New York',
@@ -66,15 +84,23 @@ const orders =
         country: 'USA'
       }
     },
-    packageQty: 2,
-    length: 10,
-    width: 1,
-    height: 1.5,
-    volume: 15,
-    weight: 3000,
+    packages: [
+      {
+        packageQty: 2,
+        length: 100,
+        width: 100,
+        height: 150,
+        volume: 1.5,
+        weight: 3000
+      }
+    ],
+    products: [
+      {
+        productId: 'P12346',
+        productQuantity: 100
+      }
+    ],
     freightCost: 950,
-    productId: 'P12346',
-    productQuantity: 100,
     dangerousGoods: true,
     carrier: 'Great Forwarder',
     document: 'image.jpg',

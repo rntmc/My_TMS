@@ -1,10 +1,10 @@
 const loads = [
   {
     loadNumber: 1,
-    pickupDate: '01/05/2024',
-    deliveryDate: '10/05/2024',
+    pickupDate: '2024-05-01',
+    deliveryDate: '2024-05-10',
     origin: {
-      entityNumber:557198,
+      entityNumber: 557198,
       entityName: 'Supplier One',
       entityLocation: {
         address: 'street 2',
@@ -28,7 +28,21 @@ const loads = [
     carrierNumber: 55454,
     carrierName: 'Great Forwarder',
     transportType: 'AIR',
-    orders: [300, 301],
+    orders: [
+      {
+        orderNumber: [10000],
+        packages: [
+          {
+            packageQty: 2,
+            length: 100,
+            width: 100,
+            height: 10,
+            volume: 1,
+            weight: 2500
+          }
+        ],
+      }
+    ],
     totalFreightCost: 500,
     totalVolume: 10,
     totalWeight: 2500,
@@ -42,10 +56,10 @@ const loads = [
   },
   {
     loadNumber: 2,
-    pickupDate: '05/05/2024',
-    deliveryDate: '10/05/2024',
+    pickupDate: '2024-05-02',
+    deliveryDate: '2024-05-11',
     origin: {
-      entityNumber:557198,
+      entityNumber: 557198,
       entityName: 'entity Two',
       entityLocation: {
         address: 'street 2',
@@ -69,7 +83,21 @@ const loads = [
     carrierNumber: 55454,
     carrierName: 'Great Forwarder',
     transportType: 'LTL',
-    orders: [10000],
+    orders: [
+      {
+        orderNumber: [10001],  
+        packages: [
+          {
+            packageQty: 2,
+            length: 100,
+            width: 100,
+            height: 150,
+            volume: 1.5,
+            weight: 3000
+          },
+        ],
+      }
+    ],
     totalFreightCost: 950,
     totalVolume: 15,
     totalWeight: 12300,
@@ -81,6 +109,6 @@ const loads = [
     document: 'image.jpg',
     status: 'Delivered'
   },
-]
+];
 
-export default loads
+export default loads;
