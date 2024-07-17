@@ -68,37 +68,54 @@ const EditOrderScreen = () => {
   }, [order]);
 
   const handleProductChange = (index, field, value) => {
-    const updatedProducts = [...products];
-    updatedProducts[index][field] = value;
-    setProducts(updatedProducts);
+    setProducts(prevProducts => {
+      const updatedProducts = [...prevProducts];
+      updatedProducts[index] = {
+        ...updatedProducts[index],
+        [field]: value,
+      };
+      return updatedProducts;
+    });
   };
 
   const addProduct = () => {
-    setProducts([...products, { productId: '', productQuantity: '' }]);
+    setProducts(prevProducts => [
+      ...prevProducts,
+      { productId: '', productQuantity: '' }
+    ]);
   };
 
   const removeProduct = (index) => {
-    const updatedProducts = [...products];
-    updatedProducts.splice(index, 1);
-    setProducts(updatedProducts);
+    setProducts(prevProducts => {
+      const updatedProducts = [...prevProducts];
+      updatedProducts.splice(index, 1);
+      return updatedProducts;
+    });
   };
 
   const handlePackageChange = (index, field, value) => {
-    const updatedPackages = [...packages];
-    updatedPackages[index][field] = value;
-    updatedPackages[index]['volume'] = calculateSingleVolume(updatedPackages[index].packageQty, updatedPackages[index].length, updatedPackages[index].width, updatedPackages[index].height);
+    const updatedPackages = packages.map((pkg, i) => {
+      if (i === index) {
+        const updatedPackage = { ...pkg, [field]: value };
+        updatedPackage.volume = calculateSingleVolume(
+          updatedPackage.packageQty,
+          updatedPackage.length,
+          updatedPackage.width,
+          updatedPackage.height
+        );
+        return updatedPackage;
+      }
+      return pkg;
+    });
     setPackages(updatedPackages);
   };
-
-
+  
   const addPackage = () => {
     setPackages([...packages, { packageQty: '', length: '', width: '', height: '', weight: '', volume: '' }]);
   };
-
+  
   const removePackage = (index) => {
-    const updatedPackages = [...packages];
-    updatedPackages.splice(index, 1);
-    setPackages(updatedPackages);
+    setPackages(packages.filter((_, i) => i !== index));
   };
 
   const submitHandler = async (e) => {
