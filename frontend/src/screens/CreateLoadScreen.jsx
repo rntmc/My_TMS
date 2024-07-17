@@ -42,6 +42,29 @@ const CreateLoadScreen = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
+    const calculateTotals = () => {
+      let totalWeight = 0;
+      let totalVolume = 0;
+      let totalFreightCost = 0;
+
+      orders.forEach(order => {
+        order.packages.forEach(pkg => {
+          totalWeight += pkg.weight;
+          totalVolume += pkg.volume;
+        });
+        totalFreightCost += order.freightCost;
+      });
+
+      setTotalWeight(totalWeight);
+      setTotalVolume(totalVolume);
+      setTotalFreightCost(totalFreightCost);
+    };
+
+    calculateTotals();
+  }, [orders]);
+
+
+  useEffect(() => {
     refetchOrders();
   }, []);
 
@@ -427,8 +450,9 @@ const CreateLoadScreen = () => {
             <Row>
               <Col md={4}>
                 <Form.Group controlId='totalVolume'>
-                  <Form.Label>Total Volume</Form.Label>
-                  <Form.Control
+                  <Form.Label>Total Volume (m³)</Form.Label>
+                  <Form.Control style={{backgroundColor: '#cdcaca5f'}}
+                    readOnly
                     type='text'
                     placeholder='Enter Total Volume'
                     value={totalVolume}
@@ -438,8 +462,9 @@ const CreateLoadScreen = () => {
               </Col>
               <Col md={4}>
                 <Form.Group controlId='totalWeight'>
-                  <Form.Label>Total Weight</Form.Label>
-                  <Form.Control
+                  <Form.Label>Total Weight (kg)</Form.Label>
+                  <Form.Control style={{backgroundColor: '#cdcaca5f'}}
+                    readOnly
                     type='text'
                     placeholder='Enter Total Weight'
                     value={totalWeight}
@@ -450,8 +475,9 @@ const CreateLoadScreen = () => {
               
               <Col md={4}>
                 <Form.Group controlId='totalFreightCost'>
-                  <Form.Label>Total Freight Cost</Form.Label>
-                  <Form.Control
+                  <Form.Label>Total Freight Cost ($)</Form.Label>
+                  <Form.Control style={{backgroundColor: '#cdcaca5f'}}
+                    readOnly
                     type='text'
                     placeholder='Enter Total Freight Cost'
                     value={totalFreightCost}

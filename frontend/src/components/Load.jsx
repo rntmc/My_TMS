@@ -9,6 +9,7 @@ import {useUpdateLoadStatusMutation} from '../slices/loadsApiSlice'
 const Load = () => {
   const [loads, setLoads] = useState([])
   const [orders, setOrders] = useState([])
+  const [totals, setTotals] = useState({});
   const [updateLoadStatus] = useUpdateLoadStatusMutation()
 
   useEffect(() => {
@@ -26,6 +27,41 @@ const Load = () => {
 
     fetchLoads();
   }, [])
+
+  useEffect(() => {
+    if (orders.length > 0 && loads.length > 0) {
+      const newTotals = {};
+
+      loads.forEach(load => {
+        const loadOrders = load.orders.map(order => orders.find(o => o.orderNumber === order.orderNumber[0]));
+        
+        const totalVolume = loadOrders.reduce((acc, order) => {
+          if (order && order.packages) {
+            return acc + order.packages.reduce((pAcc, pkg) => pAcc + pkg.volume, 0);
+          }
+          return acc;
+        }, 0);
+        
+        const totalWeight = loadOrders.reduce((acc, order) => {
+          if (order && order.packages) {
+            return acc + order.packages.reduce((pAcc, pkg) => pAcc + pkg.weight, 0);
+          }
+          return acc;
+        }, 0);
+
+        const totalFreightCost = loadOrders.reduce((acc, order) => acc + (order ? order.freightCost : 0), 0);
+
+        newTotals[load._id] = {
+          totalVolume,
+          totalWeight,
+          totalFreightCost
+        };
+      });
+
+      setTotals(newTotals);
+    }
+  }, [orders, loads]);
+  
 
   const findOrderById = (orderId) => {
     return orders.find(order => order._id === orderId);
@@ -110,9 +146,9 @@ const Load = () => {
                   <p>Loading orders...</p>
                 )}
               </td>
-              <td>$ {load.totalFreightCost}</td>
-              <td>{load.totalWeight} kg</td>
-              <td>{load.totalVolume} m³</td>
+              <td>$ {totals[load._id]?.totalFreightCost ?? load.totalFreightCost}</td>
+              <td>{totals[load._id]?.totalVolume ?? load.totalVolume} m³</td>
+              <td>{totals[load._id]?.totalWeight ?? load.totalWeight} kg</td>
               <td>{load.carrierName}</td>
               <td>{load.transportType}</td>
               <td>{load.status}
