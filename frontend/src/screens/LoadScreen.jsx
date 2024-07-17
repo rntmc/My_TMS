@@ -1,18 +1,56 @@
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import { Link } from 'react-router-dom';
 import { Row, Col, ListGroup, Card, Form, Button, OverlayTrigger, Tooltip } from 'react-bootstrap';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import { MdOutlineEdit, MdClose  } from "react-icons/md";
+import { toast } from "react-toastify";
 import Loader from '../components/Loader'
 import Message from '../components/Message'
-import { useGetLoadDetailsQuery } from '../slices/loadsApiSlice';
+import { useGetLoadDetailsQuery, useDeleteOrCancelLoadMutation } from '../slices/loadsApiSlice';
 
 const LoadScreen = () => {
   const { id: loadId } = useParams();
+  const navigate = useNavigate()
 
   const { data: load, isLoading, error} = useGetLoadDetailsQuery(loadId);
-  console.log(load)
+
+  const [deleteOrCancelLoad] = useDeleteOrCancelLoadMutation()
+
+  const cancelDeleteHandler = async (id) => {
+    console.log(`Deleting load with id: ${id}`);
+    const loadToDeleteOrCancel = load;
+  
+    if (!loadToDeleteOrCancel) {
+      toast.error('Load not found');
+      return;
+    }
+  
+    if (loadToDeleteOrCancel.status === 'delivered' || loadToDeleteOrCancel === 'collected') {
+      toast.error('Cannot delete loads marked as collected or delivered');
+      return;
+    }
+
+    if (loadToDeleteOrCancel.status === 'cancelled') {
+      toast.error('This load is already cancelled');
+      return;
+    }
+  
+    if (window.confirm(`Delete/Cancel load ${load.loadNumber} ?`)) {
+      try {
+        await deleteOrCancelLoad(id);
+        if (loadToDeleteOrCancel.status === 'collected') {
+          toast.success(`Load ${load.loadNumber} cancelled`);
+        } else {
+          toast.success(`Load ${load.loadNumber} deleted`);
+        }
+        navigate('/bookings')
+      } catch(error) {
+        console.error('Error deleting order:', error);
+        toast.error(error?.data?.message || error.error)
+      }
+    }
+  }
 
   return (
     <>
@@ -65,6 +103,7 @@ const LoadScreen = () => {
                       display: 'flex',
                       alignItems: 'center',
                     }}
+                    onClick={() => cancelDeleteHandler(load._id)}
                   >
                     <MdClose style={{ fontSize: '1rem', color: 'red' }} />
                   </Button>

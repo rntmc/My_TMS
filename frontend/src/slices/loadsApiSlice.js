@@ -29,6 +29,13 @@ export const loadsApiSlice = apiSlice.injectEndpoints({
         body: {status},
       })
     }),
+    deleteOrCancelLoad: builder.mutation({
+      query: (loadId) => ({
+        url: `${LOADS_URL}/${loadId}`,
+        method: 'DELETE'
+      }),
+      invalidatesTags: ['Loads'], 
+    }),
   }),
 })
 
@@ -36,5 +43,6 @@ export const {
   useGetLoadsQuery, 
   useGetLoadDetailsQuery,
   useCreateLoadMutation,
-  useUpdateLoadStatusMutation
+  useUpdateLoadStatusMutation,
+  useDeleteOrCancelLoadMutation,
 } = loadsApiSlice;

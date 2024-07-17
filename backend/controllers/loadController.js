@@ -107,5 +107,29 @@ const updateLoadStatus = async (req, res) => {
   }
 };
 
+// @Desc Delete/Cancel load
+// @ route DELETE /api/loads/:id
+// @access Private
+const cancelOrDeleteLoad = asyncHandler(async (req, res) => {
+  const load = await Load.findById(req.params.id);
 
-export {getLoadsById, getLoads, createLoad, updateLoadStatus}
+  if (!load) {
+    res.status(404);
+    throw new Error('Load not found');
+  }
+
+  if (load.status === "delivered" || load.status === "collected") {
+    load.status = "cancelled";
+    await load.save();
+    res.status(200).json({ message: 'Load cancelled successfully', load });
+  } else if (load.status === "confirmed" || load.status === "open") {
+    await Load.deleteOne({ _id: load._id });
+    res.status(200).json({ message: 'Load deleted successfully' });
+  } else {
+    res.status(400);
+    throw new Error('Invalid load status for cancellation or deletion');
+  }
+});
+
+
+export {getLoadsById, getLoads, createLoad, updateLoadStatus, cancelOrDeleteLoad}
