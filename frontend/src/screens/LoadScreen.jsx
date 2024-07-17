@@ -26,8 +26,8 @@ const LoadScreen = () => {
       return;
     }
   
-    if (loadToDeleteOrCancel.status === 'delivered' || loadToDeleteOrCancel === 'collected') {
-      toast.error('Cannot delete loads marked as collected or delivered');
+    if (loadToDeleteOrCancel.status === 'delivered') {
+      toast.error('Cannot delete/cancel loads marked as collected or delivered');
       return;
     }
 

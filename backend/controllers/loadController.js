@@ -131,5 +131,46 @@ const cancelOrDeleteLoad = asyncHandler(async (req, res) => {
   }
 });
 
+// @Desc update load
+// @ route PUT /api/loads/:id
+// @access Private/Admin
+const updateLoad = asyncHandler(async (req, res) => {
+  const load = await Load.findById(req.params.id)
 
-export {getLoadsById, getLoads, createLoad, updateLoadStatus, cancelOrDeleteLoad}
+  if (load) {
+    console.log('Found load:', load);
+    // Atualiza os campos da ordem com os dados do corpo da requisição
+    load.loadNumber = req.body.loadNumber || load.loadNumber;
+    load.pickupDate = req.body.pickupDate || load.pickupDate;
+    load.deliveryDate = req.body.deliveryDate || load.deliveryDate;
+    load.origin = { ...load.origin, ...req.body.origin };
+    load.destination = { ...load.destination, ...req.body.destination };
+    load.carrierNumber = req.body.carrierNumber || load.carrierNumber;
+    load.carrierName = req.body.carrierName || load.carrierName;
+    load.transportType = req.body.transportType || load.transportType;
+    load.orders = req.body.orders || load.orders;
+    load.totalFreightCost = req.body.totalFreightCost || load.totalFreightCost;
+    load.totalVolume = req.body.totalVolume || load.totalVolume;
+    load.totalWeight = req.body.totalWeight || load.totalWeight;
+    load.licensePlate = req.body.licensePlate || load.licensePlate;
+    load.driver = req.body.driver || load.driver;
+    load.insurance = req.body.insurance || load.insurance;
+    load.storageAndTransportConditions = req.body.storageAndTransportConditions || load.storageAndTransportConditions;
+    load.specialNotes = req.body.specialNotes || load.specialNotes;
+    load.transportType = req.body.transportType || load.transportType;
+    load.document = req.body.document || load.document;
+    load.status = req.body.status || load.status;
+
+    // Salva a load atualizada no banco de dados
+    const updatedLoad = await load.save();
+
+    // Responde com a load atualizada
+    res.status(200).json(updatedLoad);
+  } else {
+    // Se a load não foi encontrada, retorna um erro 404
+    res.status(404).json({ message: 'Load not found' });
+  }
+});
+
+
+export {getLoadsById, getLoads, createLoad, updateLoadStatus, cancelOrDeleteLoad, updateLoad}
