@@ -62,7 +62,7 @@ const Order = () => {
             <th>Volume</th>
             <th>Weight</th>
             <th>Freight Cost</th>
-            <th>Status</th>
+            <th style={{ width: '120px', textAlign: 'center' }}>Status</th>
           </tr>
         </thead>
         <tbody style={{ fontSize: '12px' }}>
@@ -111,32 +111,33 @@ const Order = () => {
               <td>{order.totalVolume} m&#179;</td>
               <td>{order.totalWeight} kg</td>
               <td>$ {order.freightCost}</td>
-              <td>{order.status}
-                <div style={{ display: 'flex', flexDirection: 'row', gap: '0.5rem', justifyContent: 'center' }}>
-                  {order.status === "open" ? (
-                    <OverlayTrigger
-                      placement="top"
-                      overlay={<Tooltip id={`tooltip-confirm-${order._id}`}>Confirm</Tooltip>}
-                    >
-                      <Button 
-                        style={{
-                          padding: '0.3rem',
-                          backgroundColor: '#a5a9ad',
-                          color: 'white',
-                          display: 'flex',
-                          justifyContent: 'center',
-                          alignItems: 'center',
-                          border: 'none',
-                          borderRadius: '5px'
-                        }}
-                        onClick={() => handleStatus(order._id)}
-                      >
-                        <FaCheck style={{ fontSize: '1rem', color: "green" }}/>
-                      </Button>
-                    </OverlayTrigger>
-                  ) : ("")}
-                </div>
-              </td>
+              <td>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent:'center', gap: '0.5rem' }}>
+            <span>{order.status}</span>
+            {order.status === "open" && (
+              <OverlayTrigger
+                placement="top"
+                overlay={<Tooltip id={`tooltip-confirm-${order._id}`}>Confirm</Tooltip>}
+              >
+                <Button 
+                  style={{
+                    padding: '0.3rem',
+                    backgroundColor: '#a5a9ad',
+                    color: 'white',
+                    display: 'flex',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    border: 'none',
+                    borderRadius: '5px'
+                  }}
+                  onClick={() => handleStatus(order._id)}
+                >
+                  <FaCheck style={{ fontSize: '1rem', color: "green" }}/>
+                </Button>
+              </OverlayTrigger>
+            )}
+          </div>
+        </td>
             </tr>
           ))}
         </tbody>

@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom'
 import axios from 'axios'
 import { CgDanger } from "react-icons/cg";
 import { FaCheck } from "react-icons/fa"
+import Loader from './Loader'
 import {useUpdateLoadStatusMutation} from '../slices/loadsApiSlice'
 
 const Load = () => {
@@ -92,9 +93,9 @@ const Load = () => {
             <th>Origin</th>
             <th>Destination</th>
             <th>Orders</th>
-            <th>Total Cost</th>
-            <th>Total Volume</th>
-            <th>Total Weight</th>
+            <th>Cost</th>
+            <th>Volume</th>
+            <th>Weight</th>
             <th>Carrier</th>
             <th>Method</th>
             <th>Status</th>
@@ -136,13 +137,13 @@ const Load = () => {
                             {' '}{orderData.dangerousGoods ? <CgDanger style={{color:"lightsalmon"}}/> : ''}
                           </Link>
                         ) : (
-                          <span>Loading orders...</span>
+                          <p>Loading orders...</p>
                         )}
                       </div>
                     );
                   })
                 ) : (
-                  <p>Loading orders...</p>
+                  <p></p>
                 )}
               </td>
               <td>$ {totals[load._id]?.totalFreightCost ?? load.totalFreightCost}</td>

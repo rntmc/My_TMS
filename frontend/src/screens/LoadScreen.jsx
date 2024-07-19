@@ -134,7 +134,14 @@ const LoadScreen = () => {
               </div>
             </Col>
           </Row>
-          <Row className="mb-3">
+          <Row>
+            <Col md={4}>
+              <ListGroup.Item style={{ fontSize: '0.875rem' }}>
+                <strong>Status:</strong> {load.status || 'N/A'}
+              </ListGroup.Item>
+            </Col>
+          </Row>
+          <Row className="mb-3 mt-3">
             <Col md={4}>
               <ListGroup.Item style={{ fontSize: '0.875rem' }}>
                 <strong>Collection Date:</strong> {load.pickupDate ? (
@@ -242,13 +249,6 @@ const LoadScreen = () => {
           <Col md={8}>
             <ListGroup.Item style={{ fontSize: '0.875rem' }}>
               <Form.Control as="textarea" rows={3} defaultValue={load.specialNotes || ''} readOnly />
-            </ListGroup.Item>
-          </Col>
-        </Row>
-        <Row>
-          <Col md={4}>
-            <ListGroup.Item style={{ fontSize: '0.875rem' }}>
-              <strong>Status:</strong> {load.status || 'N/A'}
             </ListGroup.Item>
           </Col>
         </Row>

@@ -174,6 +174,10 @@ const cancelOrDeleteLoad = asyncHandler(async (req, res) => {
 const updateLoad = asyncHandler(async (req, res) => {
   const { id } = req.params;
 
+  if (!mongoose.Types.ObjectId.isValid(id)) {
+    return res.status(400).json({ message: 'Invalid Load ID' });
+  }
+
   try {
     const load = await Load.findById(id);
 
@@ -181,50 +185,81 @@ const updateLoad = asyncHandler(async (req, res) => {
       return res.status(404).json({ message: 'Load not found' });
     }
 
-    // Update load fields
-    load.loadNumber = req.body.loadNumber || load.loadNumber;
-    load.pickupDate = req.body.pickupDate || load.pickupDate;
-    load.deliveryDate = req.body.deliveryDate || load.deliveryDate;
-    load.origin = { ...load.origin, ...req.body.origin };
-    load.destination = { ...load.destination, ...req.body.destination };
-    load.carrierName = req.body.carrierName || load.carrierName;
-    load.transportType = req.body.transportType || load.transportType;
-    load.totalFreightCost = req.body.totalFreightCost || load.totalFreightCost;
-    load.totalVolume = req.body.totalVolume || load.totalVolume;
-    load.totalWeight = req.body.totalWeight || load.totalWeight;
-    load.licensePlate = req.body.licensePlate || load.licensePlate;
-    load.driver = req.body.driver || load.driver;
-    load.insurance = req.body.insurance || load.insurance;
-    load.storageAndTransportConditions = req.body.storageAndTransportConditions || load.storageAndTransportConditions;
-    load.specialNotes = req.body.specialNotes || load.specialNotes;
-    load.status = req.body.status || load.status;
+    const {
+      loadNumber,
+      pickupDate,
+      deliveryDate,
+      origin,
+      destination,
+      carrierName,
+      transportType,
+      totalFreightCost,
+      totalVolume,
+      totalWeight,
+      licensePlate,
+      driver,
+      insurance,
+      storageAndTransportConditions,
+      specialNotes,
+      status,
+      document,
+      orders // Números das ordens
+    } = req.body;
 
-    // Update orders
-    if (req.body.orders) {
-      load.orders = req.body.orders.map(order => ({
-        _id: order._id || mongoose.Types.ObjectId(),
-        orderNumber: order.orderNumber,
-        packages: order.packages.map(pkg => ({
-          _id: pkg._id || mongoose.Types.ObjectId(),
-          packageQty: pkg.packageQty,
-          length: pkg.length,
-          width: pkg.width,
-          height: pkg.height,
-          volume: pkg.volume,
-          weight: pkg.weight,
-        })),
-        freightCost: order.freightCost,
-      }));
+    load.loadNumber = loadNumber || load.loadNumber;
+    load.pickupDate = pickupDate || load.pickupDate;
+    load.deliveryDate = deliveryDate || load.deliveryDate;
+    load.origin = { ...load.origin, ...origin };
+    load.destination = { ...load.destination, ...destination };
+    load.carrierName = carrierName || load.carrierName;
+    load.transportType = transportType || load.transportType;
+    load.totalFreightCost = totalFreightCost || load.totalFreightCost;
+    load.totalVolume = totalVolume || load.totalVolume;
+    load.totalWeight = totalWeight || load.totalWeight;
+    load.licensePlate = licensePlate || load.licensePlate;
+    load.driver = driver || load.driver;
+    load.insurance = insurance || load.insurance;
+    load.storageAndTransportConditions = storageAndTransportConditions || load.storageAndTransportConditions;
+    load.specialNotes = specialNotes || load.specialNotes;
+    load.status = status || load.status;
+    load.document = document || load.document;
+
+    if (orders && orders.length > 0) {
+      // Garante que orders seja uma array de números
+      const orderNumbers = orders.map(order => Number(order));
+      
+      // Busca ordens com base no orderNumber
+      const validOrders = await Order.find({ orderNumber: { $in: orderNumbers } }).select('_id');
+      console.log('Valid orders found:', validOrders);
+
+      // Atualiza a lista de ordens na carga
+      if (validOrders.length > 0) {
+        load.orders = validOrders.map(order => order._id);
+      } else {
+        load.orders = []; // Limpa as ordens se não encontrar nenhuma válida
+      }
+    } else {
+      load.orders = []; // Limpa as ordens se o array estiver vazio
     }
 
-    // Save updated load to database
     const updatedLoad = await load.save();
 
-    res.status(200).json(updatedLoad);
+    const populatedLoad = await Load.findById(updatedLoad._id)
+      .populate({
+        path: 'orders',
+        select: 'orderNumber packages freightCost',
+        populate: {
+          path: 'packages._id',
+          select: 'packageQty length width height volume weight'
+        }
+      })
+      .exec();
+
+    res.status(200).json(populatedLoad);
   } catch (error) {
+    console.error('Error updating load:', error);
     res.status(500).json({ message: 'Server error', error });
   }
 });
-
 
 export {getLoadsById, getLoads, createLoad, updateLoadStatus, cancelOrDeleteLoad, updateLoad}

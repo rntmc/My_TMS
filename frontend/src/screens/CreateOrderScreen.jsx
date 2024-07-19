@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Form, Button, Row, Col, Card } from 'react-bootstrap';
+import { Form, Button, Row, Col, Card, InputGroup } from 'react-bootstrap';
 import { FaPlus, FaMinus } from "react-icons/fa";
 import calculateSingleVolume from '../utils/calculateSingleVolume';
 import { useCreateOrderMutation } from '../slices/ordersApiSlice';
@@ -490,24 +490,56 @@ const CreateOrderScreen = () => {
         </Col>
       </Row>
 
-      <Form.Group controlId='dangerousGoods' className='mt-2'>
-        <Form.Check
-          type='checkbox'
-          label='Dangerous Goods'
-          checked={dangerousGoods}
-          onChange={(e) => setDangerousGoods(e.target.checked)}
-        ></Form.Check>
-      </Form.Group>
-
-      <Form.Group controlId='freightCost'>
-        <Form.Label>Freight Cost</Form.Label>
-        <Form.Control
-          type='number'
-          placeholder='Enter freight cost'
-          value={freightCost}
-          onChange={(e) => setFreightCost(e.target.value)}
-        ></Form.Control>
-      </Form.Group>
+      <Row className='align-items-center mt-3'>
+        <Col md={3}>
+          <InputGroup>
+            <Form.Control
+              type='file'
+              placeholder='Select document'
+              onChange={(e) => {
+                const file = e.target.files[0];
+                setDocument(file);
+              }}
+              style={{ borderTopRightRadius: '0', borderBottomRightRadius: '0' }}
+            />
+            <Button
+              type='submit'
+              variant='primary'
+              style={{
+                borderTopLeftRadius: '0',
+                borderBottomLeftRadius: '0',
+                marginLeft: '-1px' // Overlaps the border slightly to ensure they look connected
+              }}
+            >
+              Upload
+            </Button>
+          </InputGroup>
+        </Col>
+        <Col md={2} className='d-flex align-items-center'>
+          <Form.Group controlId='dangerousGoods'>
+            <Form.Check
+              type='checkbox'
+              label='Dangerous Goods'
+              checked={dangerousGoods}
+              onChange={(e) => setDangerousGoods(e.target.checked)}
+            />
+          </Form.Group>
+        </Col>
+      </Row>
+      
+      <Row className='mt-2'>
+        <Col md={3} >
+          <Form.Group controlId='freightCost'>
+            <Form.Label>Freight Cost ($)</Form.Label>
+            <Form.Control
+              type='number'
+              placeholder='Enter freight cost'
+              value={freightCost}
+              onChange={(e) => setFreightCost(e.target.value)}
+            ></Form.Control>
+          </Form.Group>
+        </Col>
+      </Row>
 
       <Row>
         <Col>
