@@ -94,21 +94,29 @@ const EditOrderScreen = () => {
   };
 
   const handlePackageChange = (index, field, value) => {
+    const numericValue = isNaN(parseFloat(value)) ? '' : parseFloat(value);
+    
     const updatedPackages = packages.map((pkg, i) => {
       if (i === index) {
-        const updatedPackage = { ...pkg, [field]: value };
-        updatedPackage.volume = calculateSingleVolume(
-          updatedPackage.packageQty,
-          updatedPackage.length,
-          updatedPackage.width,
-          updatedPackage.height
-        );
+        const updatedPackage = { ...pkg, [field]: numericValue };
+        
+        if (['length', 'width', 'height', 'packageQty'].includes(field)) {
+          updatedPackage.volume = calculateSingleVolume(
+            updatedPackage.packageQty,
+            updatedPackage.length,
+            updatedPackage.width,
+            updatedPackage.height
+          );
+        }
+        
         return updatedPackage;
       }
       return pkg;
     });
+    
     setPackages(updatedPackages);
   };
+  
   
   const addPackage = () => {
     setPackages([...packages, { packageQty: '', length: '', width: '', height: '', weight: '', volume: '' }]);
@@ -120,7 +128,14 @@ const EditOrderScreen = () => {
 
   const submitHandler = async (e) => {
     e.preventDefault();
-    const volume = calculateSingleVolume(packages.packageQty, packages.length, packages.width, packages.height);
+    const totalVolume = packages.reduce((total, pkg) => {
+      return total + (pkg.volume ? parseFloat(pkg.volume) : 0);
+    }, 0);
+  
+    const totalWeight = packages.reduce((total, pkg) => {
+      return total + (pkg.weight ? parseFloat(pkg.weight) : 0);
+    }, 0);
+
     const updatedOrderData = {
       orderId,
       status,
@@ -149,8 +164,9 @@ const EditOrderScreen = () => {
         },
       },
       products,
-      packages,
-      volume,
+      packages, // Mantenha packages como um array de objetos
+      totalVolume, // Adicione o volume total
+      totalWeight, // Adicione o peso total
       freightCost,
       dangerousGoods,
       document,

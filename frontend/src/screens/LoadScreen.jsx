@@ -1,5 +1,4 @@
-import { useParams, useNavigate } from 'react-router-dom';
-import { Link } from 'react-router-dom';
+import { useParams, useNavigate, Link } from 'react-router-dom';
 import { Row, Col, ListGroup, Card, Form, Button, OverlayTrigger, Tooltip } from 'react-bootstrap';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
@@ -8,14 +7,16 @@ import { toast } from "react-toastify";
 import Loader from '../components/Loader'
 import Message from '../components/Message'
 import { useGetLoadDetailsQuery, useDeleteOrCancelLoadMutation } from '../slices/loadsApiSlice';
+import { useUpdateOrderMutation } from '../slices/ordersApiSlice';
 
 const LoadScreen = () => {
   const { id: loadId } = useParams();
   const navigate = useNavigate()
 
-  const { data: load, isLoading, error} = useGetLoadDetailsQuery(loadId);
+  const { data: load, isLoading, error, refetch } = useGetLoadDetailsQuery(loadId);
 
   const [deleteOrCancelLoad] = useDeleteOrCancelLoadMutation()
+  const [updateOrder] = useUpdateOrderMutation();
 
   const cancelDeleteHandler = async (id) => {
     console.log(`Deleting load with id: ${id}`);
@@ -26,8 +27,8 @@ const LoadScreen = () => {
       return;
     }
   
-    if (loadToDeleteOrCancel.status === 'delivered') {
-      toast.error('Cannot delete/cancel loads marked as collected or delivered');
+    if (loadToDeleteOrCancel.status === 'delivered' || loadToDeleteOrCancel === 'collected') {
+      toast.error('Cannot delete loads marked as collected or delivered');
       return;
     }
 
@@ -51,6 +52,28 @@ const LoadScreen = () => {
       }
     }
   }
+
+  const calculateTotals = () => {
+    let totalVolume = 0;
+    let totalWeight = 0;
+    let totalFreightCost = 0;
+  
+    if (load && load.orders && load.orders.length > 0) {
+      load.orders.forEach(order => {
+        if (order.packages && order.packages.length > 0) {
+          order.packages.forEach(pkg => {
+            totalVolume += pkg.volume || 0; // Adicione um fallback para 0 se pkg.volume for undefined
+            totalWeight += pkg.weight || 0; // Adicione um fallback para 0 se pkg.weight for undefined
+          });
+        }
+        totalFreightCost += order.freightCost || 0; // Adicione um fallback para 0 se order.freightCost for undefined
+      });
+    }
+
+    return { totalVolume, totalWeight, totalFreightCost };
+  };
+
+  const { totalVolume, totalWeight, totalFreightCost } = calculateTotals();
 
   return (
     <>
@@ -168,19 +191,19 @@ const LoadScreen = () => {
             </Col>
             <Col md={4}>
               <ListGroup.Item style={{ fontSize: '0.875rem' }}>
-                <strong>Freight Cost:</strong> $ {load.totalFreightCost || 'N/A'}
+                <strong>Freight Cost:</strong> $ {totalFreightCost.toFixed(2) || 'N/A'}
               </ListGroup.Item>
             </Col>
           </Row>
           <Row className="mb-3">
             <Col md={4}>
               <ListGroup.Item style={{ fontSize: '0.875rem' }}>
-                <strong>Total Volume:</strong> {load.totalVolume || 'N/A'} m³
+                <strong>Total Volume:</strong> {totalVolume || 'N/A'} m³
               </ListGroup.Item>
             </Col>
             <Col md={4}>
               <ListGroup.Item style={{ fontSize: '0.875rem' }}>
-                <strong>Total Weight:</strong> {load.totalWeight || 'N/A'} kg
+                <strong>Total Weight:</strong> {totalWeight || 'N/A'} kg
               </ListGroup.Item>
             </Col>
           </Row>

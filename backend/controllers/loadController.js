@@ -1,11 +1,18 @@
+import  mongoose from 'mongoose'
 import asyncHandler from '../middleware/asyncHandler.js';
 import Load from '../models/loadModel.js'
+import Order from '../models/orderModel.js';
+
+const getOrderIdsByNumbers = async (orderNumbers) => {
+  const orders = await Order.find({})
+  return orders.map(order => order._id);
+};
 
 // @Desc Fetch all loads
 // @ route GET /api/loads
 // @access Public
 const getLoads = asyncHandler(async (req, res) => {
-  const loads = await Load.find({})
+  const loads = await Load.find({}).populate('orders')
   res.json(loads)
 })
 
@@ -13,7 +20,7 @@ const getLoads = asyncHandler(async (req, res) => {
 // @ route GET /api/loads/:id
 // @access Public
 const getLoadsById = asyncHandler(async (req, res) => {
-  const load = await Load.findById(req.params.id).populate('orders.orderId');
+  const load = await Load.findById(req.params.id).populate('orders');
 
   if(load) {
     res.json(load)
@@ -49,40 +56,70 @@ const createLoad = asyncHandler(async (req, res) => {
     user
   } = req.body;
 
-  console.log('req:', req);
+  // Valida se orders é uma lista
+  if (!Array.isArray(orders) || orders.length === 0) {
+    return res.status(400).json({ message: 'Orders must be an array with at least one order.' });
+  }
 
-  const load = new Load({
-    loadNumber,
-    status,
-    carrierName,
-    pickupDate,
-    deliveryDate,
-    origin: {
-      ...origin
-    },
-    destination: {
-      ...destination
-    },
-    transportType,
-    orders: orders.map(order => ({
-      orderNumber: order.orderNumber,
-      packages: order.packages
-    })),
-    totalFreightCost,
-    totalVolume,
-    totalWeight,
-    licensePlate,
-    driver,
-    insurance,
-    storageAndTransportConditions,
-    specialNotes,
-    user: req.user._id,
-  })
+   // Extrai os números das ordens e obtém os IDs das ordens correspondentes
+   const orderNumbers = orders.map(order => order.orderNumber);
 
-  const createdLoad = await load.save();
-
-  res.status(201).json(createdLoad)
-})
+   // Função auxiliar para obter IDs das ordens
+   const getOrderIdsByNumbers = async (numbers) => {
+     const orders = await Order.find({ orderNumber: { $in: numbers } });
+     if (orders.length === 0) {
+       throw new Error('No orders found for the given order numbers.');
+     }
+     return orders.map(order => order._id);
+   };
+ 
+   let orderIds;
+   try {
+     orderIds = await getOrderIdsByNumbers(orderNumbers);
+   } catch (error) {
+     return res.status(404).json({ message: error.message });
+   }
+ 
+   // Cria a nova carga com as ordens associadas
+   const load = new Load({
+     loadNumber,
+     status,
+     carrierName,
+     pickupDate,
+     deliveryDate,
+     origin: {
+       ...origin
+     },
+     destination: {
+       ...destination
+     },
+     transportType,
+     orders: orderIds, // Inclui apenas os IDs das ordens selecionadas
+     totalFreightCost,
+     totalVolume,
+     totalWeight,
+     licensePlate,
+     driver,
+     insurance,
+     storageAndTransportConditions,
+     specialNotes,
+     user: req.user._id,
+   });
+ 
+   // Salva a nova carga
+   const createdLoad = await load.save();
+ 
+   // Popula as ordens na carga criada
+   const populatedLoad = await Load.findById(createdLoad._id)
+     .populate({
+       path: 'orders',
+       select: 'orderNumber packages freightCost' // Seleciona os campos que deseja retornar
+     })
+     .exec();
+ 
+   // Retorna a carga criada com ordens populadas
+   res.status(201).json(populatedLoad);
+ });
 
 // @Desc get carriers loads ***CHECK***
 // @ route PATCH /api/loads/:id
@@ -135,20 +172,23 @@ const cancelOrDeleteLoad = asyncHandler(async (req, res) => {
 // @ route PUT /api/loads/:id
 // @access Private/Admin
 const updateLoad = asyncHandler(async (req, res) => {
-  const load = await Load.findById(req.params.id)
+  const { id } = req.params;
 
-  if (load) {
-    console.log('Found load:', load);
-    // Atualiza os campos da ordem com os dados do corpo da requisição
+  try {
+    const load = await Load.findById(id);
+
+    if (!load) {
+      return res.status(404).json({ message: 'Load not found' });
+    }
+
+    // Update load fields
     load.loadNumber = req.body.loadNumber || load.loadNumber;
     load.pickupDate = req.body.pickupDate || load.pickupDate;
     load.deliveryDate = req.body.deliveryDate || load.deliveryDate;
     load.origin = { ...load.origin, ...req.body.origin };
     load.destination = { ...load.destination, ...req.body.destination };
-    load.carrierNumber = req.body.carrierNumber || load.carrierNumber;
     load.carrierName = req.body.carrierName || load.carrierName;
     load.transportType = req.body.transportType || load.transportType;
-    load.orders = req.body.orders || load.orders;
     load.totalFreightCost = req.body.totalFreightCost || load.totalFreightCost;
     load.totalVolume = req.body.totalVolume || load.totalVolume;
     load.totalWeight = req.body.totalWeight || load.totalWeight;
@@ -157,18 +197,32 @@ const updateLoad = asyncHandler(async (req, res) => {
     load.insurance = req.body.insurance || load.insurance;
     load.storageAndTransportConditions = req.body.storageAndTransportConditions || load.storageAndTransportConditions;
     load.specialNotes = req.body.specialNotes || load.specialNotes;
-    load.transportType = req.body.transportType || load.transportType;
-    load.document = req.body.document || load.document;
     load.status = req.body.status || load.status;
 
-    // Salva a load atualizada no banco de dados
+    // Update orders
+    if (req.body.orders) {
+      load.orders = req.body.orders.map(order => ({
+        _id: order._id || mongoose.Types.ObjectId(),
+        orderNumber: order.orderNumber,
+        packages: order.packages.map(pkg => ({
+          _id: pkg._id || mongoose.Types.ObjectId(),
+          packageQty: pkg.packageQty,
+          length: pkg.length,
+          width: pkg.width,
+          height: pkg.height,
+          volume: pkg.volume,
+          weight: pkg.weight,
+        })),
+        freightCost: order.freightCost,
+      }));
+    }
+
+    // Save updated load to database
     const updatedLoad = await load.save();
 
-    // Responde com a load atualizada
     res.status(200).json(updatedLoad);
-  } else {
-    // Se a load não foi encontrada, retorna um erro 404
-    res.status(404).json({ message: 'Load not found' });
+  } catch (error) {
+    res.status(500).json({ message: 'Server error', error });
   }
 });
 

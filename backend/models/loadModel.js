@@ -1,33 +1,6 @@
 import mongoose from "mongoose";
 import addressSchema from './addressModel.js';
 
-const packageSchema = new mongoose.Schema({
-  packageQty: {
-    type: Number,
-    required: true
-  },
-  length: {
-    type: Number,
-    required: true
-  },
-  width: {
-    type: Number,
-    required: true
-  },
-  height: {
-    type: Number,
-    required: true
-  },
-  volume: {
-    type: Number,
-    required: true
-  },
-  weight: {
-    type: Number,
-    required: true
-  }
-});
-
 const loadSchema = new mongoose.Schema({
   loadNumber: {
     type: Number,
@@ -71,20 +44,17 @@ const loadSchema = new mongoose.Schema({
     type: String,
     required: true
   },
+  carrier: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Carrier',
+  },
   transportType: {
     type: String,
     required: true
   },
   orders: [{
-    orderId: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: 'Order',
-    },
-    orderNumber: [{ 
-      type: Number,
-      required: true,
-    }],
-    packages: [packageSchema],
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Order'
   }],
   totalFreightCost: {
     type: Number,

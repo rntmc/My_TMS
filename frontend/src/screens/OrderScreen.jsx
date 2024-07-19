@@ -14,7 +14,6 @@ const OrderScreen = () => {
   const navigate = useNavigate()
 
   const { data: order, isLoading, error} = useGetOrderDetailsQuery(orderId);
-
   const [deleteOrCancelOrder] = useDeleteOrCancelOrderMutation()
 
   const cancelDeleteHandler = async (id) => {
@@ -51,6 +50,18 @@ const OrderScreen = () => {
   const editOrderNavigator = () => {
     navigate(`/editorder/${order._id}`)
   }
+
+  const calculateTotalWeight = (packages) => {
+    return packages.reduce((total, pack) => total + pack.weight, 0);
+  };
+
+  const calculateTotalVolume = (packages) => {
+    return packages.reduce((total, pack) => total + pack.volume, 0);
+  };
+
+  const totalWeight = order ? calculateTotalWeight(order.packages) : 0;
+  const totalVolume = order ? calculateTotalVolume(order.packages) : 0;
+  const totalFreightCost = order ? order.packages.reduce((total, pack) => total + pack.freightCost, 0) : 0;
 
   return (
     <>
@@ -154,24 +165,12 @@ const OrderScreen = () => {
           <Row className='mt-2 mb-2'>    
             <Col md={4}>
               <ListGroup.Item style={{ fontSize: '0.875rem' }}>
-                <strong>Total Volume:</strong> {order.volume || 'N/A'} m³
+                <strong>Volume:</strong> {totalVolume} m³
               </ListGroup.Item>
             </Col>
             <Col md={4}>
               <ListGroup.Item style={{ fontSize: '0.875rem' }}>
-                <strong>Total Weight:</strong> {order.weight || 'N/A'} kg
-              </ListGroup.Item>
-            </Col>
-          </Row>
-          <Row className="mb-2">
-            <Col md={4}>
-              <ListGroup.Item style={{ fontSize: '0.875rem' }}>
-                <strong>Carrier:</strong>{order.carrierNumber || 'N/A'} {order.carrierName || 'N/A'}
-              </ListGroup.Item>
-            </Col>
-            <Col md={4}>
-              <ListGroup.Item style={{ fontSize: '0.875rem' }}>
-                <strong>Transport Type:</strong> {'N/A'}
+                <strong>Total Weight:</strong> {totalWeight} kg
               </ListGroup.Item>
             </Col>
           </Row>

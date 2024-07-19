@@ -28,21 +28,7 @@ const loads = [
     carrierNumber: 55454,
     carrierName: 'Great Forwarder',
     transportType: 'AIR',
-    orders: [
-      {
-        orderNumber: [10000],
-        packages: [
-          {
-            packageQty: 2,
-            length: 100,
-            width: 100,
-            height: 10,
-            volume: 1,
-            weight: 2500
-          }
-        ],
-      }
-    ],
+    orders: [10000],
     totalFreightCost: 500,
     totalVolume: 10,
     totalWeight: 2500,
@@ -52,7 +38,7 @@ const loads = [
     storageAndTransportConditions: 'regular',
     specialNotes: 'Expected to be delivered on time',
     document: 'image.jpg',
-    status: 'Collected'
+    status: 'collected'
   },
   {
     loadNumber: 2,
@@ -83,21 +69,7 @@ const loads = [
     carrierNumber: 55454,
     carrierName: 'Great Forwarder',
     transportType: 'LTL',
-    orders: [
-      {
-        orderNumber: [10001],  
-        packages: [
-          {
-            packageQty: 2,
-            length: 100,
-            width: 100,
-            height: 150,
-            volume: 1.5,
-            weight: 3000
-          },
-        ],
-      }
-    ],
+    orders: [10001],
     totalFreightCost: 950,
     totalVolume: 15,
     totalWeight: 12300,
@@ -107,7 +79,7 @@ const loads = [
     storageAndTransportConditions: 'regular',
     specialNotes: 'Delivered as expected',
     document: 'image.jpg',
-    status: 'Delivered'
+    status: 'delivered'
   },
 ];
 

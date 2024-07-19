@@ -1,14 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import { Form, Button, Row, Col, Card, ListGroup } from 'react-bootstrap';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { MdDelete } from "react-icons/md";
-import { useCreateLoadMutation } from '../slices/loadsApiSlice';
+import { useGetLoadDetailsQuery, useUpdateLoadMutation } from '../slices/loadsApiSlice';
 import { useGetOrdersQuery } from '../slices/ordersApiSlice';
 
-const CreateLoadScreen = () => {
+const EditLoadScreen = () => {
+  const { id: loadId } = useParams();
   const [loadNumber, setLoadNumber] = useState('');
   const [carrierName, setCarrierName] = useState('');
-  const [status, setStatus] = useState('open');
+  const [status, setStatus] = useState('');
   const [pickupDate, setPickupDate] = useState('');
   const [deliveryDate, setDeliveryDate] = useState('');
   const [originEntityNumber, setOriginEntityNumber] = useState('');
@@ -25,9 +26,9 @@ const CreateLoadScreen = () => {
   const [destinationState, setDestinationState] = useState('');
   const [destinationPostcode, setDestinationPostcode] = useState('');
   const [destinationCountry, setDestinationCountry] = useState('');
-  const [totalVolume, setTotalVolume] = useState('');
-  const [totalWeight, setTotalWeight] = useState('');
-  const [totalFreightCost, setTotalFreightCost] = useState('');
+  const [totalVolume, setTotalVolume] = useState(0);
+  const [totalWeight, setTotalWeight] = useState(0);
+  const [totalFreightCost, setTotalFreightCost] = useState(0);
   const [orders, setOrders] = useState([]);
   const [orderToAdd, setOrderToAdd] = useState('');
   const [transportType, setTransportType] = useState('');
@@ -37,36 +38,71 @@ const CreateLoadScreen = () => {
   const [storageAndTransportConditions, setStorageAndTransportConditions] = useState('');
   const [specialNotes, setSpecialNotes] = useState('');
 
-  const [createLoad, { isLoading: createLoadLoading }] = useCreateLoadMutation();
+  const { data: loadDetails, refetch: refetchLoadDetails } = useGetLoadDetailsQuery(loadId);
   const { data: ordersData, refetch: refetchOrders } = useGetOrdersQuery();
+  const [updateLoad, { isLoading: updateLoadLoading }] = useUpdateLoadMutation();
   const navigate = useNavigate();
 
   useEffect(() => {
-    const calculateTotals = () => {
-      let totalWeight = 0;
-      let totalVolume = 0;
-      let totalFreightCost = 0;
-
-      orders.forEach(order => {
-        order.packages.forEach(pkg => {
-          totalWeight += pkg.weight;
-          totalVolume += pkg.volume;
-        });
-        totalFreightCost += order.freightCost;
-      });
-
-      setTotalWeight(totalWeight);
-      setTotalVolume(totalVolume);
-      setTotalFreightCost(totalFreightCost);
-    };
-
-    calculateTotals();
-  }, [orders]);
-
+    if (loadDetails) {
+      setLoadNumber(loadDetails.loadNumber);
+      setCarrierName(loadDetails.carrierName);
+      setStatus(loadDetails.status);
+      setPickupDate(loadDetails.pickupDate);
+      setDeliveryDate(loadDetails.deliveryDate);
+      setOriginEntityNumber(loadDetails.origin.entityNumber);
+      setOriginEntityName(loadDetails.origin.entityName);
+      setOriginAddress(loadDetails.origin.entityLocation.address);
+      setOriginCity(loadDetails.origin.entityLocation.city);
+      setOriginState(loadDetails.origin.entityLocation.state);
+      setOriginPostcode(loadDetails.origin.entityLocation.postcode);
+      setOriginCountry(loadDetails.origin.entityLocation.country);
+      setDestinationEntityNumber(loadDetails.destination.entityNumber);
+      setDestinationEntityName(loadDetails.destination.entityName);
+      setDestinationAddress(loadDetails.destination.entityLocation.address);
+      setDestinationCity(loadDetails.destination.entityLocation.city);
+      setDestinationState(loadDetails.destination.entityLocation.state);
+      setDestinationPostcode(loadDetails.destination.entityLocation.postcode);
+      setDestinationCountry(loadDetails.destination.entityLocation.country);
+      setTotalVolume(loadDetails.totalVolume);
+      setTotalWeight(loadDetails.totalWeight);
+      setTotalFreightCost(loadDetails.totalFreightCost);
+      setOrders(loadDetails.orders);
+      setTransportType(loadDetails.transportType);
+      setLicensePlate(loadDetails.licensePlate);
+      setDriver(loadDetails.driver);
+      setInsurance(loadDetails.insurance);
+      setStorageAndTransportConditions(loadDetails.storageAndTransportConditions);
+      setSpecialNotes(loadDetails.specialNotes);
+    }
+  }, [loadDetails]);
 
   useEffect(() => {
-    refetchOrders();
+    refetchLoadDetails();
   }, []);
+
+  useEffect(() => {
+    calculateTotals(orders);
+  }, [orders]);
+
+  const calculateTotals = (orders) => {
+    let totalWeight = 0;
+    let totalVolume = 0;
+    let totalFreightCost = 0; // Inicializar totalFreightCost como 0
+
+    orders.forEach(order => {
+      order.packages.forEach(pkg => {
+        totalWeight += pkg.weight;
+        totalVolume += pkg.volume;
+      });
+
+      totalFreightCost += order.totalFreightCost; // Adicionar totalFreightCost de cada order
+    });
+
+    setTotalWeight(totalWeight);
+    setTotalVolume(totalVolume);
+    setTotalFreightCost(totalFreightCost); // Definir totalFreightCost calculado
+  };
 
   const addOrder = () => {
     if (orderToAdd.trim() === '') {
@@ -74,7 +110,9 @@ const CreateLoadScreen = () => {
     }
     const order = ordersData.find((o) => o.orderNumber === parseInt(orderToAdd));
     if (order && !orders.find((o) => o.orderNumber === order.orderNumber)) {
-      setOrders([...orders, order]); // Aqui estamos criando um novo array com todas as orders existentes mais a nova order
+      const updatedOrders = [...orders, order];
+      setOrders(updatedOrders);
+      calculateTotals(updatedOrders);
       setOrderToAdd('');
     }
   };
@@ -82,21 +120,12 @@ const CreateLoadScreen = () => {
   const removeOrder = (orderNumber) => {
     const updatedOrders = orders.filter((order) => order.orderNumber !== orderNumber);
     setOrders(updatedOrders);
+    calculateTotals(updatedOrders);
   };
-  
+
   const submitHandler = async (e) => {
     e.preventDefault();
 
-  // Transform orders to an array of order IDs
-    const orderIds = orders.map(order => order.orderNumber);
-    console.log(orderIds)
-    const packages = orders.reduce((acc, order) => {
-      acc.push(...order.packages);
-      return acc;
-    }, []);
-
-    console.log('Orders antes do envio:', orders);
-    
     const loadData = {
       loadNumber,
       status,
@@ -128,7 +157,12 @@ const CreateLoadScreen = () => {
       totalWeight,
       totalFreightCost,
       carrierName,
-      orders,
+      orders: orders.map(order => ({
+        ...order,
+        packages: order.packages.map(pkg => ({
+          ...pkg,
+        }))
+      })),
       transportType,
       licensePlate,
       driver,
@@ -138,24 +172,23 @@ const CreateLoadScreen = () => {
     };
 
     try {
-      const data = await createLoad(loadData).unwrap();
-      console.log('Load created:', data);
+      const data = await updateLoad({ loadId, ...loadData }).unwrap();
+      console.log('Load updated:', data);
       setOrders([]);
       navigate('/bookings');
     } catch (error) {
-      console.error('Error creating load:', error);
+      console.error('Error updating load:', error);
     }
   };
 
   return (
     <Form onSubmit={submitHandler}>
-      <Button onClick={() => navigate('/bookings')} >Back</Button>
+      <Button onClick={() => navigate(`/bookings`)}>Back</Button>
       <Row>
-        {/* Load ID and Status */}
         <Col md={3}>
           <Form.Group controlId='loadNumber'>
             <Form.Label>Load ID</Form.Label>
-            <Form.Control style={{backgroundColor: '#cdcaca5f'}}
+            <Form.Control
               type='text'
               placeholder='Enter Load ID'
               value={loadNumber}
@@ -166,9 +199,8 @@ const CreateLoadScreen = () => {
         <Col md={3}>
           <Form.Group controlId='status'>
             <Form.Label>Status</Form.Label>
-            <Form.Control style={{backgroundColor: '#cdcaca5f'}}
+            <Form.Control
               type='text'
-              readOnly
               value={status}
               onChange={(e) => setStatus(e.target.value)}
             />
@@ -176,7 +208,6 @@ const CreateLoadScreen = () => {
         </Col>
       </Row>
 
-      {/* Pickup Date and Delivery Date */}
       <Row>
         <Col md={3}>
           <Form.Group controlId='pickupDate'>
@@ -200,9 +231,7 @@ const CreateLoadScreen = () => {
         </Col>
       </Row>
 
-      {/* Origin and Destination Details */}
       <Row>
-        {/* Origin Details */}
         <Col md={6}>
           <Card className='mt-3 p-4'>
             <h4>Origin</h4>
@@ -265,7 +294,7 @@ const CreateLoadScreen = () => {
               </Col>
             </Row>
             <Row>
-              <Col md={8}>
+              <Col md={4}>
                 <Form.Group controlId='originPostcode'>
                   <Form.Label>Postcode</Form.Label>
                   <Form.Control
@@ -276,7 +305,7 @@ const CreateLoadScreen = () => {
                   />
                 </Form.Group>
               </Col>
-              <Col md={4}>
+              <Col md={8}>
                 <Form.Group controlId='originCountry'>
                   <Form.Label>Country</Form.Label>
                   <Form.Control
@@ -291,7 +320,6 @@ const CreateLoadScreen = () => {
           </Card>
         </Col>
 
-        {/* Destination Details */}
         <Col md={6}>
           <Card className='mt-3 p-4'>
             <h4>Destination</h4>
@@ -354,7 +382,7 @@ const CreateLoadScreen = () => {
               </Col>
             </Row>
             <Row>
-              <Col md={8}>
+              <Col md={4}>
                 <Form.Group controlId='destinationPostcode'>
                   <Form.Label>Postcode</Form.Label>
                   <Form.Control
@@ -365,7 +393,7 @@ const CreateLoadScreen = () => {
                   />
                 </Form.Group>
               </Col>
-              <Col md={4}>
+              <Col md={8}>
                 <Form.Group controlId='destinationCountry'>
                   <Form.Label>Country</Form.Label>
                   <Form.Control
@@ -381,7 +409,6 @@ const CreateLoadScreen = () => {
         </Col>
       </Row>
 
-      {/* Orders List */}
       <Row>
         <Col md={3} className='mt-3'>
         <Card className='p-3'>
@@ -433,9 +460,7 @@ const CreateLoadScreen = () => {
         </Col>
       </Row>
 
-      {/* Additional Load Details */}
-
-        <Card className='p-3 mt-3'>
+      <Card className='p-3 mt-3'>
           <h4>Additional Details</h4>
             <Row>
               <Col md={4}>
@@ -443,7 +468,7 @@ const CreateLoadScreen = () => {
                   <Form.Label>Total Volume (m³)</Form.Label>
                   <Form.Control style={{backgroundColor: '#cdcaca5f'}}
                     readOnly
-                    type='text'
+                    type='number'
                     placeholder='Enter Total Volume'
                     value={totalVolume}
                     onChange={(e) => setTotalVolume(e.target.value)}
@@ -455,7 +480,7 @@ const CreateLoadScreen = () => {
                   <Form.Label>Total Weight (kg)</Form.Label>
                   <Form.Control style={{backgroundColor: '#cdcaca5f'}}
                     readOnly
-                    type='text'
+                    type='number'
                     placeholder='Enter Total Weight'
                     value={totalWeight}
                     onChange={(e) => setTotalWeight(e.target.value)}
@@ -468,7 +493,7 @@ const CreateLoadScreen = () => {
                   <Form.Label>Total Freight Cost ($)</Form.Label>
                   <Form.Control style={{backgroundColor: '#cdcaca5f'}}
                     readOnly
-                    type='text'
+                    type='number'
                     placeholder='Enter Total Freight Cost'
                     value={totalFreightCost}
                     onChange={(e) => setTotalFreightCost(e.target.value)}
@@ -573,11 +598,10 @@ const CreateLoadScreen = () => {
             </Form.Group>
           </Card>
 
-      {/* Submit Button */}
       <Row className='mt-4'>
         <Col>
-          <Button type='submit' variant='primary' disabled={createLoadLoading}>
-            {createLoadLoading ? 'Creating...' : 'Create Load'}
+          <Button type='submit' variant='primary' disabled={updateLoadLoading}>
+            {updateLoadLoading ? 'Updating...' : 'Update Load'}
           </Button>
         </Col>
       </Row>
@@ -585,4 +609,4 @@ const CreateLoadScreen = () => {
   );
 };
 
-export default CreateLoadScreen;
+export default EditLoadScreen;

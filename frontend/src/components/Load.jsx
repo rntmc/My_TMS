@@ -16,6 +16,7 @@ const Load = () => {
     const fetchLoads = async () => {
       try {
         const {data: loadsData } = await axios.get('/api/loads');
+        console.log(loadsData);
         setLoads(loadsData ); 
 
         const {data: ordersData} = await axios.get('/api/orders');
@@ -33,15 +34,17 @@ const Load = () => {
       const newTotals = {};
 
       loads.forEach(load => {
-        const loadOrders = load.orders.map(order => orders.find(o => o.orderNumber === order.orderNumber[0]));
-        
+        const loadOrders = load.orders.map(order =>
+          orders.find(o => o._id === order._id)
+        );
+
         const totalVolume = loadOrders.reduce((acc, order) => {
           if (order && order.packages) {
             return acc + order.packages.reduce((pAcc, pkg) => pAcc + pkg.volume, 0);
           }
           return acc;
         }, 0);
-        
+
         const totalWeight = loadOrders.reduce((acc, order) => {
           if (order && order.packages) {
             return acc + order.packages.reduce((pAcc, pkg) => pAcc + pkg.weight, 0);
@@ -61,11 +64,6 @@ const Load = () => {
       setTotals(newTotals);
     }
   }, [orders, loads]);
-  
-
-  const findOrderById = (orderId) => {
-    return orders.find(order => order._id === orderId);
-  };
 
   const handleStatus = async (loadId) => {
     try {
@@ -129,12 +127,12 @@ const Load = () => {
               <td>
                 {load.orders.length > 0 ? (
                   load.orders.map((order) => {
-                    const orderData = orders.find((o) => o.orderNumber === order.orderNumber[0]);
+                    const orderData = orders.find((o) => o._id === order._id);
                     return (
                       <div key={order._id}>
                         {orderData ? (
                           <Link to={`/order/${orderData._id}`} style={{ color: 'blue' }}>
-                            {order.orderNumber.join(', ')}
+                            {orderData.orderNumber}
                           </Link>
                         ) : (
                           <span>Loading orders...</span>

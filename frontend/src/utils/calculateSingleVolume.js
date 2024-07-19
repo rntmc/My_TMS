@@ -1,8 +1,12 @@
 const calculateSingleVolume = (packageQty, length, width, height) => {
-  if (length && width && height) {
-    return (parseFloat(packageQty) * (parseFloat(length) / 100) * (parseFloat(width) / 100) * (parseFloat(height) / 100)).toFixed(2);
-  }
-  return '';
+  // Verifica se todos os valores necessários estão presentes
+  if (!length || !width || !height) return 0;
+
+  // Converte para números e calcula o volume
+  const volume = parseFloat(length) * parseFloat(width) * parseFloat(height);
+
+  // Retorna o volume multiplicado pela quantidade do pacote
+  return parseFloat(packageQty) * volume / 1000000; // Volume em metros cúbicos
 };
 
 export default calculateSingleVolume;

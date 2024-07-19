@@ -44,6 +44,12 @@ export const ordersApiSlice = apiSlice.injectEndpoints({
       }),
       invalidatesTags: ['Orders'],
     }),
+    getMyOrders: builder.query({ //orders associated with a user
+      query: () => ({
+        url: `${ORDERS_URL}/myorders`,
+      }),
+      keepUnusedDataFor: 5
+    }),
   }),
 })
 
@@ -54,4 +60,5 @@ export const {
   useUpdateOrderStatusMutation,
   useDeleteOrCancelOrderMutation,
   useUpdateOrderMutation,
+  useGetMyOrdersQuery,
 } = ordersApiSlice;

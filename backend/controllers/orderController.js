@@ -1,5 +1,7 @@
+import  mongoose from 'mongoose'
 import asyncHandler from '../middleware/asyncHandler.js';
 import Order from '../models/orderModel.js'
+import Load from '../models/loadModel.js'
 
 // @Desc Fetch all orders
 // @ route GET /api/orders
@@ -68,7 +70,7 @@ const createOrder = asyncHandler(async (req, res) => {
 // @ route POST /api/myorders
 // @access User/carrier
 const getMyOrders = asyncHandler(async (req, res) => {
-  const orders = await Order.find({ user: req.user._id});
+  const orders = await Order.find({ user: req.user._id}); //orders linked to the user
   res.status(200).json(orders)
 })
 
@@ -122,31 +124,54 @@ const cancelOrDeleteOrder = asyncHandler(async (req, res) => {
 // @ route PUT /api/orders/:id
 // @access Private/Admin
 const updateOrder = asyncHandler(async (req, res) => {
-  const order = await Order.findById(req.params.id)
+  const orderId = req.params.id;
 
-  if (order) {
-    console.log('Found order:', order);
-    // Atualiza os campos da ordem com os dados do corpo da requisição
-    order.orderNumber = req.body.orderNumber || order.orderNumber;
-    order.status = req.body.status || order.status;
-    order.pickupDate = req.body.pickupDate || order.pickupDate;
-    order.deliveryDate = req.body.deliveryDate || order.deliveryDate;
-    order.origin = { ...order.origin, ...req.body.origin };
-    order.destination = { ...order.destination, ...req.body.destination };
-    order.products = req.body.products || order.products;
-    order.packages = req.body.packages || order.packages;
-    order.freightCost = req.body.freightCost || order.freightCost;
-    order.dangerousGoods = req.body.dangerousGoods !== undefined ? req.body.dangerousGoods : order.dangerousGoods;
-
-    // Salva a ordem atualizada no banco de dados
-    const updatedOrder = await order.save();
-
-    // Responde com a ordem atualizada
-    res.status(200).json(updatedOrder);
-  } else {
-    // Se a ordem não foi encontrada, retorna um erro 404
-    res.status(404).json({ message: 'Order not found' });
+  // Verifica se o ID é válido
+  if (!mongoose.Types.ObjectId.isValid(orderId)) {
+    return res.status(400).json({ message: 'Invalid Order ID' });
   }
+
+  const order = await Order.findById(orderId);
+
+  if (!order) {
+    return res.status(404).json({ message: 'Order not found' });
+  }
+
+  // Atualiza os campos da ordem com os dados do corpo da requisição
+  if (req.body.orderNumber) order.orderNumber = req.body.orderNumber;
+  if (req.body.status) order.status = req.body.status;
+  if (req.body.pickupDate) order.pickupDate = req.body.pickupDate;
+  if (req.body.deliveryDate) order.deliveryDate = req.body.deliveryDate;
+  if (req.body.origin) order.origin = { ...order.origin, ...req.body.origin };
+  if (req.body.destination) order.destination = { ...order.destination, ...req.body.destination };
+  
+  if (req.body.products) {
+    order.products = req.body.products.map(product => ({
+      productId: product.productId || '',
+      productQuantity: typeof product.productQuantity === 'number' ? product.productQuantity : 0,
+    }));
+  }
+
+  if (req.body.packages) {
+    order.packages = req.body.packages.map(pkg => ({
+      packageQty: typeof pkg.packageQty === 'number' ? pkg.packageQty : 0,
+      length: typeof pkg.length === 'number' ? pkg.length : 0,
+      width: typeof pkg.width === 'number' ? pkg.width : 0,
+      height: typeof pkg.height === 'number' ? pkg.height : 0,
+      volume: typeof pkg.volume === 'number' ? pkg.volume : 0,
+      weight: typeof pkg.weight === 'number' ? pkg.weight : 0,
+    }));
+  }
+
+  if (req.body.freightCost) order.freightCost = req.body.freightCost;
+  if (req.body.dangerousGoods !== undefined) order.dangerousGoods = req.body.dangerousGoods;
+
+  // Salva a ordem atualizada no banco de dados
+  const updatedOrder = await order.save();
+
+  // Responde com a ordem atualizada
+  res.status(200).json(updatedOrder);
 });
+
 
 export {getOrderById, getOrders, createOrder, getMyOrders, updateOrderStatus, cancelOrDeleteOrder, updateOrder}

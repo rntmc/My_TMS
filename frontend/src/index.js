@@ -8,6 +8,7 @@ import './assets/styles/index.css'
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 import PrivateRoute from './components/PrivateRoute';
+import AdminRoute from './components/AdminRoute';
 import HomeScreen from './screens/HomeScreen';
 import Bookings from './screens/Bookings';
 import LoadScreen from './screens/LoadScreen';
@@ -28,10 +29,13 @@ import DatabaseCarrierEditScreen from './screens/DatabaseCarrierEditScreen';
 import DatabaseEntityEditScreen from './screens/DatabaseEntityEditScreen';
 import ProfileScreen from './screens/ProfileScreen';
 import EditOrderScreen from './screens/EditOrderScreen';
+import EditLoadScreen from './screens/EditLoadScreen';
+import MyOrdersScreen from './screens/MyOrdersScreen';
+import OrderListScreen from './screens/OrderListScreen';
 
 const router = createBrowserRouter(
   createRoutesFromElements(
-    <Route path="/" element={<App/>}> {/* "/" is the parent element*/}
+    <Route path="" element={<App/>}> {/* "/" is the parent element*/}
       <Route index={true} path="/" element={<HomeScreen/>}/>
       <Route path="/login" element={<LoginScreen/>}/>
       <Route path="/register" element={<RegisterScreen/>}/>
@@ -54,6 +58,12 @@ const router = createBrowserRouter(
         <Route path="/database/editcarrier/:id" element={<DatabaseCarrierEditScreen/>}/> 
         <Route path="/database/editentity/:id" element={<DatabaseEntityEditScreen/>}/> 
         <Route path="/editorder/:id" element={<EditOrderScreen/>}/> 
+        <Route path="/editload/:id" element={<EditLoadScreen/>}/> 
+        <Route path="/myorders" element={<MyOrdersScreen/>}/> 
+      </Route>
+
+      <Route path='' element={<AdminRoute/>}>
+        <Route path='/admin/orderlist' element={<OrderListScreen/>} />
       </Route>
     </Route>
   )

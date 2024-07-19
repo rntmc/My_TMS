@@ -36,6 +36,14 @@ export const loadsApiSlice = apiSlice.injectEndpoints({
       }),
       invalidatesTags: ['Loads'], 
     }),
+    updateLoad: builder.mutation({
+      query: (data) => ({
+        url: `${LOADS_URL}/${data.loadId}`,
+        method: 'PUT',
+        body: data,
+      }),
+      invalidatesTags: ['Loads'],
+    }),
   }),
 })
 
@@ -45,4 +53,5 @@ export const {
   useCreateLoadMutation,
   useUpdateLoadStatusMutation,
   useDeleteOrCancelLoadMutation,
+  useUpdateLoadMutation,
 } = loadsApiSlice;
