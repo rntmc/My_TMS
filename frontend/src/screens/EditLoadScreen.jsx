@@ -48,8 +48,8 @@ const EditLoadScreen = () => {
       setLoadNumber(loadDetails.loadNumber);
       setCarrierName(loadDetails.carrierName);
       setStatus(loadDetails.status);
-      setPickupDate(loadDetails.pickupDate);
-      setDeliveryDate(loadDetails.deliveryDate);
+      setPickupDate(loadDetails.pickupDate ? loadDetails.pickupDate.split('T')[0] : '');
+      setDeliveryDate(loadDetails.deliveryDate ? loadDetails.deliveryDate.split('T')[0] : '');
       setOriginEntityNumber(loadDetails.origin.entityNumber);
       setOriginEntityName(loadDetails.origin.entityName);
       setOriginAddress(loadDetails.origin.entityLocation.address);
@@ -79,6 +79,7 @@ const EditLoadScreen = () => {
 
   useEffect(() => {
     refetchLoadDetails();
+    refetchOrders();
   }, []);
 
   useEffect(() => {
@@ -95,8 +96,8 @@ const EditLoadScreen = () => {
         totalWeight += pkg.weight;
         totalVolume += pkg.volume;
       });
-
-      totalFreightCost += order.totalFreightCost; // Adicionar totalFreightCost de cada order
+      
+      totalFreightCost += order.freightCost; // Adicionar totalFreightCost de cada order
     });
 
     setTotalWeight(totalWeight);
@@ -157,12 +158,7 @@ const EditLoadScreen = () => {
       totalWeight,
       totalFreightCost,
       carrierName,
-      orders: orders.map(order => ({
-        ...order,
-        packages: order.packages.map(pkg => ({
-          ...pkg,
-        }))
-      })),
+      orders: orders.map(order => order.orderNumber),
       transportType,
       licensePlate,
       driver,
@@ -170,6 +166,7 @@ const EditLoadScreen = () => {
       storageAndTransportConditions,
       specialNotes,
     };
+
 
     try {
       const data = await updateLoad({ loadId, ...loadData }).unwrap();
@@ -199,11 +196,15 @@ const EditLoadScreen = () => {
         <Col md={3}>
           <Form.Group controlId='status'>
             <Form.Label>Status</Form.Label>
-            <Form.Control
-              type='text'
+            <Form.Select
               value={status}
               onChange={(e) => setStatus(e.target.value)}
-            />
+            >
+              <option value='confirmed'>Confirmed</option>
+              <option value='collected'>Collected</option>
+              <option value='delivered'>Delivered</option>
+              <option value='cancelled'>Cancelled</option>
+            </Form.Select>
           </Form.Group>
         </Col>
       </Row>
@@ -412,9 +413,9 @@ const EditLoadScreen = () => {
       <Row>
         <Col md={3} className='mt-3'>
         <Card className='p-3'>
-          <h4>Orders</h4>
+          <h4>Order Management</h4>
             <Form.Group controlId='orderToAdd' >
-              <Form.Label>Add Order by ID</Form.Label>
+              <Form.Label>Add Order Number</Form.Label>
               <Row >
                 <Col md={6} >
                   <Form.Control 

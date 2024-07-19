@@ -172,6 +172,7 @@ const updateOrder = asyncHandler(async (req, res) => {
   const updatedOrder = await order.save();
 
   // Responde com a ordem atualizada
+  console.log('order updated:', updatedOrder)
   res.status(200).json(updatedOrder);
 });
 

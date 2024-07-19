@@ -225,24 +225,23 @@ const updateLoad = asyncHandler(async (req, res) => {
     load.document = document || load.document;
 
     if (orders && orders.length > 0) {
-      // Garante que orders seja uma array de números
-      const orderNumbers = orders.map(order => Number(order));
+      
+      const idOrderNumber = orders.map(order => order);
       
       // Busca ordens com base no orderNumber
-      const validOrders = await Order.find({ orderNumber: { $in: orderNumbers } }).select('_id');
+      const validOrders = await Order.find({ orderNumber: { $in: idOrderNumber } }).select('_id');
       console.log('Valid orders found:', validOrders);
 
       // Atualiza a lista de ordens na carga
       if (validOrders.length > 0) {
         load.orders = validOrders.map(order => order._id);
-      } else {
-        load.orders = []; // Limpa as ordens se não encontrar nenhuma válida
-      }
+      } 
     } else {
       load.orders = []; // Limpa as ordens se o array estiver vazio
     }
 
     const updatedLoad = await load.save();
+    console.log(updatedLoad)
 
     const populatedLoad = await Load.findById(updatedLoad._id)
       .populate({

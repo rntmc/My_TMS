@@ -10,7 +10,6 @@ const EditOrderScreen = () => {
   const { data: order, isLoading, isError } = useGetOrderDetailsQuery(orderId);
   const [updateOrder] = useUpdateOrderMutation();
   const navigate = useNavigate();
-  console.log(order)
 
   const [status, setStatus] = useState('');
   const [pickupDate, setPickupDate] = useState('');
@@ -173,8 +172,7 @@ const EditOrderScreen = () => {
     };
 
     try {
-      const data = await updateOrder(updatedOrderData).unwrap();
-      console.log('Order updated:', data);
+      await updateOrder(updatedOrderData).unwrap();
       navigate('/bookings');
     } catch (error) {
       console.error('Error updating order:', error);

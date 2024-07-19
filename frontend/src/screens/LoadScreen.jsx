@@ -18,6 +18,10 @@ const LoadScreen = () => {
   const [deleteOrCancelLoad] = useDeleteOrCancelLoadMutation()
   const [updateOrder] = useUpdateOrderMutation();
 
+  const editLoadNavigator = () => {
+    navigate(`/editload/${load._id}`)
+  }
+
   const cancelDeleteHandler = async (id) => {
     console.log(`Deleting load with id: ${id}`);
     const loadToDeleteOrCancel = load;
@@ -109,6 +113,7 @@ const LoadScreen = () => {
                       display: 'flex',
                       alignItems: 'center',
                     }}
+                    onClick={() => editLoadNavigator(load._id)}
                   >
                     <MdOutlineEdit style={{ fontSize: '1rem' }} />
                   </Button>
