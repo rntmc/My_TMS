@@ -69,8 +69,20 @@ const Order = () => {
           {orders.map((order) => (
             <tr key={order._id}>
               <td>
-                <Link to={`/order/${order._id}`} style={{color:'blue'}}>{order.orderNumber}</Link>
-                {' '}{order.dangerousGoods ? <CgDanger style={{color:"lightsalmon"}}/> : ''}
+                <Link to={`/order/${order._id}`} style={{ color: 'blue' }}>
+                  {order.orderNumber}
+                </Link>
+                {' '}
+                {order.dangerousGoods ? (
+                  <OverlayTrigger
+                    placement="top"
+                    overlay={<Tooltip id={`tooltip-dangerous-goods-${order._id}`}>Dangerous Goods</Tooltip>}
+                  >
+                    <span style={{ display: 'inline-block' }}>
+                      <CgDanger style={{ color: 'lightsalmon', cursor: 'pointer' }} />
+                    </span>
+                  </OverlayTrigger>
+                ) : ''}
               </td>
               <td style={{fontSize:'10px'}}>
                 <div>

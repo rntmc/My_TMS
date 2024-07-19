@@ -133,6 +133,7 @@ const Load = () => {
                         {orderData ? (
                           <Link to={`/order/${orderData._id}`} style={{ color: 'blue' }}>
                             {orderData.orderNumber}
+                            {' '}{orderData.dangerousGoods ? <CgDanger style={{color:"lightsalmon"}}/> : ''}
                           </Link>
                         ) : (
                           <span>Loading orders...</span>
