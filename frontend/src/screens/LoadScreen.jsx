@@ -14,6 +14,7 @@ const LoadScreen = () => {
   const navigate = useNavigate()
 
   const { data: load, isLoading, error, refetch } = useGetLoadDetailsQuery(loadId);
+  console.log(load)
 
   const [deleteOrCancelLoad] = useDeleteOrCancelLoadMutation()
   const [updateOrder] = useUpdateOrderMutation();

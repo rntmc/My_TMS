@@ -1,14 +1,17 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { Form, Button, Row, Col, Card, FormGroup, InputGroup } from 'react-bootstrap';
-import { useGetOrderDetailsQuery, useUpdateOrderMutation } from '../slices/ordersApiSlice';
 import { FaPlus, FaMinus } from "react-icons/fa";
+import { toast } from "react-toastify";
+import { useGetOrderDetailsQuery, useUpdateOrderMutation, useUploadOrderDocumentMutation } from '../slices/ordersApiSlice';
 import calculateSingleVolume from '../utils/calculateSingleVolume';
 
 const EditOrderScreen = () => {
   const { id: orderId } = useParams();
   const { data: order, isLoading, isError } = useGetOrderDetailsQuery(orderId);
   const [updateOrder] = useUpdateOrderMutation();
+  const [uploadOrderDocument, {isLoading: loadingUpload}] = useUploadOrderDocumentMutation()
+
   const navigate = useNavigate();
 
   const [status, setStatus] = useState('');
@@ -37,7 +40,6 @@ const EditOrderScreen = () => {
   const [freightCost, setFreightCost] = useState('');
   const [dangerousGoods, setDangerousGoods] = useState(false);
   const [document, setDocument] = useState('');
-
 
   useEffect(() => {
     if (order) {
@@ -124,6 +126,18 @@ const EditOrderScreen = () => {
   const removePackage = (index) => {
     setPackages(packages.filter((_, i) => i !== index));
   };
+
+  const uploadFileHandler = async (e) => {
+    const formData = new FormData();
+    formData.append('file', e.target.files[0]);
+    try {
+      const res = await uploadOrderDocument(formData).unwrap();
+      toast.success(res.message);
+      setDocument(res.document)
+    } catch (error) {
+      toast.error(error?.data?.message || error.error)
+    }
+  }
 
   const submitHandler = async (e) => {
     e.preventDefault();
@@ -551,29 +565,21 @@ const EditOrderScreen = () => {
       </Row>
 
       <Row className='align-items-center mt-3'>
-        <Col md={3}>
-          <InputGroup>
-            <Form.Control
-              type='file'
-              placeholder='Select document'
-              onChange={(e) => {
-                const file = e.target.files[0];
-                setDocument(file);
-              }}
-              style={{ borderTopRightRadius: '0', borderBottomRightRadius: '0' }}
-            />
-            <Button
-              type='submit'
-              variant='primary'
-              style={{
-                borderTopLeftRadius: '0',
-                borderBottomLeftRadius: '0',
-                marginLeft: '-1px' // Overlaps the border slightly to ensure they look connected
-              }}
-            >
-              Upload
-            </Button>
-          </InputGroup>
+        <Col md={4}>
+          <Form.Group controlId='document' className='my-2'>
+            <Form.Label>Documentation</Form.Label>
+              <Form.Control
+                type='text'
+                placeholder='Enter document'
+                value={document}
+                onChange={(e) => setDocument}
+              />
+              <Form.Control
+                type='file'
+                label="Choose file"
+                onChange={uploadFileHandler}
+              />
+          </Form.Group>
         </Col>
         <Col md={2} className='d-flex align-items-center'>
           <Form.Group controlId='dangerousGoods'>

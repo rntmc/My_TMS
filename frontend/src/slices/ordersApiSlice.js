@@ -1,4 +1,4 @@
-import { ORDERS_URL } from "../constants";
+import { ORDERS_URL, UPLOADS_URL } from "../constants";
 import { apiSlice } from "./apiSlice";
 
 export const ordersApiSlice = apiSlice.injectEndpoints({
@@ -20,8 +20,7 @@ export const ordersApiSlice = apiSlice.injectEndpoints({
         url: ORDERS_URL,
         method: 'POST',
         body: {...order},
-      }),
-      invalidatesTags: ['Orders'],
+      })
     }),
     updateOrderStatus: builder.mutation({
       query: ({ orderId, status }) => ({
@@ -51,6 +50,13 @@ export const ordersApiSlice = apiSlice.injectEndpoints({
       }),
       keepUnusedDataFor: 5
     }),
+    uploadOrderDocument: builder.mutation({
+      query: (data) => ({
+        url: `${UPLOADS_URL}`,
+        method: 'POST',
+        body: data,
+      }),
+    })
   }),
 })
 
@@ -62,4 +68,5 @@ export const {
   useDeleteOrCancelOrderMutation,
   useUpdateOrderMutation,
   useGetMyOrdersQuery,
+  useUploadOrderDocumentMutation,
 } = ordersApiSlice;

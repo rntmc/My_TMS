@@ -146,14 +146,12 @@ const updateOrder = asyncHandler(async (req, res) => {
   if (req.body.deliveryDate) order.deliveryDate = req.body.deliveryDate;
   if (req.body.origin) order.origin = { ...order.origin, ...req.body.origin };
   if (req.body.destination) order.destination = { ...order.destination, ...req.body.destination };
-  
   if (req.body.products) {
     order.products = req.body.products.map(product => ({
-      productId: product.productId || 'outro',
+      productId: product.productId || '',
       productQuantity: typeof product.productQuantity !== 'undefined' ? product.productQuantity : 0,
     }));
   }
-
   if (req.body.packages) {
     order.packages = req.body.packages.map(pkg => ({
       packageQty: typeof pkg.packageQty !== 'undefined' ? pkg.packageQty : 0,
@@ -164,9 +162,9 @@ const updateOrder = asyncHandler(async (req, res) => {
       weight: typeof pkg.weight !== 'undefined' ? pkg.weight : 0,
     }));
   }
-
   if (req.body.freightCost) order.freightCost = req.body.freightCost;
   if (req.body.dangerousGoods !== undefined) order.dangerousGoods = req.body.dangerousGoods;
+  if (req.body.document) order.document = req.body.document;
 
   // Salva a ordem atualizada no banco de dados
   const updatedOrder = await order.save();

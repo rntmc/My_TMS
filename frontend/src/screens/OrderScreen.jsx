@@ -14,7 +14,7 @@ const OrderScreen = () => {
   const navigate = useNavigate()
 
   const { data: order, isLoading, error} = useGetOrderDetailsQuery(orderId);
-  const [deleteOrCancelOrder] = useDeleteOrCancelOrderMutation()
+  const [deleteOrCancelOrder, refetch] = useDeleteOrCancelOrderMutation()
 
   const cancelDeleteHandler = async (id) => {
     console.log(`Deleting order with id: ${id}`);
