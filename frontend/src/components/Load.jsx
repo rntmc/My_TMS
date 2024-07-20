@@ -1,34 +1,27 @@
 import { useState, useEffect } from 'react'
 import {Table, OverlayTrigger, Tooltip, Button, Row} from 'react-bootstrap'
 import { Link } from 'react-router-dom'
-import axios from 'axios'
 import { CgDanger } from "react-icons/cg";
 import { FaCheck } from "react-icons/fa"
-import Loader from './Loader'
-import {useUpdateLoadStatusMutation} from '../slices/loadsApiSlice'
+import {useUpdateLoadStatusMutation, useGetLoadsQuery} from '../slices/loadsApiSlice'
+import {useGetOrdersQuery} from '../slices/ordersApiSlice'
 
 const Load = () => {
   const [loads, setLoads] = useState([])
   const [orders, setOrders] = useState([])
   const [totals, setTotals] = useState({});
+  const { data: loadsData, refetch: refetchLoads } = useGetLoadsQuery();
+  const { data: ordersData } = useGetOrdersQuery();
   const [updateLoadStatus] = useUpdateLoadStatusMutation()
 
   useEffect(() => {
-    const fetchLoads = async () => {
-      try {
-        const {data: loadsData } = await axios.get('/api/loads');
-        console.log(loadsData);
-        setLoads(loadsData ); 
-
-        const {data: ordersData} = await axios.get('/api/orders');
-        setOrders(ordersData);
-      } catch (error) {
-        console.error('Error fetching loads:', error);
-      }
-    };
-
-    fetchLoads();
-  }, [])
+    if (loadsData) {
+      setLoads(loadsData);
+    }
+    if (ordersData) {
+      setOrders(ordersData);
+    }
+  }, [loadsData, ordersData]);
 
   useEffect(() => {
     if (orders.length > 0 && loads.length > 0) {
@@ -70,6 +63,8 @@ const Load = () => {
     try {
       // Send the updated status to the server
       await updateLoadStatus({ loadId, status: 'confirmed' });
+
+      await refetchLoads()
       
       // Update the status in the local state
       setOrders((prevLoads) =>

@@ -20,7 +20,8 @@ export const loadsApiSlice = apiSlice.injectEndpoints({
         url: LOADS_URL,
         method: 'POST',
         body: {...load},
-      })
+      }),
+      invalidatesTags: ['Loads'], //maybe i can deelte it?
     }),
     updateLoadStatus: builder.mutation({
       query: ({ loadId, status }) => ({

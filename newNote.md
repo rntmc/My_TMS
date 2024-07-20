@@ -1,6 +1,7 @@
 ## TO DO LIST:
 
 - [] check if really need bookingSlice.js
+- [] logInfo at models
 
 - [] loginScreen.jsx: Remove /register as only admin must be able to create users
 - [] RegisterScreen.jsx: Only admins must be able to add users/carriers
@@ -19,11 +20,13 @@
 - [] implement googleAPI to validate address (USA Only)
 - [x] Order Component: if status is Open, show confirm button(carrier & admin only)
 - [] add distance and freight cost to Orders
-- [] Add Product quantity rows
-- [] Add measurements rows
+- [X] Add Product quantity rows
+- [X] Add measurements rows
 - [] Add possibility to attach docs to Orders and Loads
 - [] checkbox next to "open" orders so they can be cancelled easily ('/bookings')
-- [] update dangerousGoods so the icon changes in the bookings page
+- [X] update dangerousGoods so the icon changes in the bookings page
+- [] Include dangerousGoods description in booking page
+- [] Special notes at orderModel
 
 - [] The status should change once the button "check" is clicked. We need to refresh the page to work
 - [] Only Carrier and Admin should be able to change orders/load status

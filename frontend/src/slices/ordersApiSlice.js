@@ -20,7 +20,8 @@ export const ordersApiSlice = apiSlice.injectEndpoints({
         url: ORDERS_URL,
         method: 'POST',
         body: {...order},
-      })
+      }),
+      invalidatesTags: ['Orders'],
     }),
     updateOrderStatus: builder.mutation({
       query: ({ orderId, status }) => ({

@@ -87,9 +87,21 @@ const loadSchema = new mongoose.Schema({
   status: {
     type: String,
   },
-  trackingInfo: { //status isDelivered?
-    type: String,
-  },
+  trackingInfo: [{
+    action: {
+      type: String,
+      required: true
+    },
+    timestamp: {
+      type: Date,
+      default: Date.now
+    },
+    user: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'User',
+      required: true
+    }
+  }],
   document: {
     type: String, 
   },

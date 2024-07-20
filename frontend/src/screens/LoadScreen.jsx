@@ -31,11 +31,6 @@ const LoadScreen = () => {
       return;
     }
   
-    if (loadToDeleteOrCancel.status === 'delivered' || loadToDeleteOrCancel === 'collected') {
-      toast.error('Cannot delete loads marked as collected or delivered');
-      return;
-    }
-
     if (loadToDeleteOrCancel.status === 'cancelled') {
       toast.error('This load is already cancelled');
       return;
@@ -44,7 +39,7 @@ const LoadScreen = () => {
     if (window.confirm(`Delete/Cancel load ${load.loadNumber} ?`)) {
       try {
         await deleteOrCancelLoad(id);
-        if (loadToDeleteOrCancel.status === 'collected') {
+        if (loadToDeleteOrCancel.status === 'collected' || loadToDeleteOrCancel.status === 'delivered') {
           toast.success(`Load ${load.loadNumber} cancelled`);
         } else {
           toast.success(`Load ${load.loadNumber} deleted`);
@@ -257,21 +252,22 @@ const LoadScreen = () => {
             </ListGroup.Item>
           </Col>
         </Row>
-        <Row className="mb-3">
+        <Row>
           <Col md={8}>
-            <Card className='my-3'>
+            <Card>
               <Card.Header>Tracking History</Card.Header>
               <Card.Body>
                 <ListGroup variant='flush'>
-                  {load.trackingInfo && load.trackingInfo.history.length > 0 ? (
-                    load.trackingInfo.history.map((event, index) => (
-                      <ListGroup.Item key={index} style={{ fontSize: '0.875rem' }}>
-                        <strong>Location:</strong> {event.location} <br />
+                  {load && load.trackingInfo && load.trackingInfo.length > 0 ? (
+                    load.trackingInfo.map((event, index) => (
+                      <ListGroup.Item key={index} style={{ padding: '6px', fontSize: '10px' }}>
+                        <strong>User:</strong> {event.user} <br/>
+                        <strong>Action:</strong> {event.action} <br/>
                         <strong>Timestamp:</strong> {new Date(event.timestamp).toLocaleString()}
                       </ListGroup.Item>
                     ))
                   ) : (
-                    <ListGroup.Item style={{ fontSize: '0.875rem' }}>No tracking history available</ListGroup.Item>
+                    <ListGroup.Item style={{ paddind: '6px', fontSize: '10px' }}>No tracking history available</ListGroup.Item>
                   )}
                 </ListGroup>
               </Card.Body>

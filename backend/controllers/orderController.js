@@ -149,19 +149,19 @@ const updateOrder = asyncHandler(async (req, res) => {
   
   if (req.body.products) {
     order.products = req.body.products.map(product => ({
-      productId: product.productId || '',
-      productQuantity: typeof product.productQuantity === 'number' ? product.productQuantity : 0,
+      productId: product.productId || 'outro',
+      productQuantity: typeof product.productQuantity !== 'undefined' ? product.productQuantity : 0,
     }));
   }
 
   if (req.body.packages) {
     order.packages = req.body.packages.map(pkg => ({
-      packageQty: typeof pkg.packageQty === 'number' ? pkg.packageQty : 0,
-      length: typeof pkg.length === 'number' ? pkg.length : 0,
-      width: typeof pkg.width === 'number' ? pkg.width : 0,
-      height: typeof pkg.height === 'number' ? pkg.height : 0,
-      volume: typeof pkg.volume === 'number' ? pkg.volume : 0,
-      weight: typeof pkg.weight === 'number' ? pkg.weight : 0,
+      packageQty: typeof pkg.packageQty !== 'undefined' ? pkg.packageQty : 0,
+      length: typeof pkg.length !== 'undefined' ? pkg.length : 0,
+      width: typeof pkg.width !== 'undefined' ? pkg.width : 0,
+      height: typeof pkg.height !== 'undefined' ? pkg.height : 0,
+      volume: typeof pkg.volume !== 'undefined' ? pkg.volume : 0,
+      weight: typeof pkg.weight !== 'undefined' ? pkg.weight : 0,
     }));
   }
 

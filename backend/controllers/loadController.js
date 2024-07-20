@@ -3,11 +3,6 @@ import asyncHandler from '../middleware/asyncHandler.js';
 import Load from '../models/loadModel.js'
 import Order from '../models/orderModel.js';
 
-const getOrderIdsByNumbers = async (orderNumbers) => {
-  const orders = await Order.find({})
-  return orders.map(order => order._id);
-};
-
 // @Desc Fetch all loads
 // @ route GET /api/loads
 // @access Public
@@ -82,28 +77,32 @@ const createLoad = asyncHandler(async (req, res) => {
  
    // Cria a nova carga com as ordens associadas
    const load = new Load({
-     loadNumber,
-     status,
-     carrierName,
-     pickupDate,
-     deliveryDate,
-     origin: {
-       ...origin
-     },
-     destination: {
-       ...destination
-     },
-     transportType,
-     orders: orderIds, // Inclui apenas os IDs das ordens selecionadas
-     totalFreightCost,
-     totalVolume,
-     totalWeight,
-     licensePlate,
-     driver,
-     insurance,
-     storageAndTransportConditions,
-     specialNotes,
-     user: req.user._id,
+    loadNumber,
+    status,
+    carrierName,
+    pickupDate,
+    deliveryDate,
+    origin: {
+      ...origin
+    },
+    destination: {
+      ...destination
+    },
+    transportType,
+    orders: orderIds, // Inclui apenas os IDs das ordens selecionadas
+    totalFreightCost,
+    totalVolume,
+    totalWeight,
+    licensePlate,
+    driver,
+    insurance,
+    storageAndTransportConditions,
+    specialNotes,
+    trackingInfo: [{
+      action: 'created',
+      user: req.user._id // Assuming the user is authenticated and you have middleware to handle this
+    }],
+    user: req.user._id,
    });
  
    // Salva a nova carga
@@ -136,6 +135,10 @@ const updateLoadStatus = async (req, res) => {
     }
 
     load.status = status;
+    load.trackingInfo.push({
+      action: 'status_updated',
+      user: req.user._id // Assuming the user is authenticated and you have middleware to handle this
+    });
     await load.save();
 
     res.status(200).json({ message: 'Load status updated', load });
@@ -157,6 +160,10 @@ const cancelOrDeleteLoad = asyncHandler(async (req, res) => {
 
   if (load.status === "delivered" || load.status === "collected") {
     load.status = "cancelled";
+    load.trackingInfo.push({
+      action: 'cancelled',
+      user: req.user._id // Assuming the user is authenticated and you have middleware to handle this
+    });
     await load.save();
     res.status(200).json({ message: 'Load cancelled successfully', load });
   } else if (load.status === "confirmed" || load.status === "open") {
@@ -203,6 +210,7 @@ const updateLoad = asyncHandler(async (req, res) => {
       specialNotes,
       status,
       document,
+      trackingInfo,
       orders // Números das ordens
     } = req.body;
 
@@ -223,6 +231,7 @@ const updateLoad = asyncHandler(async (req, res) => {
     load.specialNotes = specialNotes || load.specialNotes;
     load.status = status || load.status;
     load.document = document || load.document;
+    load.trackingInfo = trackingInfo || load.trackingInfo;
 
     if (orders && orders.length > 0) {
       
@@ -239,6 +248,11 @@ const updateLoad = asyncHandler(async (req, res) => {
     } else {
       load.orders = []; // Limpa as ordens se o array estiver vazio
     }
+
+    load.trackingInfo.push({
+      action: 'updated',
+      user: req.user._id
+    });
 
     const updatedLoad = await load.save();
     console.log(updatedLoad)
