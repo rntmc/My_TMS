@@ -3,6 +3,7 @@ import { Table, Button, OverlayTrigger, Tooltip } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 import { CgDanger } from "react-icons/cg";
 import { FaCheck } from "react-icons/fa";
+import { MdAttachFile } from "react-icons/md";
 import { useGetOrdersQuery, useUpdateOrderStatusMutation } from '../slices/ordersApiSlice';
 
 const Order = () => {
@@ -79,9 +80,20 @@ const Order = () => {
                     overlay={<Tooltip id={`tooltip-dangerous-goods-${order._id}`}>Dangerous Goods</Tooltip>}
                   >
                     <span style={{ display: 'inline-block' }}>
-                      <CgDanger style={{ color: 'lightsalmon', cursor: 'pointer' }} />
+                      <CgDanger style={{ color: 'lightsalmon'}} />
                     </span>
                   </OverlayTrigger>
+                ) : ''}
+                {' '}
+                {order.document.length > 0 ? (
+                  <OverlayTrigger
+                  placement="top"
+                  overlay={<Tooltip id={`tooltip-documentation-${order._id}`}>Attachments</Tooltip>}
+                >
+                  <span style={{ display: 'inline-block'}}>
+                    <MdAttachFile style={{ color: 'black'}} />
+                  </span>
+                </OverlayTrigger>
                 ) : ''}
               </td>
               <td style={{fontSize:'10px'}}>

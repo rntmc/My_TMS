@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { Form, Button, Row, Col, Card, FormGroup, InputGroup } from 'react-bootstrap';
+import { Form, Button, Row, Col, Card, FormGroup, ListGroup } from 'react-bootstrap';
 import { FaPlus, FaMinus, FaTrash } from "react-icons/fa";
 import { toast } from "react-toastify";
 import { useGetOrderDetailsQuery, useUpdateOrderMutation, useUploadOrderDocumentMutation } from '../slices/ordersApiSlice';
@@ -9,8 +9,8 @@ import calculateSingleVolume from '../utils/calculateSingleVolume';
 const EditOrderScreen = () => {
   const { id: orderId } = useParams();
   const { data: order, isLoading, isError } = useGetOrderDetailsQuery(orderId);
+  const [uploadOrderDocument] = useUploadOrderDocumentMutation();
   const [updateOrder] = useUpdateOrderMutation();
-  const [uploadOrderDocument] = useUploadOrderDocumentMutation()
 
   const navigate = useNavigate();
 
@@ -127,18 +127,26 @@ const EditOrderScreen = () => {
     setPackages(packages.filter((_, i) => i !== index));
   };
 
-  const handleDocumentChange = (e) => {
-    const files = Array.from(e.target.files);
-    const fileData = files.map(file => ({
-      url: URL.createObjectURL(file),
-      name: file.name
-    }));
-    setDocument(prevDocuments => [...prevDocuments, ...fileData]);
+  const uploadFileHandler = async (e) => {
+    const formData = new FormData();
+    for (let i = 0; i < e.target.files.length; i++) {
+      formData.append('document', e.target.files[i]);
+    }
+    try {
+      const res = await uploadOrderDocument(formData).unwrap();
+      // Assuming `res.files` contains the new files
+      setDocument(prevDocs => [...prevDocs, ...res.files]);
+    } catch (err) {
+      toast.error(err?.data?.message || err.error);
+    }
   };
 
-  const removeDocument = (index) => {
-    setDocument((prevDocuments) => prevDocuments.filter((_, i) => i !== index));
-  };
+const removeDocument = (index) => {
+    // Remove document at the specified index
+    const updatedDocuments = [...document];
+    updatedDocuments.splice(index, 1);
+    setDocument(updatedDocuments);
+};
 
   const submitHandler = async (e) => {
     e.preventDefault();
@@ -565,31 +573,50 @@ const EditOrderScreen = () => {
         </Col>
       </Row>
 
-      <Card className='mt-3 p-4'>
+    <Col className='mt-3'>
+    <Card>
+      <Card.Body>
+        <Card.Title>Documentation</Card.Title>
         <Form.Group controlId='document'>
-          <Form.Label>Documents</Form.Label>
-          {document.length > 0 ? (
-            <ul>
-              {document.map((doc, index) => (
-                <li key={index}>
-                  {doc.name}
-                  <Button variant='link' onClick={() => removeDocument(index)}>
-                    <FaTrash />
-                  </Button>
-                </li>
-              ))}
-            </ul>
-          ) : (
-            <p>No document uploaded</p>
-          )}
+          <Form.Label>Upload Document</Form.Label>
           <Form.Control
             type='file'
             multiple
-            onChange={handleDocumentChange}
-            style={{ marginTop: '10px' }}
+            onChange={(e) => uploadFileHandler(e)}
           />
         </Form.Group>
-      </Card>
+        <Card.Title style={{ fontSize: '0.8rem' }} className="mt-2">Documents Selected</Card.Title>
+        <ListGroup>
+          {document.length === 0 ? (
+            <ListGroup.Item style={{ fontSize: '0.8rem' }}>No documents to display</ListGroup.Item>
+          ) : (
+            document.map((doc, index) => (
+              <ListGroup.Item key={index}>
+                <div style={{ display: 'flex', justifyContent: 'start', alignItems: 'center' }}>
+                <a href={doc.url} target='_blank' rel='noopener noreferrer' style={{ fontSize: '0.8rem' }}>
+                  {doc.name}
+                </a>
+                <Button
+                    style={{
+                      padding: '0.3rem',
+                      backgroundColor: '#a5a9ad',
+                      color: 'white',
+                      display: 'flex',
+                      alignItems: 'center',
+                      marginLeft: '10px'
+                    }}
+                    onClick={() => removeDocument(index)}
+                  >
+                    <FaTrash style={{ fontSize: '1rem' }} />
+                  </Button>
+              </div>
+              </ListGroup.Item>
+            ))
+          )}
+        </ListGroup>
+      </Card.Body>
+    </Card>
+  </Col>
       
       <Row className='mt-2'>
         <Col md={2} className='d-flex align-items-center'>

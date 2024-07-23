@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Form, Button, Row, Col, Card, InputGroup } from 'react-bootstrap';
+import { Form, Button, Row, Col, Card, InputGroup, ListGroup } from 'react-bootstrap';
 import { FaPlus, FaMinus, FaTrash } from "react-icons/fa";
+import {toast} from 'react-toastify';
 import calculateSingleVolume from '../utils/calculateSingleVolume';
-import { useCreateOrderMutation } from '../slices/ordersApiSlice';
+import { useCreateOrderMutation, useUploadOrderDocumentMutation } from '../slices/ordersApiSlice';
 
 const CreateOrderScreen = () => {
   const [orderNumber, setOrderNumber] = useState('');
@@ -35,6 +36,7 @@ const CreateOrderScreen = () => {
   const [document, setDocument] = useState([]);
 
   const [createOrder] = useCreateOrderMutation();
+  const [uploadOrderDocument] = useUploadOrderDocumentMutation();
   const navigate = useNavigate();
 
   const handleProductChange = (index, field, value) => {
@@ -82,20 +84,26 @@ const CreateOrderScreen = () => {
     setPackages(updatedPackages);
   };
 
-  const handleDocumentChange = (e) => {
-    const files = Array.from(e.target.files);
-    const fileData = files.map(file => ({
-      url: URL.createObjectURL(file),
-      name: file.name
-    }));
-    setDocument(prevDocuments => [...prevDocuments, ...fileData]);
+  const uploadFileHandler = async (e) => {
+    const formData = new FormData();
+    for (let i = 0; i < e.target.files.length; i++) {
+      formData.append('document', e.target.files[i]);
+    }
+    try {
+      const res = await uploadOrderDocument(formData).unwrap();
+      // Assuming `res.files` contains the new files
+      setDocument(prevDocs => [...prevDocs, ...res.files]);
+    } catch (err) {
+      toast.error(err?.data?.message || err.error);
+    }
   };
 
-  const removeDocument = (index) => {
+const removeDocument = (index) => {
+    // Remove document at the specified index
     const updatedDocuments = [...document];
     updatedDocuments.splice(index, 1);
     setDocument(updatedDocuments);
-  };
+};
 
   const submitHandler = async (e) => {
     e.preventDefault();
@@ -506,30 +514,6 @@ const CreateOrderScreen = () => {
       </Row>
 
       <Row className='align-items-center mt-3'>
-        {/* <Col md={3}>
-          <InputGroup>
-            <Form.Control
-              type='file'
-              placeholder='Select document'
-              onChange={(e) => {
-                const file = e.target.files[0];
-                setDocument(file);
-              }}
-              style={{ borderTopRightRadius: '0', borderBottomRightRadius: '0' }}
-            />
-            <Button
-              type='submit'
-              variant='primary'
-              style={{
-                borderTopLeftRadius: '0',
-                borderBottomLeftRadius: '0',
-                marginLeft: '-1px' // Overlaps the border slightly to ensure they look connected
-              }}
-            >
-              Upload
-            </Button>
-          </InputGroup>
-        </Col> */}
         <Col md={2} className='d-flex align-items-center'>
           <Form.Group controlId='dangerousGoods'>
             <Form.Check
@@ -556,31 +540,50 @@ const CreateOrderScreen = () => {
         </Col>
       </Row>
 
-      <Card className='mt-3 p-4'>
-        <Form.Group controlId='documents'>
-          <Form.Label>Documents</Form.Label>
-          {document.length > 0 ? (
-            <ul>
-              {document.map((doc, index) => (
-                <li key={index}>
-                  {doc.name}
-                  <Button variant='link' onClick={() => removeDocument(index)}>
-                    <FaTrash />
-                  </Button>
-                </li>
-              ))}
-            </ul>
-          ) : (
-            <p>No document uploaded</p>
-          )}
+    <Col className='mt-3'>
+    <Card>
+      <Card.Body>
+        <Card.Title>Documentation</Card.Title>
+        <Form.Group controlId='document'>
+          <Form.Label>Upload Document</Form.Label>
           <Form.Control
             type='file'
             multiple
-            onChange={handleDocumentChange}
-            style={{ marginTop: '10px' }}
+            onChange={(e) => uploadFileHandler(e)}
           />
         </Form.Group>
-      </Card>
+        <Card.Title style={{ fontSize: '0.8rem' }} className="mt-2">Documents Selected</Card.Title>
+        <ListGroup>
+          {document.length === 0 ? (
+            <ListGroup.Item style={{ fontSize: '0.8rem' }}>No documents provided</ListGroup.Item>
+          ) : (
+            document.map((doc, index) => (
+              <ListGroup.Item key={index}>
+                <div style={{ display: 'flex', justifyContent: 'start', alignItems: 'center' }}>
+                <a href={doc.url} target='_blank' rel='noopener noreferrer' style={{ fontSize: '0.8rem' }}>
+                  {doc.name}
+                </a>
+                <Button
+                    style={{
+                      padding: '0.3rem',
+                      backgroundColor: '#a5a9ad',
+                      color: 'white',
+                      display: 'flex',
+                      alignItems: 'center',
+                      marginLeft: '10px'
+                    }}
+                    onClick={() => removeDocument(index)}
+                  >
+                    <FaTrash style={{ fontSize: '1rem' }} />
+                  </Button>
+              </div>
+              </ListGroup.Item>
+            ))
+          )}
+        </ListGroup>
+      </Card.Body>
+    </Card>
+  </Col>
 
       <Row>
         <Col>

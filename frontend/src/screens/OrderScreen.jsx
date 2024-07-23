@@ -1,6 +1,6 @@
 import { useParams, useNavigate } from 'react-router-dom';
 import { Link  } from 'react-router-dom';
-import { Row, Col, ListGroup, Form, Button, OverlayTrigger, Tooltip  } from 'react-bootstrap';
+import { Row, Col, ListGroup, Form, Button, OverlayTrigger, Tooltip, Card  } from 'react-bootstrap';
 import { MdOutlineEdit, MdClose  } from "react-icons/md";
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
@@ -14,7 +14,7 @@ const OrderScreen = () => {
   const navigate = useNavigate()
 
   const { data: order, isLoading, error} = useGetOrderDetailsQuery(orderId);
-  const [deleteOrCancelOrder, refetch] = useDeleteOrCancelOrderMutation()
+  const [deleteOrCancelOrder] = useDeleteOrCancelOrderMutation()  
 
   const cancelDeleteHandler = async (id) => {
     console.log(`Deleting order with id: ${id}`);
@@ -47,6 +47,22 @@ const OrderScreen = () => {
     }
   }
 
+  const totalDocuments = order?.document?.length || 0;
+
+  const downloadDocumentsHandler = (documents) => {
+    if (documents && documents.length > 0) {
+      documents.forEach((doc) => {
+        if (doc.url) {
+          window.open(doc.url, '_blank');
+        } else {
+          toast.error(`Document URL not found for ${doc.name}`);
+        }
+      });
+    } else {
+      toast.error('No documents found.');
+    }
+  };
+
   const editOrderNavigator = () => {
     navigate(`/editorder/${order._id}`)
   }
@@ -62,6 +78,7 @@ const OrderScreen = () => {
   const totalWeight = order ? calculateTotalWeight(order.packages) : 0;
   const totalVolume = order ? calculateTotalVolume(order.packages) : 0;
   const totalFreightCost = order ? order.packages.reduce((total, pack) => total + pack.freightCost, 0) : 0;
+
 
   return (
     <>
@@ -123,6 +140,27 @@ const OrderScreen = () => {
               </div>
             </Col>
           </Row>
+          
+          <Row className="mb-2">
+          <Col md={8}>
+            <Card>
+              <Card.Header>Documentation</Card.Header>
+              <Card.Body>
+                <ListGroup variant='flush'>
+                  <ListGroup.Item style={{ padding: '6px', fontSize: '10px' }}>
+                    <strong>Total Documents:</strong> {totalDocuments}
+                  </ListGroup.Item>
+                  {totalDocuments > 0 && (
+                    <Button onClick={() => downloadDocumentsHandler(order.document)}>
+                      Download All Documents
+                    </Button>
+                  )}
+                </ListGroup>
+              </Card.Body>
+            </Card>
+          </Col>
+        </Row>
+
         <Row className='mb-2'>
           <Col md={4}>
             <ListGroup.Item style={{ fontSize: '0.875rem' }}>

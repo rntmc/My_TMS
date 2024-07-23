@@ -1,4 +1,4 @@
-import { ORDERS_URL, UPLOAD_URL } from "../constants";
+import { ORDERS_URL, UPLOADS_URL } from "../constants";
 import { apiSlice } from "./apiSlice";
 
 export const ordersApiSlice = apiSlice.injectEndpoints({
@@ -52,7 +52,7 @@ export const ordersApiSlice = apiSlice.injectEndpoints({
     }),
     uploadOrderDocument: builder.mutation({
       query: (data) => ({
-        url: `${UPLOAD_URL}`,
+        url: `${UPLOADS_URL}`,
         method: 'POST',
         body: data,
       }),
