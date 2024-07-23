@@ -3,6 +3,7 @@ import {Table, OverlayTrigger, Tooltip, Button, Row} from 'react-bootstrap'
 import { Link } from 'react-router-dom'
 import { CgDanger } from "react-icons/cg";
 import { FaCheck } from "react-icons/fa"
+import { MdAttachFile } from "react-icons/md";
 import {useUpdateLoadStatusMutation, useGetLoadsQuery} from '../slices/loadsApiSlice'
 import {useGetOrdersQuery} from '../slices/ordersApiSlice'
 
@@ -127,10 +128,31 @@ const Load = () => {
                     return (
                       <div key={order._id}>
                         {orderData ? (
-                          <Link to={`/order/${orderData._id}`} style={{ color: 'blue' }}>
-                            {orderData.orderNumber}
-                            {' '}{orderData.dangerousGoods ? <CgDanger style={{color:"lightsalmon"}}/> : ''}
-                          </Link>
+                          <>
+                            <Link to={`/order/${orderData._id}`} style={{ color: 'blue' }}>
+                              {orderData.orderNumber}
+                            </Link>
+                            {orderData.dangerousGoods && (
+                              <OverlayTrigger
+                                placement="top"
+                                overlay={<Tooltip id={`tooltip-dangerous-goods-${order._id}`}>Dangerous Goods</Tooltip>}
+                              >
+                                <span style={{ display: 'inline-block' }}>
+                                  <CgDanger style={{ color: 'lightsalmon', marginLeft: '2px' }} />
+                                </span>
+                              </OverlayTrigger>
+                            )}
+                            {orderData.document.length > 0 && (
+                              <OverlayTrigger
+                                placement="top"
+                                overlay={<Tooltip id={`tooltip-documentation-${order._id}`}>Attachments</Tooltip>}
+                              >
+                                <span style={{ display: 'inline-block' }}>
+                                  <MdAttachFile style={{ color: 'black' }} />
+                                </span>
+                              </OverlayTrigger>
+                            )}
+                          </>
                         ) : (
                           <p>Loading orders...</p>
                         )}
@@ -141,9 +163,9 @@ const Load = () => {
                   <p></p>
                 )}
               </td>
-              <td>$ {totals[load._id]?.totalFreightCost ?? load.totalFreightCost}</td>
-              <td>{totals[load._id]?.totalVolume ?? load.totalVolume} m³</td>
-              <td>{totals[load._id]?.totalWeight ?? load.totalWeight} kg</td>
+              <td>$ {totals[load._id]?.totalFreightCost.toFixed(2) ?? load.totalFreightCost.toFixed(2)}</td>
+              <td>{totals[load._id]?.totalVolume.toFixed(2) ?? load.totalVolume.toFixed(2)} m³</td>
+              <td>{totals[load._id]?.totalWeight.toFixed(2) ?? load.totalWeight.toFixed(2)} kg</td>
               <td>{load.carrierName}</td>
               <td>{load.transportType}</td>
               <td>{load.status}

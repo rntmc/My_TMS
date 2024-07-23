@@ -120,9 +120,9 @@ const Order = () => {
                 <div>{order.pickupDate}</div>
                 <div>{order.deliveryDate}</div>
               </td>
-              <td>{order.totalVolume} m&#179;</td>
-              <td>{order.totalWeight} kg</td>
-              <td>$ {order.freightCost}</td>
+              <td>{order.totalVolume.toFixed(2)} m&#179;</td>
+              <td>{order.totalWeight.toFixed(2)} kg</td>
+              <td>$ {order.freightCost.toFixed(2)}</td>
               <td>
           <div style={{ display: 'flex', alignItems: 'center', justifyContent:'center', gap: '0.5rem' }}>
             <span>{order.status}</span>

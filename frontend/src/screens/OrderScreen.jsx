@@ -140,26 +140,6 @@ const OrderScreen = () => {
               </div>
             </Col>
           </Row>
-          
-          <Row className="mb-2">
-          <Col md={8}>
-            <Card>
-              <Card.Header>Documentation</Card.Header>
-              <Card.Body>
-                <ListGroup variant='flush'>
-                  <ListGroup.Item style={{ padding: '6px', fontSize: '10px' }}>
-                    <strong>Total Documents:</strong> {totalDocuments}
-                  </ListGroup.Item>
-                  {totalDocuments > 0 && (
-                    <Button onClick={() => downloadDocumentsHandler(order.document)}>
-                      Download All Documents
-                    </Button>
-                  )}
-                </ListGroup>
-              </Card.Body>
-            </Card>
-          </Col>
-        </Row>
 
         <Row className='mb-2'>
           <Col md={4}>
@@ -203,12 +183,12 @@ const OrderScreen = () => {
           <Row className='mt-2 mb-2'>    
             <Col md={4}>
               <ListGroup.Item style={{ fontSize: '0.875rem' }}>
-                <strong>Volume:</strong> {totalVolume} m³
+                <strong>Volume:</strong> {totalVolume.toFixed(2)} m³
               </ListGroup.Item>
             </Col>
             <Col md={4}>
               <ListGroup.Item style={{ fontSize: '0.875rem' }}>
-                <strong>Total Weight:</strong> {totalWeight} kg
+                <strong>Total Weight:</strong> {totalWeight.toFixed(2)} kg
               </ListGroup.Item>
             </Col>
           </Row>
@@ -220,7 +200,7 @@ const OrderScreen = () => {
             </Col>
             <Col md={4}>
               <ListGroup.Item style={{ fontSize: '0.875rem' }}>
-                <strong>Freight Cost:</strong> $ {order.freightCost || 'N/A'}
+                <strong>Freight Cost:</strong> $ {order.freightCost.toFixed(2) || 'N/A'}
               </ListGroup.Item>
             </Col>
           </Row>

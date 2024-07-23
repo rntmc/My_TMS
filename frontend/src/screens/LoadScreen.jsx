@@ -191,7 +191,7 @@ const LoadScreen = () => {
               <ListGroup.Item style={{ fontSize: '0.875rem' }}>
                 <strong>Orders Included:</strong> {load.orders.map((order, index) => (
                   <span key={index}>
-                    <Link to={`/load/${order._id}`}>{order.orderNumber}</Link>
+                    <Link to={`/order/${order._id}`}>{order.orderNumber}</Link>
                     {index !== load.orders.length - 1 && ', '}
                   </span>
                 ))}
@@ -206,12 +206,12 @@ const LoadScreen = () => {
           <Row className="mb-3">
             <Col md={4}>
               <ListGroup.Item style={{ fontSize: '0.875rem' }}>
-                <strong>Total Volume:</strong> {totalVolume || 'N/A'} m³
+                <strong>Total Volume:</strong> {totalVolume.toFixed(2) || 'N/A'} m³
               </ListGroup.Item>
             </Col>
             <Col md={4}>
               <ListGroup.Item style={{ fontSize: '0.875rem' }}>
-                <strong>Total Weight:</strong> {totalWeight || 'N/A'} kg
+                <strong>Total Weight:</strong> {totalWeight.toFixed(2) || 'N/A'} kg
               </ListGroup.Item>
             </Col>
           </Row>
