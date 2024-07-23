@@ -39,6 +39,17 @@ const packageSchema = new mongoose.Schema({
   }
 });
 
+const documentSchema = new mongoose.Schema({
+  url: {
+    type: String,
+    required: true
+  },
+  name: {
+    type: String,
+    required: true
+  }
+});
+
 const orderSchema = new mongoose.Schema({
   orderNumber: {
     type: Number,
@@ -88,9 +99,7 @@ const orderSchema = new mongoose.Schema({
     type: Boolean,
     default: false
   },
-  document: {
-    type: String, 
-  },
+  document: [documentSchema],
   user: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User',  

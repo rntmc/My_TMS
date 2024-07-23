@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Form, Button, Row, Col, Card, InputGroup } from 'react-bootstrap';
-import { FaPlus, FaMinus } from "react-icons/fa";
+import { FaPlus, FaMinus, FaTrash } from "react-icons/fa";
 import calculateSingleVolume from '../utils/calculateSingleVolume';
 import { useCreateOrderMutation } from '../slices/ordersApiSlice';
 
@@ -32,7 +32,7 @@ const CreateOrderScreen = () => {
   ]);
   const [freightCost, setFreightCost] = useState('');
   const [dangerousGoods, setDangerousGoods] = useState(false);
-  const [document, setDocument] = useState('');
+  const [document, setDocument] = useState([]);
 
   const [createOrder] = useCreateOrderMutation();
   const navigate = useNavigate();
@@ -80,6 +80,21 @@ const CreateOrderScreen = () => {
     const updatedPackages = [...packages];
     updatedPackages.splice(index, 1);
     setPackages(updatedPackages);
+  };
+
+  const handleDocumentChange = (e) => {
+    const files = Array.from(e.target.files);
+    const fileData = files.map(file => ({
+      url: URL.createObjectURL(file),
+      name: file.name
+    }));
+    setDocument(prevDocuments => [...prevDocuments, ...fileData]);
+  };
+
+  const removeDocument = (index) => {
+    const updatedDocuments = [...document];
+    updatedDocuments.splice(index, 1);
+    setDocument(updatedDocuments);
   };
 
   const submitHandler = async (e) => {
@@ -491,7 +506,7 @@ const CreateOrderScreen = () => {
       </Row>
 
       <Row className='align-items-center mt-3'>
-        <Col md={3}>
+        {/* <Col md={3}>
           <InputGroup>
             <Form.Control
               type='file'
@@ -514,7 +529,7 @@ const CreateOrderScreen = () => {
               Upload
             </Button>
           </InputGroup>
-        </Col>
+        </Col> */}
         <Col md={2} className='d-flex align-items-center'>
           <Form.Group controlId='dangerousGoods'>
             <Form.Check
@@ -540,6 +555,32 @@ const CreateOrderScreen = () => {
           </Form.Group>
         </Col>
       </Row>
+
+      <Card className='mt-3 p-4'>
+        <Form.Group controlId='documents'>
+          <Form.Label>Documents</Form.Label>
+          {document.length > 0 ? (
+            <ul>
+              {document.map((doc, index) => (
+                <li key={index}>
+                  {doc.name}
+                  <Button variant='link' onClick={() => removeDocument(index)}>
+                    <FaTrash />
+                  </Button>
+                </li>
+              ))}
+            </ul>
+          ) : (
+            <p>No document uploaded</p>
+          )}
+          <Form.Control
+            type='file'
+            multiple
+            onChange={handleDocumentChange}
+            style={{ marginTop: '10px' }}
+          />
+        </Form.Group>
+      </Card>
 
       <Row>
         <Col>

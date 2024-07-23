@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { Form, Button, Row, Col, Card, FormGroup, InputGroup } from 'react-bootstrap';
-import { FaPlus, FaMinus } from "react-icons/fa";
+import { FaPlus, FaMinus, FaTrash } from "react-icons/fa";
 import { toast } from "react-toastify";
 import { useGetOrderDetailsQuery, useUpdateOrderMutation, useUploadOrderDocumentMutation } from '../slices/ordersApiSlice';
 import calculateSingleVolume from '../utils/calculateSingleVolume';
@@ -10,7 +10,7 @@ const EditOrderScreen = () => {
   const { id: orderId } = useParams();
   const { data: order, isLoading, isError } = useGetOrderDetailsQuery(orderId);
   const [updateOrder] = useUpdateOrderMutation();
-  const [uploadOrderDocument, {isLoading: loadingUpload}] = useUploadOrderDocumentMutation()
+  const [uploadOrderDocument] = useUploadOrderDocumentMutation()
 
   const navigate = useNavigate();
 
@@ -64,7 +64,7 @@ const EditOrderScreen = () => {
       setPackages(order.packages || [{ packageQty: '', length: '', width: '', height: '', weight: '', volume: '' }]);
       setFreightCost(order.freightCost);
       setDangerousGoods(order.dangerousGoods);
-      setDocument(order.document || '');
+      setDocument(order.document || []);
     }
   }, [order]);
 
@@ -127,17 +127,18 @@ const EditOrderScreen = () => {
     setPackages(packages.filter((_, i) => i !== index));
   };
 
-  const uploadFileHandler = async (e) => {
-    const formData = new FormData();
-    formData.append('file', e.target.files[0]);
-    try {
-      const res = await uploadOrderDocument(formData).unwrap();
-      toast.success(res.message);
-      setDocument(res.document)
-    } catch (error) {
-      toast.error(error?.data?.message || error.error)
-    }
-  }
+  const handleDocumentChange = (e) => {
+    const files = Array.from(e.target.files);
+    const fileData = files.map(file => ({
+      url: URL.createObjectURL(file),
+      name: file.name
+    }));
+    setDocument(prevDocuments => [...prevDocuments, ...fileData]);
+  };
+
+  const removeDocument = (index) => {
+    setDocument((prevDocuments) => prevDocuments.filter((_, i) => i !== index));
+  };
 
   const submitHandler = async (e) => {
     e.preventDefault();
@@ -564,23 +565,33 @@ const EditOrderScreen = () => {
         </Col>
       </Row>
 
-      <Row className='align-items-center mt-3'>
-        <Col md={4}>
-          <Form.Group controlId='document' className='my-2'>
-            <Form.Label>Documentation</Form.Label>
-              <Form.Control
-                type='text'
-                placeholder='Enter document'
-                value={document}
-                onChange={(e) => setDocument}
-              />
-              <Form.Control
-                type='file'
-                label="Choose file"
-                onChange={uploadFileHandler}
-              />
-          </Form.Group>
-        </Col>
+      <Card className='mt-3 p-4'>
+        <Form.Group controlId='document'>
+          <Form.Label>Documents</Form.Label>
+          {document.length > 0 ? (
+            <ul>
+              {document.map((doc, index) => (
+                <li key={index}>
+                  {doc.name}
+                  <Button variant='link' onClick={() => removeDocument(index)}>
+                    <FaTrash />
+                  </Button>
+                </li>
+              ))}
+            </ul>
+          ) : (
+            <p>No document uploaded</p>
+          )}
+          <Form.Control
+            type='file'
+            multiple
+            onChange={handleDocumentChange}
+            style={{ marginTop: '10px' }}
+          />
+        </Form.Group>
+      </Card>
+      
+      <Row className='mt-2'>
         <Col md={2} className='d-flex align-items-center'>
           <Form.Group controlId='dangerousGoods'>
             <Form.Check
@@ -591,9 +602,6 @@ const EditOrderScreen = () => {
             />
           </Form.Group>
         </Col>
-      </Row>
-      
-      <Row className='mt-2'>
         <Col md={3} >
           <Form.Group controlId='freightCost'>
             <Form.Label>Freight Cost ($)</Form.Label>

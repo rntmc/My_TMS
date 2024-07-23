@@ -1,40 +1,59 @@
 import path from 'path'
 import express from 'express'
 import multer from 'multer'
+
 const router = express.Router()
 
-const storage = multer.diskStorage({//We are using diskstorage(server), otherwise we could've used Amazon buckets
-  destination(req, file, cb) {
-    cb(null, 'uploads/');
-  },
-  filename(req, file, cb) {
-    cb(null, `${file.fieldname}-${Date.now()}${path.extname(file.originalname)}`)
-  }
+const storage = multer.diskStorage({ 
+  destination: function (req, file, cb) { cb(null, 'uploads/'); }, 
+  filename: function (req, file, cb) { cb(null, Date.now() + '-' + file.originalname); }, 
 });
 
 // check the file type
-function checkFileType(file, cb) {
-  const filetypes = /jpg|jpeg|png|pdf/;
-  const extname = filetypes.test(path.extname(file.originalname).toLowerCase());
-  const mimetype = filetypes.test(file.mimetype);
-  if (extname && mimetype) {
-    return cb(null, true);
-  } else {
-    cb('Please check the type of the file')
-  }
-}
+// function fileFilter(file, cb) {
+//   const filetypes = /jpg|jpeg|png|pdf/;
+//   const mimetypes = /image\/jpe?g|image\/png|image\/pdf/;
+
+//   const extname = filetypes.test(path.extname(file.originalname).toLowerCase());
+//   const mimetype = filetypes.test(file.mimetype);
+
+//   if (extname && mimetype) {
+//     return cb(null, true);
+//   } else {
+//     cb(new Error('Please check the type of the file'), false)
+//   }
+// }
 
 const upload = multer({
   storage,
   fileFilter: function (req, file, cb) {
-    checkFileType(file, cb);
-  }
-});
+   if (file.mimetype !== 'image/png' && file.mimetype !== 'image/jpeg' && file.mimetype !== 'image/pdf') {
+    return cb(new Error('Only PNG, JPEG and PDF files are allowed.'));
+   }
+   cb(null, true);
+  },
+  limits: {
+   fileSize: 1024 * 1024 * 5, // Limiting file size to 5 MB
+  },
+ })
 
-router.post('/', upload.single('file'), (req, res) => {
-  res.send({
-    message: 'File uploaded',
-    document: `/${req.file.path}`
+ const uploadMultipleImages = upload.array('document', 5);
+
+router.post('/', (req, res) => {
+  uploadMultipleImages(req, res, function(err) {
+    if (err) {
+      res.status(400).send({ message: err.message });
+    }
+
+    const documents = req.files.map(file => ({
+      url: `${file.filename}`,
+      name: file.originalname,
+    }));
+
+    res.status(200).send({
+      message: 'Files uploaded',
+      documents,
+    })
   })
 })
 

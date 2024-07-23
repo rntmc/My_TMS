@@ -63,6 +63,11 @@ const createOrder = asyncHandler(async (req, res) => {
     user: req.user._id,
   })
 
+  if (document && document.length > 10) {
+    res.status(400);
+    throw new Error('You can only upload up to 10 files per order');
+  }
+
   const createdOrder = await order.save();
 
   res.status(201).json(createdOrder)
@@ -165,7 +170,7 @@ const updateOrder = asyncHandler(async (req, res) => {
   if (req.body.freightCost) order.freightCost = req.body.freightCost;
   if (req.body.dangerousGoods !== undefined) order.dangerousGoods = req.body.dangerousGoods;
   if (req.body.document) order.document = req.body.document;
-
+  
   // Salva a ordem atualizada no banco de dados
   const updatedOrder = await order.save();
 
