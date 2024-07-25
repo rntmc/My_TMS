@@ -70,13 +70,7 @@ const MyOrdersScreen = () => {
           {error?.data?.message || error.error}
         </Message>
         ) : (
-          <Table striped hover responsive className='table-sm'>
-            <thead>
-              <tr>
-                <Order/>
-              </tr>
-            </thead>
-          </Table>
+          <Order/>
         )}
       </Col>
     </Row>

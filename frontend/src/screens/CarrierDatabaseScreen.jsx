@@ -85,8 +85,8 @@ const CarrierDatabaseScreen = () => {
                 <td>{carrier.carrierNumber}</td>
                 <td>{carrier.carrierName}</td>
                 <td>{carrier.contactPerson}</td>
-                <td>{carrier.address.postcode}</td>
-                <td>{carrier.address.country}</td>
+                <td>{carrier.location.postcode}</td>
+                <td>{carrier.location.country}</td>
                 <td>{carrier.servicesOffered.join(', ')}</td>
                 <td>
                   <div style={{ display: 'flex', flexDirection: 'row', gap: '0.5rem', justifyContent: 'center' }}>

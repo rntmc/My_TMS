@@ -25,7 +25,7 @@ const carrierSchema = new mongoose.Schema({
       required: true,
     },
   },
-  address: addressSchema,
+  location: addressSchema,
   servicesOffered: {
     type: [String],
     required: true,

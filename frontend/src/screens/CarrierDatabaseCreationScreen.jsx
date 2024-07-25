@@ -9,7 +9,7 @@ const CarrierDatabaseCreationScreen = () => {
   const [contactPerson, setContactPerson] = useState('');
   const [contactEmail, setContactEmail] = useState('');
   const [contactPhone, setContactPhone] = useState('');
-  const [address, setAddress] = useState({
+  const [location, setLocation] = useState({
     address: '',
     city: '',
     state: '',
@@ -29,12 +29,15 @@ const CarrierDatabaseCreationScreen = () => {
 
   const submitHandler = async (e) => {
     e.preventDefault();
+
+    try {
+
     const carrierData = {
       carrierNumber,
       carrierName,
       contactPerson,
       contactInfo: { email: contactEmail, phone: contactPhone },
-      address,
+      location,
       servicesOffered: servicesOffered.split(',').map(service => service.trim()),
       insuranceCoverage,
       fleetInfo: {
@@ -43,16 +46,15 @@ const CarrierDatabaseCreationScreen = () => {
       }
     };
 
-    try {
-      const response = await registerUser(carrierData).unwrap();
-      console.log('Carrier created:', response);
-      // Clear form fields or perform additional actions upon successful user creation
-      setCarrierNumber('');
+    const response = await registerUser(carrierData).unwrap();
+    console.log('Carrier created:', response);
+
+    setCarrierNumber('');
       setCarrierName('');
       setContactPerson('');
       setContactEmail('');
       setContactPhone('');
-      setAddress({
+      setLocation({
         address: '',
         city: '',
         state: '',
@@ -136,8 +138,8 @@ const CarrierDatabaseCreationScreen = () => {
             <Form.Control
               type="text"
               placeholder="Enter street address"
-              value={address.address}
-              onChange={(e) => setAddress({ ...address, address: e.target.value })}
+              value={location.address}
+              onChange={(e) => setLocation({ ...location, address: e.target.value })}
               required
             />
           </Form.Group>
@@ -147,8 +149,8 @@ const CarrierDatabaseCreationScreen = () => {
             <Form.Control
               type="text"
               placeholder="Enter city"
-              value={address.city}
-              onChange={(e) => setAddress({ ...address, city: e.target.value })}
+              value={location.city}
+              onChange={(e) => setLocation({ ...location, city: e.target.value })}
               required
             />
           </Form.Group>
@@ -158,8 +160,8 @@ const CarrierDatabaseCreationScreen = () => {
             <Form.Control
               type="text"
               placeholder="Enter state"
-              value={address.state}
-              onChange={(e) => setAddress({ ...address, state: e.target.value })}
+              value={location.state}
+              onChange={(e) => setLocation({ ...location, state: e.target.value })}
               required
             />
           </Form.Group>
@@ -169,8 +171,8 @@ const CarrierDatabaseCreationScreen = () => {
             <Form.Control
               type="text"
               placeholder="Enter country"
-              value={address.country}
-              onChange={(e) => setAddress({ ...address, country: e.target.value })}
+              value={location.country}
+              onChange={(e) => setLocation({ ...location, country: e.target.value })}
               required
             />
           </Form.Group>
@@ -180,8 +182,8 @@ const CarrierDatabaseCreationScreen = () => {
             <Form.Control
               type="text"
               placeholder="Enter postcode"
-              value={address.postcode}
-              onChange={(e) => setAddress({ ...address, postcode: e.target.value })}
+              value={location.postcode}
+              onChange={(e) => setLocation({ ...location, postcode: e.target.value })}
               required
             />
           </Form.Group>

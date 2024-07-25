@@ -10,7 +10,7 @@ const registerCarrier = asyncHandler(async (req, res) => {
     carrierName, 
     contactPerson, 
     contactInfo: { email, phone }, 
-    address: { address, city, state, postcode, country },
+    location: { address, city, state, postcode, country },
     servicesOffered, 
     insuranceCoverage, 
     fleetInfo: { numberOfVehicles, vehicleTypes }
@@ -31,7 +31,7 @@ const registerCarrier = asyncHandler(async (req, res) => {
       email,
       phone,
     }, 
-    address: {
+    location: {
       address,     // Ensure nested address fields are correctly passed as an object
       city,
       state,
@@ -54,7 +54,7 @@ const registerCarrier = asyncHandler(async (req, res) => {
       carrierName: carrier.carrierName,
       contactPerson: carrier.contactPerson,
       contactInfo: carrier.contactInfo,
-      address: carrier.address,
+      location: carrier.address,
       servicesOffered: carrier.servicesOffered,
       insuranceCoverage: carrier.insuranceCoverage,
       fleetInfo: carrier.fleetInfo,
@@ -115,11 +115,11 @@ const updateCarrier = asyncHandler(async (req, res) => {
     carrier.contactPerson = req.body.contactPerson || carrier.contactPerson;
     carrier.contactEmail = req.body.contactEmail || carrier.contactEmail;
     carrier.contactPhone = req.body.contactPhone || carrier.contactPhone;
-    carrier.address.address = req.body.address?.address || carrier.address.address;
-    carrier.address.city = req.body.address?.city || carrier.address.city;
-    carrier.address.state = req.body.address?.state || carrier.address.state;
-    carrier.address.country = req.body.address?.country || carrier.address.country;
-    carrier.address.postcode = req.body.address?.postcode || carrier.address.postcode;
+    carrier.location.address = req.body.location?.address || carrier.location.address;
+    carrier.location.city = req.body.location?.city || carrier.location.city;
+    carrier.location.state = req.body.location?.state || carrier.location.state;
+    carrier.location.country = req.body.location?.country || carrier.location.country;
+    carrier.location.postcode = req.body.location?.postcode || carrier.location.postcode;
     carrier.servicesOffered = req.body.servicesOffered || carrier.servicesOffered;
     carrier.insuranceCoverage = req.body.insuranceCoverage || carrier.insuranceCoverage;
     carrier.fleetInfo.numberOfVehicles = req.body.fleetInfo?.numberOfVehicles || carrier.fleetInfo.numberOfVehicles;
@@ -134,12 +134,12 @@ const updateCarrier = asyncHandler(async (req, res) => {
       contactPerson: updatedCarrier.contactPerson,
       contactEmail: updatedCarrier.contactEmail,
       contactPhone: updatedCarrier.contactPhone,
-      address: {
-        address: updatedCarrier.address.address,
-        city: updatedCarrier.address.city,
-        state: updatedCarrier.address.state,
-        country: updatedCarrier.address.country,
-        postcode: updatedCarrier.address.postcode,
+      location: {
+        address: updatedCarrier.location.address,
+        city: updatedCarrier.location.city,
+        state: updatedCarrier.location.state,
+        country: updatedCarrier.location.country,
+        postcode: updatedCarrier.location.postcode,
       },
       servicesOffered: updatedCarrier.servicesOffered,
       insuranceCoverage: updatedCarrier.insuranceCoverage,

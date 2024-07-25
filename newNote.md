@@ -26,7 +26,7 @@
 - [] Add possibility to attach multiple docs to Orders and Loads. Validate file format an max number of files. Add icon for orders with docs attached
 - [X] checkbox next to "open" orders so they can be cancelled easily ('/bookings')
 - [X] update dangerousGoods so the icon changes in the bookings page
-- [] Include dangerousGoods description in booking page
+- [x] Include dangerousGoods description in booking page
 - [] Special notes at orderModel
 
 - [X] The status should change once the button "check" is clicked. We need to refresh the page to work
@@ -35,3 +35,4 @@
 
 - [] Barcode with main packages information
 - [] Roteirizacao pelo TMS??
+- [] Pagination

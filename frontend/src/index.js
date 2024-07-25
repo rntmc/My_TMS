@@ -31,6 +31,7 @@ import ProfileScreen from './screens/ProfileScreen';
 import EditOrderScreen from './screens/EditOrderScreen';
 import EditLoadScreen from './screens/EditLoadScreen';
 import MyOrdersScreen from './screens/MyOrdersScreen';
+import MyLoadsScreen from './screens/MyLoadsScreen';
 import OrderListScreen from './screens/OrderListScreen';
 
 const router = createBrowserRouter(
@@ -60,6 +61,9 @@ const router = createBrowserRouter(
         <Route path="/editorder/:id" element={<EditOrderScreen/>}/> 
         <Route path="/editload/:id" element={<EditLoadScreen/>}/> 
         <Route path="/myorders" element={<MyOrdersScreen/>}/> 
+        <Route path="/myloads" element={<MyLoadsScreen/>}/> 
+        <Route path="/search/:keyword" element={<Bookings/>}/>
+        {/* <Route path="/search/:keyword/page/:pageNumber" element={<Bookings/>}/> */}
       </Route>
 
       <Route path='' element={<AdminRoute/>}>

@@ -46,6 +46,12 @@ export const loadsApiSlice = apiSlice.injectEndpoints({
       }),
       invalidatesTags: ['Loads'],
     }),
+    getMyLoads: builder.query({ //loads associated with a user
+      query: () => ({
+        url: `${LOADS_URL}/myloads`,
+      }),
+      keepUnusedDataFor: 5
+    }),
   }),
 })
 
@@ -56,4 +62,5 @@ export const {
   useUpdateLoadStatusMutation,
   useDeleteOrCancelLoadMutation,
   useUpdateLoadMutation,
+  useGetMyLoadsQuery,
 } = loadsApiSlice;

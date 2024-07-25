@@ -11,6 +11,14 @@ const getLoads = asyncHandler(async (req, res) => {
   res.json(loads)
 })
 
+// @Desc get carriers loads ***CHECK***
+// @ route POST /api/myloads
+// @access User/carrier
+const getMyLoads = asyncHandler(async (req, res) => {
+  const loads = await Load.find({ user: req.user._id}); //loads linked to the user
+  res.status(200).json(loads)
+})
+
 // @Desc Fetch a load
 // @ route GET /api/loads/:id
 // @access Public
@@ -275,4 +283,4 @@ const updateLoad = asyncHandler(async (req, res) => {
   }
 });
 
-export {getLoadsById, getLoads, createLoad, updateLoadStatus, cancelOrDeleteLoad, updateLoad}
+export {getLoadsById, getLoads, createLoad, updateLoadStatus, cancelOrDeleteLoad, updateLoad, getMyLoads}

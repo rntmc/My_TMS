@@ -1,3 +1,4 @@
+import { useParams } from 'react-router-dom';
 import { Row, Col, Button, OverlayTrigger, Tooltip } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 import { IoMdAdd } from "react-icons/io";
@@ -9,8 +10,10 @@ import { useGetLoadsQuery } from '../slices/loadsApiSlice';
 import { useGetOrdersQuery } from '../slices/ordersApiSlice';
 
 const Bookings = () => {
+  const {keyword} = useParams()
+
   const { data: loads, isLoading, error } = useGetLoadsQuery();
-  const { data: orders } = useGetOrdersQuery();
+  const { data: orders } = useGetOrdersQuery({keyword});
 
   return (
     <>
@@ -24,7 +27,9 @@ const Bookings = () => {
         <>
           <Row>
             <Col md={10}>
-              <h3>Loads</h3>
+              <Link to={'/myloads'} style={{ textDecoration: 'none' }}>
+                <h3>Loads</h3>
+              </Link>
             </Col>
             <Col md={2} className='d-flex justify-content-end'>
               <OverlayTrigger placement="top" overlay={<Tooltip>Add Load</Tooltip>}>
@@ -42,7 +47,9 @@ const Bookings = () => {
           </Row>
           <Row className='mt-2'>
             <Col md={10}>
-              <h3>Orders</h3>
+            <Link to={'/myorders'} style={{ textDecoration: 'none' }}>
+                <h3>Orders</h3>
+              </Link>
             </Col>
             <Col md={2} className='d-flex justify-content-end'>
                 <OverlayTrigger placement="top" overlay={<Tooltip>Add Order</Tooltip>}>

@@ -1,13 +1,18 @@
 import  mongoose from 'mongoose'
 import asyncHandler from '../middleware/asyncHandler.js';
 import Order from '../models/orderModel.js'
-import Load from '../models/loadModel.js'
 
 // @Desc Fetch all orders
 // @ route GET /api/orders
 // @access Public
 const getOrders = asyncHandler(async (req, res) => {
-  const orders = await Order.find({}).populate('packages');
+
+  // const keyword = req.query.keyword ? { name: {$regex: req.query.keyword, $options: 'i'}} : {};
+
+  // const count = await Order.countDocuments({...keyword})
+
+  const orders = await Order.find({})
+    // .populate('packages');
   res.json(orders)
 })
 
