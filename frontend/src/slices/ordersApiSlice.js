@@ -4,13 +4,17 @@ import { apiSlice } from "./apiSlice";
 export const ordersApiSlice = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
     getOrders: builder.query({
-      query: () => ({
-        url: ORDERS_URL,
-        params: {
-  
-        },
-      }),
-      keepUnusedDataFor: 5
+      query: ({ keyword } = {}) => {
+        const params = {};
+        if (keyword) {
+          params.keyword = keyword;
+        }
+        return {
+          url: ORDERS_URL,
+          params,
+        };
+      },
+      keepUnusedDataFor: 5,
     }),
     getOrderDetails: builder.query({
       query: (orderId) => ({

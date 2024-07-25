@@ -7,7 +7,18 @@ import Order from '../models/orderModel.js';
 // @ route GET /api/loads
 // @access Public
 const getLoads = asyncHandler(async (req, res) => {
-  const loads = await Load.find({}).populate('orders')
+  const keyword = req.query.keyword;
+
+  let query = {};
+  if (keyword) {
+    if (!isNaN(keyword)) {
+      query = { loadNumber: Number(keyword) };
+    } else {
+      query = { loadNumber: { $regex: keyword, $options: 'i' } };
+    }
+  }
+
+  const loads = await Load.find(query).populate('orders')
   res.json(loads)
 })
 

@@ -6,14 +6,13 @@ import { FaCheck } from "react-icons/fa";
 import { MdAttachFile } from "react-icons/md";
 import { useGetOrdersQuery, useUpdateOrderStatusMutation } from '../slices/ordersApiSlice';
 
-const Order = () => {
-  const { data: ordersData, error, isLoading } = useGetOrdersQuery();
+const Order = ({ orders: initialOrders }) => {
   const [orders, setOrders] = useState([]);
-  const [updateOrderStatus] = useUpdateOrderStatusMutation();
+  const [updateOrderStatus, {error, isLoading}] = useUpdateOrderStatusMutation();
 
   useEffect(() => {
-    if (ordersData) {
-      const formattedOrders = ordersData.map(order => {
+    if (initialOrders) {
+      const formattedOrders = initialOrders.map(order => {
         const totalVolume = order.packages.reduce((sum, pkg) => sum + pkg.volume, 0);
         const totalWeight = order.packages.reduce((sum, pkg) => sum + pkg.weight, 0);
         return {
@@ -26,7 +25,7 @@ const Order = () => {
       });
       setOrders(formattedOrders);
     }
-  }, [ordersData]);
+  }, [initialOrders]);
 
   const handleStatus = async (orderId) => {
     try {

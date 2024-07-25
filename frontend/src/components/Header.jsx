@@ -5,6 +5,7 @@ import {LinkContainer} from 'react-router-bootstrap'
 import { useSelector, useDispatch } from 'react-redux';
 import { useLogoutMutation } from '../slices/usersApiSlice';
 import {logout} from '../slices/authSlice'
+import SearchBox from './SearchBox';
 import logo4 from '../assets/logo4.jpg'
 
 const Header = () => {
@@ -38,6 +39,7 @@ const Header = () => {
           <Navbar.Toggle aria-controls="basic-navbar-nav"/>
           <Navbar.Collapse id='basic-navbar-nav'>
             <Nav className='ms-auto'> {/*align items to the right*/}
+              <SearchBox/>
               <LinkContainer to="/bookings">
                 <Nav.Link ><FaTruckPlane/> Bookings</Nav.Link>
               </LinkContainer>

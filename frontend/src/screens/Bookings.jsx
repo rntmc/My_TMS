@@ -11,9 +11,8 @@ import { useGetOrdersQuery } from '../slices/ordersApiSlice';
 
 const Bookings = () => {
   const {keyword} = useParams()
-
-  const { data: loads, isLoading, error } = useGetLoadsQuery();
-  const { data: orders } = useGetOrdersQuery({keyword});
+  const { data: orders } = useGetOrdersQuery({ keyword: keyword || '' });
+  const { data: loads, isLoading, error } = useGetLoadsQuery({ keyword: keyword || '' });
 
   return (
     <>

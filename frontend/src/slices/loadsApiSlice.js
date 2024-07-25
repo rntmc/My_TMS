@@ -4,9 +4,16 @@ import { apiSlice } from "./apiSlice";
 export const loadsApiSlice = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
     getLoads: builder.query({
-      query: () => ({
-        url: LOADS_URL,
-      }),
+      query: ({ keyword } = {}) => {
+        const params = {};
+        if (keyword) {
+          params.keyword = keyword;
+        }
+        return {
+          url: LOADS_URL,
+          params,
+        };
+      },
       providesTags: ['Loads'],
       keepUnusedDataFor: 5
     }),

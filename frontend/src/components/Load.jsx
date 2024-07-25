@@ -7,22 +7,23 @@ import { MdAttachFile } from "react-icons/md";
 import {useUpdateLoadStatusMutation, useGetLoadsQuery} from '../slices/loadsApiSlice'
 import {useGetOrdersQuery} from '../slices/ordersApiSlice'
 
-const Load = () => {
+const Load = ({ loads: initialLoads }) => {
   const [loads, setLoads] = useState([])
   const [orders, setOrders] = useState([])
   const [totals, setTotals] = useState({});
+  const [updateLoadStatus] = useUpdateLoadStatusMutation()
+  
   const { data: loadsData, refetch: refetchLoads } = useGetLoadsQuery();
   const { data: ordersData } = useGetOrdersQuery();
-  const [updateLoadStatus] = useUpdateLoadStatusMutation()
 
   useEffect(() => {
-    if (loadsData) {
-      setLoads(loadsData);
+    if (initialLoads) {
+      setLoads(initialLoads);
     }
     if (ordersData) {
       setOrders(ordersData);
     }
-  }, [loadsData, ordersData]);
+  }, [initialLoads, ordersData]);
 
   useEffect(() => {
     if (orders.length > 0 && loads.length > 0) {

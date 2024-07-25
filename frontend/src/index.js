@@ -54,16 +54,20 @@ const router = createBrowserRouter(
         <Route path="/database/entitycreation" element={<EntityDatabaseCreationScreen/>}/> 
         <Route path="/database/entities" element={<EntityDatabaseScreen/>}/> 
         <Route path="/profile" element={<ProfileScreen/>}/> 
-        <Route path="/Bookings" element={<Bookings/>}/> 
+        <Route path="/bookings" element={<Bookings/>}/> 
         <Route path="/database/edituser/:id" element={<DatabaseUserEditScreen/>}/> 
         <Route path="/database/editcarrier/:id" element={<DatabaseCarrierEditScreen/>}/> 
         <Route path="/database/editentity/:id" element={<DatabaseEntityEditScreen/>}/> 
         <Route path="/editorder/:id" element={<EditOrderScreen/>}/> 
         <Route path="/editload/:id" element={<EditLoadScreen/>}/> 
         <Route path="/myorders" element={<MyOrdersScreen/>}/> 
-        <Route path="/myloads" element={<MyLoadsScreen/>}/> 
-        <Route path="/search/:keyword" element={<Bookings/>}/>
-        {/* <Route path="/search/:keyword/page/:pageNumber" element={<Bookings/>}/> */}
+        <Route path="/myloads" element={<MyLoadsScreen/>}/>
+        
+        <Route path="bookings/search/:keyword" element={<Bookings/>}/> {/*CHECK*/}
+        <Route path="/myloads/search/:keyword" element={<MyLoadsScreen/>}/> {/*CHECK*/}
+        <Route path="/myorders/search/:keyword" element={<MyOrdersScreen/>}/> {/*CHECK*/}
+        {/* <Route path="/search/:keyword/page/:pagenumber" element={<Bookings/>}/> {/*CHECK*/}
+        {/* <Route path="/myorders/page/:pageNumber" element={<MyOrdersScreen/>}/>  */}
       </Route>
 
       <Route path='' element={<AdminRoute/>}>

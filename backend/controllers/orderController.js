@@ -6,15 +6,20 @@ import Order from '../models/orderModel.js'
 // @ route GET /api/orders
 // @access Public
 const getOrders = asyncHandler(async (req, res) => {
+    const keyword = req.query.keyword;
 
-  // const keyword = req.query.keyword ? { name: {$regex: req.query.keyword, $options: 'i'}} : {};
+    let query = {};
+    if (keyword) {
+      if (!isNaN(keyword)) {
+        query = { orderNumber: Number(keyword) };
+      } else {
+        query = { orderNumber: { $regex: keyword, $options: 'i' } };
+      }
+    }
 
-  // const count = await Order.countDocuments({...keyword})
-
-  const orders = await Order.find({})
-    // .populate('packages');
-  res.json(orders)
-})
+    const orders = await Order.find(query).populate('packages');
+    res.json(orders);
+});
 
 // @Desc Fetch a load
 // @ route GET /api/loads/:id
