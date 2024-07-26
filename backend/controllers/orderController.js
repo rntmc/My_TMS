@@ -82,7 +82,11 @@ const createOrder = asyncHandler(async (req, res) => {
     dangerousGoods,
     document,
     user: req.user._id,
-    loads
+    loads,
+    trackingInfo: [{
+      action: 'created',
+      user: req.user._id 
+    }]
   })
 
   if (document && document.length > 8) {
@@ -120,6 +124,10 @@ const updateOrderStatus = asyncHandler(async (req, res) => {
 
   if (status === "confirmed" || status === "open") {
     order.status = status;
+    order.trackingInfo.push({
+      action: 'status_updated',
+      user: req.user._id 
+    });
     await order.save();
     res.status(200).json({ message: 'Order status updated', order });
   } else {
@@ -140,6 +148,10 @@ const cancelOrDeleteOrder = asyncHandler(async (req, res) => {
 
   if (order.status === "delivered" || order.status === "collected") {
     order.status = "cancelled";
+    order.trackingInfo.push({
+      action: 'cancelled',
+      user: req.user._id 
+    });
     await order.save();
     res.status(200).json({ message: 'Order cancelled successfully', order });
   } else if (order.status === "confirmed" || order.status === "open") {
@@ -200,6 +212,11 @@ const updateOrder = asyncHandler(async (req, res) => {
     res.status(400);
     throw new Error('You can only upload up to 8 files per order');
   }
+
+  order.trackingInfo.push({
+    action: 'updated',
+    user: req.user._id
+  });
   
   // Salva a ordem atualizada no banco de dados
   const updatedOrder = await order.save();

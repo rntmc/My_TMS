@@ -99,6 +99,21 @@ const orderSchema = new mongoose.Schema({
     type: Boolean,
     default: false
   },
+  trackingInfo: [{
+    action: {
+      type: String,
+      required: true
+    },
+    timestamp: {
+      type: Date,
+      default: Date.now
+    },
+    user: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'User',
+      required: true
+    }
+  }],
   document: [documentSchema],
   user: {
     type: mongoose.Schema.Types.ObjectId,

@@ -1,25 +1,24 @@
+import { useState } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import {useSelector} from 'react-redux'
-import { Row, Col, ListGroup, Card, Form, Button, OverlayTrigger, Tooltip } from 'react-bootstrap';
+import { Row, Col, ListGroup, Form, Button, OverlayTrigger, Tooltip } from 'react-bootstrap';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import { MdOutlineEdit, MdClose  } from "react-icons/md";
 import { toast } from "react-toastify";
 import Loader from '../components/Loader'
 import Message from '../components/Message'
+import LogHistory from '../components/LogHistory';
 import { useGetLoadDetailsQuery, useDeleteOrCancelLoadMutation } from '../slices/loadsApiSlice';
-import { useUpdateOrderMutation } from '../slices/ordersApiSlice';
 
 const LoadScreen = () => {
   const { id: loadId } = useParams();
   const {userInfo} = useSelector(state=> state.auth)
   const navigate = useNavigate()
 
-  const { data: load, isLoading, error, refetch } = useGetLoadDetailsQuery(loadId);
-  console.log(load)
+  const { data: load, isLoading, error } = useGetLoadDetailsQuery(loadId);
 
   const [deleteOrCancelLoad] = useDeleteOrCancelLoadMutation()
-  const [updateOrder] = useUpdateOrderMutation();
 
   const editLoadNavigator = () => {
     navigate(`/editload/${load._id}`)
@@ -260,28 +259,7 @@ const LoadScreen = () => {
             </ListGroup.Item>
           </Col>
         </Row>
-        <Row>
-          <Col md={8}>
-            <Card>
-              <Card.Header>Tracking History</Card.Header>
-              <Card.Body>
-                <ListGroup variant='flush'>
-                  {load && load.trackingInfo && load.trackingInfo.length > 0 ? (
-                    load.trackingInfo.map((event, index) => (
-                      <ListGroup.Item key={index} style={{ padding: '6px', fontSize: '10px' }}>
-                        <strong>User:</strong> {event.user} <br/>
-                        <strong>Action:</strong> {event.action} <br/>
-                        <strong>Timestamp:</strong> {new Date(event.timestamp).toLocaleString()}
-                      </ListGroup.Item>
-                    ))
-                  ) : (
-                    <ListGroup.Item style={{ paddind: '6px', fontSize: '10px' }}>No tracking history available</ListGroup.Item>
-                  )}
-                </ListGroup>
-              </Card.Body>
-            </Card>
-          </Col>
-        </Row>
+        <LogHistory trackingInfo={load.trackingInfo} />
         </>  
       )}   
     </>

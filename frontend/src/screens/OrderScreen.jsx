@@ -8,6 +8,7 @@ import 'react-datepicker/dist/react-datepicker.css';
 import { toast } from "react-toastify";
 import Loader from '../components/Loader'
 import Message from '../components/Message'
+import LogHistory from '../components/LogHistory';
 import { useGetOrderDetailsQuery, useDeleteOrCancelOrderMutation } from '../slices/ordersApiSlice';
 
 const OrderScreen = () => {
@@ -231,6 +232,7 @@ const OrderScreen = () => {
             </ListGroup.Item>
           </Col>
         </Row>
+        <LogHistory trackingInfo={order.trackingInfo} />
         </>  
       )}   
     </>
