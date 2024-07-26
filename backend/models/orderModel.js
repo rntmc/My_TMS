@@ -104,6 +104,11 @@ const orderSchema = new mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User',  
   },
+  loads: [
+    { 
+      type: mongoose.Schema.Types.ObjectId, ref: 'Load' 
+    }
+  ],
 }, {
   timestamps: true 
 });

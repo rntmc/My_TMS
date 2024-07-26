@@ -94,9 +94,9 @@ const createLoad = asyncHandler(async (req, res) => {
      return orders.map(order => order._id);
    };
  
-   let orderIds;
+   let orderObjs;
    try {
-     orderIds = await getOrderIdsByNumbers(orderNumbers);
+    orderObjs = await getOrderIdsByNumbers(orderNumbers);
    } catch (error) {
      return res.status(404).json({ message: error.message });
    }
@@ -115,7 +115,7 @@ const createLoad = asyncHandler(async (req, res) => {
       ...destination
     },
     transportType,
-    orders: orderIds, // Inclui apenas os IDs das ordens selecionadas
+    orders: orderObjs, // Inclui apenas os IDs das ordens selecionadas
     totalFreightCost,
     totalVolume,
     totalWeight,
@@ -133,6 +133,12 @@ const createLoad = asyncHandler(async (req, res) => {
  
    // Salva a nova carga
    const createdLoad = await load.save();
+
+   // Atualiza as ordens para adicionar o ID da carga
+  await Order.updateMany(
+    { _id: { $in: orderObjs } },
+    { $addToSet: { loads: createdLoad._id } }
+  );
  
    // Popula as ordens na carga criada
    const populatedLoad = await Load.findById(createdLoad._id)
@@ -191,9 +197,22 @@ const cancelOrDeleteLoad = asyncHandler(async (req, res) => {
       user: req.user._id // Assuming the user is authenticated and you have middleware to handle this
     });
     await load.save();
+
+    // Atualizar ordens associadas para remover o ID da carga
+    await Order.updateMany(
+      { _id: { $in: load.orders } },
+      { $pull: { loads: load._id } }
+    );
+
     res.status(200).json({ message: 'Load cancelled successfully', load });
   } else if (load.status === "confirmed" || load.status === "open") {
+    // Excluir a carga
+    await Order.updateMany(
+      { _id: { $in: load.orders } },
+      { $pull: { loads: load._id } }
+    );
     await Load.deleteOne({ _id: load._id });
+    
     res.status(200).json({ message: 'Load deleted successfully' });
   } else {
     res.status(400);
@@ -260,17 +279,25 @@ const updateLoad = asyncHandler(async (req, res) => {
     load.trackingInfo = trackingInfo || load.trackingInfo;
 
     if (orders && orders.length > 0) {
-      
-      const idOrderNumber = orders.map(order => order);
-      
-      // Busca ordens com base no orderNumber
-      const validOrders = await Order.find({ orderNumber: { $in: idOrderNumber } }).select('_id');
-      console.log('Valid orders found:', validOrders);
-
+      const orderNumbers = orders.map(order => order);
+      const validOrders = await Order.find({ orderNumber: { $in: orderNumbers } }).select('_id');
       // Atualiza a lista de ordens na carga
       if (validOrders.length > 0) {
+        // Remove associações antigas
+        await Order.updateMany(
+          { _id: { $in: load.orders } },
+          { $pull: { loads: load._id } }
+        );
+
+        // Atualiza a lista de ordens na carga
         load.orders = validOrders.map(order => order._id);
-      } 
+        await Order.updateMany(
+          { _id: { $in: validOrders.map(order => order._id) } },
+          { $addToSet: { loads: load._id } }
+        );
+      } else {
+        load.orders = []; // Limpa as ordens se o array estiver vazio
+      }
     } else {
       load.orders = []; // Limpa as ordens se o array estiver vazio
     }
@@ -281,7 +308,6 @@ const updateLoad = asyncHandler(async (req, res) => {
     });
 
     const updatedLoad = await load.save();
-    console.log(updatedLoad)
 
     const populatedLoad = await Load.findById(updatedLoad._id)
       .populate({

@@ -17,7 +17,9 @@ const getOrders = asyncHandler(async (req, res) => {
       }
     }
 
-    const orders = await Order.find(query).populate('packages');
+    const orders = await Order.find(query)
+      .populate('packages')
+      .populate('loads');
     res.json(orders);
 });
 
@@ -25,7 +27,9 @@ const getOrders = asyncHandler(async (req, res) => {
 // @ route GET /api/loads/:id
 // @access Public
 const getOrderById = asyncHandler(async (req, res) => {
-  const order = await Order.findById(req.params.id).populate('packages');
+  const order = await Order.findById(req.params.id)
+    .populate('packages')
+    .populate('loads');
 
   if(order) {
     res.json(order)
@@ -52,6 +56,7 @@ const createOrder = asyncHandler(async (req, res) => {
     freightCost,
     dangerousGoods,
     document,
+    loads,
   } = req.body;
 
   const order = new Order({
@@ -71,6 +76,7 @@ const createOrder = asyncHandler(async (req, res) => {
     dangerousGoods,
     document,
     user: req.user._id,
+    loads
   })
 
   if (document && document.length > 8) {
@@ -87,7 +93,9 @@ const createOrder = asyncHandler(async (req, res) => {
 // @ route POST /api/myorders
 // @access User/carrier
 const getMyOrders = asyncHandler(async (req, res) => {
-  const orders = await Order.find({ user: req.user._id}); //orders linked to the user
+  const orders = await Order.find({ user: req.user._id}) //orders linked to the user
+    .populate('loads');
+
   res.status(200).json(orders)
 })
 
@@ -180,6 +188,7 @@ const updateOrder = asyncHandler(async (req, res) => {
   if (req.body.freightCost) order.freightCost = req.body.freightCost;
   if (req.body.dangerousGoods !== undefined) order.dangerousGoods = req.body.dangerousGoods;
   if (req.body.document) order.document = req.body.document;
+  if (req.body.loads) order.loads = req.body.loads;
 
   if (order.document && order.document.length > 8) {
     res.status(400);
@@ -190,7 +199,6 @@ const updateOrder = asyncHandler(async (req, res) => {
   const updatedOrder = await order.save();
 
   // Responde com a ordem atualizada
-  console.log('order updated:', updatedOrder)
   res.status(200).json(updatedOrder);
 });
 
