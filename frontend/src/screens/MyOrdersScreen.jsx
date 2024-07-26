@@ -26,7 +26,7 @@ const MyOrdersScreen = () => {
           </Col>
           <Col md={2} className='d-flex justify-content-end'>
             <OverlayTrigger placement="top" overlay={<Tooltip>Create Order</Tooltip>}>
-              <Link to='/createload' style={{ textDecoration: 'none' }}>
+              <Link to='/createorder' style={{ textDecoration: 'none' }}>
                 <Button style={{padding: '0.5rem 1rem',backgroundColor: '#677074',color: '#fff',textDecoration: 'none',display: 'flex',justifyContent: 'center',alignItems: 'center',border: 'none'}}>
                   Order
                   <IoMdAdd style={{fontSize: '1.5rem',marginLeft: '0.5rem',}} />

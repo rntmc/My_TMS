@@ -1,6 +1,7 @@
 import  mongoose from 'mongoose'
 import asyncHandler from '../middleware/asyncHandler.js';
 import Order from '../models/orderModel.js'
+import getNextOrderNumber from '../utils/getNextOrderNumber.js';
 
 // @Desc Fetch all orders
 // @ route GET /api/orders
@@ -51,7 +52,6 @@ const getOrderById = asyncHandler(async (req, res) => {
 const createOrder = asyncHandler(async (req, res) => {
 
   const {  
-    orderNumber,
     status,
     pickupDate,
     deliveryDate,
@@ -65,6 +65,8 @@ const createOrder = asyncHandler(async (req, res) => {
     loads,
   } = req.body;
 
+  const orderNumber = await getNextOrderNumber();
+  
   const order = new Order({
     orderNumber,
     status,

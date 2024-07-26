@@ -39,7 +39,7 @@ const EditOrderScreen = () => {
   ]);
   const [freightCost, setFreightCost] = useState('');
   const [dangerousGoods, setDangerousGoods] = useState(false);
-  const [document, setDocument] = useState('');
+  const [document, setDocument] = useState([]);
 
   useEffect(() => {
     if (order) {

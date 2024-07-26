@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Form, Button, Row, Col, Card, InputGroup, ListGroup } from 'react-bootstrap';
+import { Form, Button, Row, Col, Card, ListGroup } from 'react-bootstrap';
 import { FaPlus, FaMinus, FaTrash } from "react-icons/fa";
 import {toast} from 'react-toastify';
 import calculateSingleVolume from '../utils/calculateSingleVolume';
@@ -105,6 +105,7 @@ const removeDocument = (index) => {
     setDocument(updatedDocuments);
 };
 
+
   const submitHandler = async (e) => {
     e.preventDefault();
 
@@ -143,8 +144,7 @@ const removeDocument = (index) => {
     };
 
     try {
-      const data = await createOrder(orderData).unwrap();
-      console.log('Order created:', data);
+      await createOrder(orderData).unwrap();
       navigate('/bookings');
     } catch (error) {
       console.error('Error creating order:', error);
@@ -158,18 +158,18 @@ const removeDocument = (index) => {
         <Col md={3}>
           <Form.Group controlId='orderNumber'>
             <Form.Label>Order ID</Form.Label>
-            <Form.Control style={{backgroundColor: '#cdcaca5f'}}
+            <Form.Control style={{backgroundColor: '#cdcaca5f', fontStyle:"italic"}}
               type='number'
               placeholder='Automatically generated'
               value={orderNumber}
-              onChange={(e) => setOrderNumber(e.target.value)}
+              readOnly
             />
           </Form.Group>
         </Col>
         <Col md={3}>
           <Form.Group controlId='status'>
             <Form.Label>Status</Form.Label>
-            <Form.Control style={{backgroundColor: '#cdcaca5f'}}
+            <Form.Control style={{backgroundColor: '#cdcaca5f' , fontStyle:"italic"}}
               type='text'
               placeholder='Enter status'
               readOnly
@@ -211,7 +211,7 @@ const removeDocument = (index) => {
               <Col md={4}>
                 <Form.Group controlId='originEntityNumber'>
                   <Form.Label>Entity Number</Form.Label>
-                  <Form.Control
+                  <Form.Control 
                     type='text'
                     placeholder='Enter Entity number'
                     value={originEntityNumber}
@@ -484,7 +484,7 @@ const removeDocument = (index) => {
                       />
                   </Col>
                   <Col md={2}>
-                    <Form.Control
+                    <Form.Control style={{backgroundColor: '#cdcaca5f'}}
                       type='text'
                       placeholder='Auto-calculated'
                       readOnly
@@ -540,7 +540,7 @@ const removeDocument = (index) => {
         </Col>
       </Row>
 
-    <Col className='mt-3'>
+      <Col className='mt-3'>
     <Card>
       <Card.Body>
         <Card.Title>Documentation</Card.Title>
@@ -584,6 +584,7 @@ const removeDocument = (index) => {
       </Card.Body>
     </Card>
   </Col>
+
 
       <Row>
         <Col>
