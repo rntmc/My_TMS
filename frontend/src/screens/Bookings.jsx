@@ -31,7 +31,7 @@ const Bookings = () => {
               </Link>
             </Col>
             <Col md={2} className='d-flex justify-content-end'>
-              <OverlayTrigger placement="top" overlay={<Tooltip>Add Load</Tooltip>}>
+              <OverlayTrigger placement="top" overlay={<Tooltip>Create Load</Tooltip>}>
                 <Link to='/createload' style={{ textDecoration: 'none' }}>
                   <Button style={{padding: '0.5rem 1rem',backgroundColor: '#677074',color: '#fff',textDecoration: 'none',display: 'flex',justifyContent: 'center',alignItems: 'center',border: 'none'}}>
                     Load

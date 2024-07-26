@@ -6,21 +6,27 @@ import Order from '../models/orderModel.js'
 // @ route GET /api/orders
 // @access Public
 const getOrders = asyncHandler(async (req, res) => {
-    const keyword = req.query.keyword;
+  const keyword = req.query.keyword ;
 
-    let query = {};
-    if (keyword) {
-      if (!isNaN(keyword)) {
-        query = { orderNumber: Number(keyword) };
-      } else {
-        query = { orderNumber: { $regex: keyword, $options: 'i' } };
-      }
+  let query = {};
+
+      // If the user is not an admin, restrict the query to their orders
+  if (req.user.role !== 'Admin') {
+    query.user = req.user._id;
+  }
+    
+  if (keyword) {
+    if (!isNaN(keyword)) {
+      query = { orderNumber: Number(keyword) };
+    } else {
+      query = { orderNumber: { $regex: keyword, $options: 'i' } };
     }
+  }
 
-    const orders = await Order.find(query)
-      .populate('packages')
-      .populate('loads');
-    res.json(orders);
+  const orders = await Order.find(query)
+    .populate('packages')
+    .populate('loads');
+  res.json(orders);
 });
 
 // @Desc Fetch a load

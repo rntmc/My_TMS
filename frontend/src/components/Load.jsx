@@ -155,7 +155,7 @@ const Load = ({ loads: initialLoads }) => {
                             )}
                           </>
                         ) : (
-                          <p>Loading orders...</p>
+                          <p></p>
                         )}
                       </div>
                     );

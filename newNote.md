@@ -28,6 +28,7 @@
 - [X] update dangerousGoods so the icon changes in the bookings page
 - [x] Include dangerousGoods description in booking page
 - [] Special notes at orderModel
+- [] users should only be able to open their own orders
 
 - [X] The status should change once the button "check" is clicked. We need to refresh the page to work
 

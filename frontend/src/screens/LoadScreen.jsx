@@ -1,4 +1,5 @@
 import { useParams, useNavigate, Link } from 'react-router-dom';
+import {useSelector} from 'react-redux'
 import { Row, Col, ListGroup, Card, Form, Button, OverlayTrigger, Tooltip } from 'react-bootstrap';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
@@ -11,6 +12,7 @@ import { useUpdateOrderMutation } from '../slices/ordersApiSlice';
 
 const LoadScreen = () => {
   const { id: loadId } = useParams();
+  const {userInfo} = useSelector(state=> state.auth)
   const navigate = useNavigate()
 
   const { data: load, isLoading, error, refetch } = useGetLoadDetailsQuery(loadId);
@@ -77,10 +79,15 @@ const LoadScreen = () => {
 
   return (
     <>
-      <Link className='btn btn-light my-3' to='/bookings'>
+      {userInfo.role === 'Admin' ? (
+        <Link className='btn btn-light my-3' to='/bookings'>
         Return
       </Link>
-
+      ) : (
+        <Link className='btn btn-light my-3' to='/myloads'>
+          Return
+        </Link>
+      )}
       {isLoading ? (
         <Loader/>
       ) : error ? (

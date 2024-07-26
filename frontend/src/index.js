@@ -32,7 +32,6 @@ import EditOrderScreen from './screens/EditOrderScreen';
 import EditLoadScreen from './screens/EditLoadScreen';
 import MyOrdersScreen from './screens/MyOrdersScreen';
 import MyLoadsScreen from './screens/MyLoadsScreen';
-import OrderListScreen from './screens/OrderListScreen';
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -42,36 +41,36 @@ const router = createBrowserRouter(
       <Route path="/register" element={<RegisterScreen/>}/>
 
       <Route path='/' element={<PrivateRoute/>}>
-        <Route path="/load/:id" element={<LoadScreen/>}/> 
+        <Route path="/profile" element={<ProfileScreen/>}/> 
+        <Route path="/myorders" element={<MyOrdersScreen/>}/> 
         <Route path="/order/:id" element={<OrderScreen/>}/> 
         <Route path="/createorder" element={<CreateOrderScreen/>}/> 
-        <Route path="/createload" element={<CreateLoadScreen/>}/> 
-        <Route path="/database" element={<DatabaseScreen/>}/> 
-        <Route path="/database/usercreation" element={<UserDatabaseCreationScreen/>}/> 
-        <Route path="/database/users" element={<UserDatabaseScreen/>}/> 
-        <Route path="/database/carriercreation" element={<CarrierDatabaseCreationScreen/>}/> 
-        <Route path="/database/carriers" element={<CarrierDatabaseScreen/>}/> 
-        <Route path="/database/entitycreation" element={<EntityDatabaseCreationScreen/>}/> 
-        <Route path="/database/entities" element={<EntityDatabaseScreen/>}/> 
-        <Route path="/profile" element={<ProfileScreen/>}/> 
-        <Route path="/bookings" element={<Bookings/>}/> 
-        <Route path="/database/edituser/:id" element={<DatabaseUserEditScreen/>}/> 
-        <Route path="/database/editcarrier/:id" element={<DatabaseCarrierEditScreen/>}/> 
-        <Route path="/database/editentity/:id" element={<DatabaseEntityEditScreen/>}/> 
         <Route path="/editorder/:id" element={<EditOrderScreen/>}/> 
-        <Route path="/editload/:id" element={<EditLoadScreen/>}/> 
-        <Route path="/myorders" element={<MyOrdersScreen/>}/> 
-        <Route path="/myloads" element={<MyLoadsScreen/>}/>
-        
-        <Route path="bookings/search/:keyword" element={<Bookings/>}/> {/*CHECK*/}
-        <Route path="/myloads/search/:keyword" element={<MyLoadsScreen/>}/> {/*CHECK*/}
         <Route path="/myorders/search/:keyword" element={<MyOrdersScreen/>}/> {/*CHECK*/}
+
+        <Route path="/myloads" element={<MyLoadsScreen/>}/>
+        <Route path="/load/:id" element={<LoadScreen/>}/> 
+        <Route path="/myloads/search/:keyword" element={<MyLoadsScreen/>}/> {/*CHECK*/}
+        
         {/* <Route path="/search/:keyword/page/:pagenumber" element={<Bookings/>}/> {/*CHECK*/}
         {/* <Route path="/myorders/page/:pageNumber" element={<MyOrdersScreen/>}/>  */}
       </Route>
 
       <Route path='' element={<AdminRoute/>}>
-        <Route path='/admin/orderlist' element={<OrderListScreen/>} />
+        <Route path="/bookings" element={<Bookings/>}/> 
+        <Route path="/editload/:id" element={<EditLoadScreen/>}/> 
+        <Route path="/createload" element={<CreateLoadScreen/>}/> 
+        <Route path="bookings/search/:keyword" element={<Bookings/>}/> {/*CHECK*/}
+        <Route path="/database" element={<DatabaseScreen/>}/> 
+        <Route path="/database/users" element={<UserDatabaseScreen/>}/> 
+        <Route path="/database/usercreation" element={<UserDatabaseCreationScreen/>}/> 
+        <Route path="/database/edituser/:id" element={<DatabaseUserEditScreen/>}/> 
+        <Route path="/database/carriers" element={<CarrierDatabaseScreen/>}/> 
+        <Route path="/database/carriercreation" element={<CarrierDatabaseCreationScreen/>}/> 
+        <Route path="/database/editcarrier/:id" element={<DatabaseCarrierEditScreen/>}/> 
+        <Route path="/database/entities" element={<EntityDatabaseScreen/>}/> 
+        <Route path="/database/entitycreation" element={<EntityDatabaseCreationScreen/>}/> 
+        <Route path="/database/editentity/:id" element={<DatabaseEntityEditScreen/>}/> 
       </Route>
     </Route>
   )

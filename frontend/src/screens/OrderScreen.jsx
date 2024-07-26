@@ -1,4 +1,5 @@
 import { useParams, useNavigate } from 'react-router-dom';
+import {useSelector} from 'react-redux'
 import { Link  } from 'react-router-dom';
 import { Row, Col, ListGroup, Form, Button, OverlayTrigger, Tooltip, Card  } from 'react-bootstrap';
 import { MdOutlineEdit, MdClose  } from "react-icons/md";
@@ -11,6 +12,7 @@ import { useGetOrderDetailsQuery, useDeleteOrCancelOrderMutation } from '../slic
 
 const OrderScreen = () => {
   const { id: orderId } = useParams();
+  const {userInfo} = useSelector(state=> state.auth)
   const navigate = useNavigate()
 
   const { data: order, isLoading, error} = useGetOrderDetailsQuery(orderId);
@@ -82,9 +84,15 @@ const OrderScreen = () => {
 
   return (
     <>
-      <Link className='btn btn-light my-3' to='/bookings'>
-        Return
-      </Link>
+      {userInfo.role === 'Admin' ? (
+        <Link className='btn btn-light my-3' to='/bookings'>
+          Return
+        </Link>
+      ) : (
+        <Link className='btn btn-light my-3' to='/myorders'>
+          Return
+        </Link>
+      )}
 
       {isLoading ? (
         <Loader/>
