@@ -26,9 +26,16 @@ const getLoads = asyncHandler(async (req, res) => {
 // @ route POST /api/myloads
 // @access User/carrier
 const getMyLoads = asyncHandler(async (req, res) => {
-  const loads = await Load.find({ user: req.user._id}); //loads linked to the user
-  res.status(200).json(loads)
-})
+  const loads = await Load.find({ user: req.user._id }).populate({
+    path: 'orders',
+    populate: {
+      path: 'packages', 
+      select: 'packageQty length width height volume weight'
+    }
+  });
+
+  res.status(200).json(loads);
+});
 
 // @Desc Fetch a load
 // @ route GET /api/loads/:id

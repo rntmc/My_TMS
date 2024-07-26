@@ -19,8 +19,8 @@
 
 - [] automatically generate order ID
 - [] implement googleAPI to validate address (USA Only)
-- [x] Order Component: if status is Open, show confirm button(carrier & admin only)
 - [] add distance and freight cost to Orders
+- [x] Order Component: if status is Open, show confirm button(carrier & admin only)
 - [X] Add Product quantity rows
 - [X] Add measurements rows
 - [] Add possibility to attach multiple docs to Orders and Loads. Validate file format an max number of files. Add icon for orders with docs attached
@@ -36,3 +36,4 @@
 - [] Barcode with main packages information
 - [] Roteirizacao pelo TMS??
 - [] Pagination
+- [] Search function in /myorders and /myloads
