@@ -40,9 +40,20 @@ const Header = () => {
           <Navbar.Collapse id='basic-navbar-nav'>
             <Nav className='ms-auto'> {/*align items to the right*/}
               <SearchBox/>
-              <LinkContainer to="/bookings">
-                <Nav.Link ><FaTruckPlane/> Bookings</Nav.Link>
-              </LinkContainer>
+              {userInfo && userInfo.role === 'Admin' ? (
+                <LinkContainer to="/bookings">
+                  <Nav.Link><FaTruckPlane/> Bookings</Nav.Link>
+                </LinkContainer>
+              ) : (
+                <>
+                  <LinkContainer to="/myorders">
+                    <Nav.Link> My Orders</Nav.Link>
+                  </LinkContainer>
+                  <LinkContainer to="/myloads">
+                    <Nav.Link>My Loads</Nav.Link>
+                  </LinkContainer>
+                </>
+              )}
               {userInfo ? (
                 <NavDropdown title={userInfo.name} id='username'>
                   <LinkContainer to='profile'>
