@@ -42,7 +42,11 @@ const OrderScreen = () => {
       try {
         await deleteOrCancelOrder(id);
         toast.success(`Order ${order.orderNumber} deleted`)
-        navigate('/bookings')
+        if(userInfo.role === "Admin") {
+          navigate('/bookings')
+        } else {
+          navigate('/myorders')
+        }
       } catch(error) {
         console.error('Error deleting order:', error);
         toast.error(error?.data?.message || error.error)

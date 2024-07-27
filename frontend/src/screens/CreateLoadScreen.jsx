@@ -155,18 +155,18 @@ const CreateLoadScreen = () => {
         <Col md={3}>
           <Form.Group controlId='loadNumber'>
             <Form.Label>Load ID</Form.Label>
-            <Form.Control style={{backgroundColor: '#cdcaca5f'}}
+            <Form.Control style={{backgroundColor: '#cdcaca5f', fontStyle:"italic"}}
               type='text'
-              placeholder='Enter Load ID'
+              placeholder='Automatically generated'
               value={loadNumber}
-              onChange={(e) => setLoadNumber(e.target.value)}
+              readOnly
             />
           </Form.Group>
         </Col>
         <Col md={3}>
           <Form.Group controlId='status'>
             <Form.Label>Status</Form.Label>
-            <Form.Control style={{backgroundColor: '#cdcaca5f'}}
+            <Form.Control style={{backgroundColor: '#cdcaca5f', fontStyle:"italic"}}
               type='text'
               readOnly
               value={status}

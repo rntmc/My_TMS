@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import {useSelector} from 'react-redux'
 import { useNavigate, useParams } from 'react-router-dom';
 import { Form, Button, Row, Col, Card, FormGroup, ListGroup } from 'react-bootstrap';
 import { FaPlus, FaMinus, FaTrash } from "react-icons/fa";
@@ -8,6 +9,7 @@ import calculateSingleVolume from '../utils/calculateSingleVolume';
 
 const EditOrderScreen = () => {
   const { id: orderId } = useParams();
+  const {userInfo} = useSelector(state=> state.auth)
   const { data: order, isLoading, isError } = useGetOrderDetailsQuery(orderId);
   const [uploadOrderDocument] = useUploadOrderDocumentMutation();
   const [updateOrder] = useUpdateOrderMutation();
@@ -148,6 +150,11 @@ const removeDocument = (index) => {
     setDocument(updatedDocuments);
 };
 
+const handleBackButtonClick = () => {
+  const path = userInfo.role === 'Admin' ? '/bookings' : '/myorders';
+  navigate(path);
+};
+
   const submitHandler = async (e) => {
     e.preventDefault();
     const totalVolume = packages.reduce((total, pkg) => {
@@ -196,7 +203,11 @@ const removeDocument = (index) => {
 
     try {
       await updateOrder(updatedOrderData).unwrap();
-      navigate('/bookings');
+      if(userInfo.role === "Admin") {
+        navigate('/bookings')
+      } else {
+        navigate('/myorders')
+      }
     } catch (error) {
       console.error('Error updating order:', error);
     }
@@ -212,7 +223,7 @@ const removeDocument = (index) => {
 
   return (
     <Form onSubmit={submitHandler}>
-      <Button onClick={() => navigate('/bookings')}>Back</Button>
+      <Button onClick={handleBackButtonClick}>Back</Button>
       <Row>
         <Col md={3}>
           <Form.Group controlId='orderId'>

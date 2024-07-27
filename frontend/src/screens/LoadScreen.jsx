@@ -46,7 +46,11 @@ const LoadScreen = () => {
         } else {
           toast.success(`Load ${load.loadNumber} deleted`);
         }
-        navigate('/bookings')
+        if(userInfo.role === "Admin") {
+          navigate('/bookings')
+        } else {
+          navigate('/myloads')
+        }
       } catch(error) {
         console.error('Error deleting order:', error);
         toast.error(error?.data?.message || error.error)

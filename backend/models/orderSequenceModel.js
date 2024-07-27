@@ -1,7 +1,7 @@
 import mongoose from 'mongoose';
 
 // Define the schema for the sequence collection
-const sequenceSchema = new mongoose.Schema({
+const orderSequenceSchema = new mongoose.Schema({
   _id: { 
     type: String, 
     required: true 
@@ -12,6 +12,6 @@ const sequenceSchema = new mongoose.Schema({
   }
 });
 
-const Sequence = mongoose.model('Sequence', sequenceSchema);
+const OrderSequence = mongoose.model('Sequence', orderSequenceSchema);
 
-export default Sequence;
+export default OrderSequence;

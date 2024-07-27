@@ -1,9 +1,9 @@
-import Sequence from '../models/sequenceModel.js'; // Adjust the path as necessary
+import OrderSequence from '../models/orderSequenceModel.js'; // Adjust the path as necessary
 
 const getNextOrderNumber = async () => {
   try {
     // Find and update the sequence document atomically
-    const result = await Sequence.findOneAndUpdate(
+    const result = await OrderSequence.findOneAndUpdate(
       { _id: 'orderNumber' },
       { $inc: { currentValue: 1 } },
       { new: true, upsert: true }
@@ -11,7 +11,7 @@ const getNextOrderNumber = async () => {
 
     return result.currentValue; // Return the updated value
   } catch (error) {
-    console.error('Error updating sequence:', error);
+    console.error('Error updating order sequence:', error);
     throw new Error('Failed to get the next order number');
   }
 };

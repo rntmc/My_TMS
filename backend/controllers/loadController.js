@@ -2,6 +2,7 @@ import  mongoose from 'mongoose'
 import asyncHandler from '../middleware/asyncHandler.js';
 import Load from '../models/loadModel.js'
 import Order from '../models/orderModel.js';
+import getNextLoadNumber from '../utils/getNextLoadNumber.js';
 
 // @Desc Fetch all loads
 // @ route GET /api/loads
@@ -57,7 +58,6 @@ const getLoadsById = asyncHandler(async (req, res) => {
 const createLoad = asyncHandler(async (req, res) => {
 
   const {  
-    loadNumber,
     status,
     carrierName,
     pickupDate,
@@ -78,8 +78,8 @@ const createLoad = asyncHandler(async (req, res) => {
   } = req.body;
 
   // Valida se orders é uma lista
-  if (!Array.isArray(orders) || orders.length === 0) {
-    return res.status(400).json({ message: 'Orders must be an array with at least one order.' });
+  if (!Array.isArray(orders)) {
+    return res.status(400).json({ message: 'Orders must be an array.' });
   }
 
    // Extrai os números das ordens e obtém os IDs das ordens correspondentes
@@ -101,6 +101,7 @@ const createLoad = asyncHandler(async (req, res) => {
      return res.status(404).json({ message: error.message });
    }
  
+   const loadNumber = await getNextLoadNumber();
    // Cria a nova carga com as ordens associadas
    const load = new Load({
     loadNumber,
