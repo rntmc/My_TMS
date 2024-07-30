@@ -5,6 +5,7 @@ import { Form, Button, Row, Col, Card, FormGroup, ListGroup } from 'react-bootst
 import { FaPlus, FaMinus, FaTrash } from "react-icons/fa";
 import { toast } from "react-toastify";
 import { useGetOrderDetailsQuery, useUpdateOrderMutation, useUploadOrderDocumentMutation } from '../slices/ordersApiSlice';
+import { useGetEntityByNumberQuery } from '../slices/entitiesApiSlice';
 import calculateSingleVolume from '../utils/calculateSingleVolume';
 
 const EditOrderScreen = () => {
@@ -43,25 +44,17 @@ const EditOrderScreen = () => {
   const [dangerousGoods, setDangerousGoods] = useState(false);
   const [document, setDocument] = useState([]);
 
+  // Fetch entity details for origin and destination
+  const { data: originEntity, isFetching: isFetchingOriginEntity } = useGetEntityByNumberQuery(originEntityNumber);
+  const { data: destinationEntity, isFetching: isFetchingDestinationEntity } = useGetEntityByNumberQuery(destinationEntityNumber);
+
   useEffect(() => {
     if (order) {
       setStatus(order.status);
       setPickupDate(order.pickupDate ? order.pickupDate.split('T')[0] : '');
       setDeliveryDate(order.deliveryDate ? order.deliveryDate.split('T')[0] : '');
       setOriginEntityNumber(order.origin.entityNumber);
-      setOriginEntityName(order.origin.entityName);
-      setOriginAddress(order.origin.entityLocation.address);
-      setOriginCity(order.origin.entityLocation.city);
-      setOriginState(order.origin.entityLocation.state);
-      setOriginPostcode(order.origin.entityLocation.postcode);
-      setOriginCountry(order.origin.entityLocation.country);
       setDestinationEntityNumber(order.destination.entityNumber);
-      setDestinationEntityName(order.destination.entityName);
-      setDestinationAddress(order.destination.entityLocation.address);
-      setDestinationCity(order.destination.entityLocation.city);
-      setDestinationState(order.destination.entityLocation.state);
-      setDestinationPostcode(order.destination.entityLocation.postcode);
-      setDestinationCountry(order.destination.entityLocation.country);
       setProducts(order.products || [{ productId: '', productQuantity: '' }]);
       setPackages(order.packages || [{ packageQty: '', length: '', width: '', height: '', weight: '', volume: '' }]);
       setFreightCost(order.freightCost);
@@ -69,6 +62,28 @@ const EditOrderScreen = () => {
       setDocument(order.document || []);
     }
   }, [order]);
+
+  useEffect(() => {
+    if (originEntity) {
+      setOriginEntityName(originEntity.name);
+      setOriginAddress(originEntity.location.address);
+      setOriginCity(originEntity.location.city);
+      setOriginState(originEntity.location.state);
+      setOriginPostcode(originEntity.location.postcode);
+      setOriginCountry(originEntity.location.country);
+    }
+  }, [originEntity]);
+
+  useEffect(() => {
+    if (destinationEntity) {
+      setDestinationEntityName(destinationEntity.name);
+      setDestinationAddress(destinationEntity.location.address);
+      setDestinationCity(destinationEntity.location.city);
+      setDestinationState(destinationEntity.location.state);
+      setDestinationPostcode(destinationEntity.location.postcode);
+      setDestinationCountry(destinationEntity.location.country);
+    }
+  }, [destinationEntity]);
 
   const handleProductChange = (index, field, value) => {
     setProducts(prevProducts => {
@@ -294,33 +309,33 @@ const handleBackButtonClick = () => {
               <Col md={8}>
                 <Form.Group controlId='originEntityName'>
                   <Form.Label>Entity Name</Form.Label>
-                  <Form.Control
+                  <Form.Control style={{backgroundColor: '#cdcaca5f'}}
                     type='text'
-                    placeholder='Enter Entity name'
+                    placeholder='Entity name'
                     value={originEntityName}
-                    onChange={(e) => setOriginEntityName(e.target.value)}
+                    readOnly
                   />
                 </Form.Group>
               </Col>
             </Row>
             <Form.Group controlId='originAddress'>
               <Form.Label>Address</Form.Label>
-              <Form.Control
+              <Form.Control style={{backgroundColor: '#cdcaca5f'}}
                 type='text'
-                placeholder='Enter address'
+                placeholder='Address'
                 value={originAddress}
-                onChange={(e) => setOriginAddress(e.target.value)}
+                readOnly
               />
             </Form.Group>
             <Row>
               <Col md={8}>
                 <Form.Group controlId='originCity'>
                   <Form.Label>City</Form.Label>
-                  <Form.Control
+                  <Form.Control style={{backgroundColor: '#cdcaca5f'}}
                     type='text'
-                    placeholder='Enter city'
+                    placeholder='City'
                     value={originCity}
-                    onChange={(e) => setOriginCity(e.target.value)}
+                    readOnly
                   />
                 </Form.Group>
               </Col>
@@ -328,11 +343,11 @@ const handleBackButtonClick = () => {
               <Col md={4}>
                 <Form.Group controlId='originState'>
                   <Form.Label>State</Form.Label>
-                  <Form.Control
+                  <Form.Control style={{backgroundColor: '#cdcaca5f'}}
                     type='text'
-                    placeholder='Enter origin state'
+                    placeholder='State'
                     value={originState}
-                    onChange={(e) => setOriginState(e.target.value)}
+                    readOnly
                   />
                 </Form.Group>
               </Col>
@@ -342,22 +357,22 @@ const handleBackButtonClick = () => {
               <Col md={8}>
                 <Form.Group controlId='originCountry'>
                   <Form.Label>Country</Form.Label>
-                  <Form.Control
+                  <Form.Control style={{backgroundColor: '#cdcaca5f'}}
                     type='text'
-                    placeholder='Enter origin country'
+                    placeholder='Country'
                     value={originCountry}
-                    onChange={(e) => setOriginCountry(e.target.value)}
+                    readOnly
                   />
                 </Form.Group>
               </Col>
               <Col md={4}>
                 <Form.Group controlId='originPostcode'>
                   <Form.Label>Postcode</Form.Label>
-                  <Form.Control
+                  <Form.Control style={{backgroundColor: '#cdcaca5f'}}
                     type='text'
-                    placeholder='Enter origin postcode'
+                    placeholder='Postcode'
                     value={originPostcode}
-                    onChange={(e) => setOriginPostcode(e.target.value)}
+                    readOnly
                   />
                 </Form.Group>
               </Col>
@@ -383,33 +398,33 @@ const handleBackButtonClick = () => {
               <Col md={8}>
                 <Form.Group controlId='destinationEntityName'>
                   <Form.Label>Entity Name</Form.Label>
-                  <Form.Control
+                  <Form.Control style={{backgroundColor: '#cdcaca5f'}}
                     type='text'
-                    placeholder='Enter Entity name'
+                    placeholder='Entity name'
                     value={destinationEntityName}
-                    onChange={(e) => setDestinationEntityName(e.target.value)}
+                    readOnly
                   />
                 </Form.Group>
               </Col>
             </Row>
             <Form.Group controlId='destinationAddress'>
               <Form.Label>Address</Form.Label>
-              <Form.Control
+              <Form.Control style={{backgroundColor: '#cdcaca5f'}}
                 type='text'
-                placeholder='Enter address'
+                placeholder='Address'
                 value={destinationAddress}
-                onChange={(e) => setDestinationAddress(e.target.value)}
+                readOnly
               />
             </Form.Group>
             <Row>
               <Col md={8}>
                 <Form.Group controlId='destinationCity'>
                   <Form.Label>City</Form.Label>
-                  <Form.Control
+                  <Form.Control style={{backgroundColor: '#cdcaca5f'}}
                     type='text'
-                    placeholder='Enter city'
+                    placeholder='City'
                     value={destinationCity}
-                    onChange={(e) => setDestinationCity(e.target.value)}
+                    readOnly
                   />
                 </Form.Group>
               </Col>
@@ -417,11 +432,11 @@ const handleBackButtonClick = () => {
               <Col md={4}>
                 <Form.Group controlId='destinationState'>
                   <Form.Label>State</Form.Label>
-                  <Form.Control
+                  <Form.Control style={{backgroundColor: '#cdcaca5f'}}
                     type='text'
-                    placeholder='Enter destination state'
+                    placeholder='State'
                     value={destinationState}
-                    onChange={(e) => setDestinationState(e.target.value)}
+                    readOnly
                   />
                 </Form.Group>
               </Col>
@@ -431,22 +446,22 @@ const handleBackButtonClick = () => {
               <Col md={8}>
                 <Form.Group controlId='destinationCountry'>
                   <Form.Label>Country</Form.Label>
-                  <Form.Control
+                  <Form.Control style={{backgroundColor: '#cdcaca5f'}}
                     type='text'
-                    placeholder='Enter destination country'
+                    placeholder='Country'
                     value={destinationCountry}
-                    onChange={(e) => setDestinationCountry(e.target.value)}
+                    readOnly
                   />
                 </Form.Group>
               </Col>
               <Col md={4}>
                 <Form.Group controlId='destinationPostcode'>
                   <Form.Label>Postcode</Form.Label>
-                  <Form.Control
+                  <Form.Control style={{backgroundColor: '#cdcaca5f'}}
                     type='text'
-                    placeholder='Enter destination postcode'
+                    placeholder='Postcode'
                     value={destinationPostcode}
-                    onChange={(e) => setDestinationPostcode(e.target.value)}
+                    readOnly
                   />
                 </Form.Group>
               </Col>
