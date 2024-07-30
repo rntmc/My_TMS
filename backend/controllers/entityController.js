@@ -152,10 +152,27 @@ const updateEntity = asyncHandler(async (req, res) => {
   }
 });
 
+// @Desc Get entity by entity number
+// @route GET /api/entities/number/:entityNumber
+// @access Public
+const getEntityByNumber = asyncHandler(async (req, res) => {
+  const { entityNumber } = req.params;
+
+  const entity = await Entity.findOne({ entityNumber });
+
+  if (!entity) {
+    res.status(404);
+    throw new Error('Entity not found');
+  }
+
+  res.json(entity);
+});
+
 export {
   registerEntity,
   getEntities,
   deleteEntity,
   getEntityById,
   updateEntity,
+  getEntityByNumber,
 }

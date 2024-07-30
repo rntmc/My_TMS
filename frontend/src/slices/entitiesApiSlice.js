@@ -39,6 +39,13 @@ export const entitiesApiSlice = apiSlice.injectEndpoints({ //endpoint: {{baseURL
       }),
       invalidatesTags: ['Entities'],
     }),
+    getEntityByNumber: builder.query({
+      query: (entityNumber) => ({
+        url: `${ENTITIES_URL}/number/${entityNumber}`, 
+      }),
+      providesTags: ['Entities'],
+      keepUnusedDataFor: 5,
+    }),
   }),
 })
 
@@ -48,4 +55,5 @@ export const {
   useDeleteEntityMutation,
   useGetEntityQuery,
   useUpdateEntityMutation,
+  useGetEntityByNumberQuery,
 } = entitiesApiSlice;

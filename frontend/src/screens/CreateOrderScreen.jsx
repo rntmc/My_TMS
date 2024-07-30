@@ -1,10 +1,11 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Form, Button, Row, Col, Card, ListGroup } from 'react-bootstrap';
 import { FaPlus, FaMinus, FaTrash } from "react-icons/fa";
 import {toast} from 'react-toastify';
 import calculateSingleVolume from '../utils/calculateSingleVolume';
 import { useCreateOrderMutation, useUploadOrderDocumentMutation } from '../slices/ordersApiSlice';
+import {useGetEntityByNumberQuery } from '../slices/entitiesApiSlice'
 
 const CreateOrderScreen = () => {
   const [orderNumber, setOrderNumber] = useState('');
@@ -35,9 +36,46 @@ const CreateOrderScreen = () => {
   const [dangerousGoods, setDangerousGoods] = useState(false);
   const [document, setDocument] = useState([]);
 
+  const { data: originEntity, refetch: refetchOriginEntity } = useGetEntityByNumberQuery(originEntityNumber);
+  const { data: destinationEntity, refetch: refetchDestinationEntity } = useGetEntityByNumberQuery(destinationEntityNumber)
+
   const [createOrder] = useCreateOrderMutation();
   const [uploadOrderDocument] = useUploadOrderDocumentMutation();
   const navigate = useNavigate();
+
+  useEffect(() => {
+    if (originEntity) {
+      setOriginEntityName(originEntity.name || '');
+      setOriginAddress(originEntity.location.address || '');
+      setOriginCity(originEntity.location.city || '');
+      setOriginState(originEntity.location.state || '');
+      setOriginPostcode(originEntity.location.postcode || '');
+      setOriginCountry(originEntity.location.country || '');
+    }
+  }, [originEntity]);
+  
+  useEffect(() => {
+    if (destinationEntity) {
+      setDestinationEntityName(destinationEntity.name || '');
+      setDestinationAddress(destinationEntity.location.address || '');
+      setDestinationCity(destinationEntity.location.city || '');
+      setDestinationState(destinationEntity.location.state || '');
+      setDestinationPostcode(destinationEntity.location.postcode || '');
+      setDestinationCountry(destinationEntity.location.country || '');
+    }
+  }, [destinationEntity]);
+
+  useEffect(() => {
+    if (originEntityNumber) {
+      refetchOriginEntity();
+    }
+  }, [originEntityNumber]);
+
+  useEffect(() => {
+    if (destinationEntityNumber) {
+      refetchDestinationEntity();
+    }
+  }, [destinationEntityNumber]);
 
   const handleProductChange = (index, field, value) => {
     const updatedProducts = [...products];
@@ -223,33 +261,33 @@ const removeDocument = (index) => {
               <Col md={8}>
                 <Form.Group controlId='originEntityName'>
                   <Form.Label>Entity Name</Form.Label>
-                  <Form.Control
+                  <Form.Control style={{backgroundColor: '#cdcaca5f'}}
                     type='text'
-                    placeholder='Enter Entity name'
+                    placeholder='Entity name'
                     value={originEntityName}
-                    onChange={(e) => setOriginEntityName(e.target.value)}
+                    readOnly
                   />
                 </Form.Group>
               </Col>
             </Row>
             <Form.Group controlId='originAddress'>
               <Form.Label>Address</Form.Label>
-              <Form.Control
+              <Form.Control style={{backgroundColor: '#cdcaca5f'}}
                 type='text'
-                placeholder='Enter address'
+                placeholder='Address'
                 value={originAddress}
-                onChange={(e) => setOriginAddress(e.target.value)}
+                readOnly
               />
             </Form.Group>
             <Row>
               <Col md={8}>
                 <Form.Group controlId='originCity'>
                   <Form.Label>City</Form.Label>
-                  <Form.Control
+                  <Form.Control style={{backgroundColor: '#cdcaca5f'}}
                     type='text'
-                    placeholder='Enter city'
+                    placeholder='City'
                     value={originCity}
-                    onChange={(e) => setOriginCity(e.target.value)}
+                    readOnly
                   />
                 </Form.Group>
               </Col>
@@ -257,11 +295,11 @@ const removeDocument = (index) => {
               <Col md={4}>
                 <Form.Group controlId='originState'>
                   <Form.Label>State</Form.Label>
-                  <Form.Control
+                  <Form.Control style={{backgroundColor: '#cdcaca5f'}}
                     type='text'
-                    placeholder='Enter origin state'
+                    placeholder='State'
                     value={originState}
-                    onChange={(e) => setOriginState(e.target.value)}
+                    readOnly
                   />
                 </Form.Group>
               </Col>
@@ -271,22 +309,22 @@ const removeDocument = (index) => {
               <Col md={8}>
                 <Form.Group controlId='originCountry'>
                   <Form.Label>Country</Form.Label>
-                  <Form.Control
+                  <Form.Control style={{backgroundColor: '#cdcaca5f'}}
                     type='text'
-                    placeholder='Enter origin country'
+                    placeholder='Country'
                     value={originCountry}
-                    onChange={(e) => setOriginCountry(e.target.value)}
+                    readOnly
                   />
                 </Form.Group>
               </Col>
               <Col md={4}>
                 <Form.Group controlId='originPostcode'>
                   <Form.Label>Postcode</Form.Label>
-                  <Form.Control
+                  <Form.Control style={{backgroundColor: '#cdcaca5f'}}
                     type='text'
-                    placeholder='Enter origin postcode'
+                    placeholder='Postcode'
                     value={originPostcode}
-                    onChange={(e) => setOriginPostcode(e.target.value)}
+                    readOnly
                   />
                 </Form.Group>
               </Col>
@@ -300,7 +338,7 @@ const removeDocument = (index) => {
               <Col md={4}>
                 <Form.Group controlId='destinationEntityNumber'>
                   <Form.Label>Entity Number</Form.Label>
-                  <Form.Control
+                  <Form.Control 
                     type='text'
                     placeholder='Enter Entity number'
                     value={destinationEntityNumber}
@@ -312,22 +350,22 @@ const removeDocument = (index) => {
               <Col md={8}>
                 <Form.Group controlId='destinationEntityName'>
                   <Form.Label>Entity Name</Form.Label>
-                  <Form.Control
+                  <Form.Control style={{backgroundColor: '#cdcaca5f'}}
                     type='text'
-                    placeholder='Enter Entity name'
+                    placeholder='Entity name'
                     value={destinationEntityName}
-                    onChange={(e) => setDestinationEntityName(e.target.value)}
+                    readOnly
                   />
                 </Form.Group>
               </Col>
             </Row>
             <Form.Group controlId='destinationAddress'>
               <Form.Label>Address</Form.Label>
-              <Form.Control
+              <Form.Control style={{backgroundColor: '#cdcaca5f'}}
                 type='text'
-                placeholder='Enter address'
+                placeholder='Address'
                 value={destinationAddress}
-                onChange={(e) => setDestinationAddress(e.target.value)}
+                readOnly
               />
             </Form.Group>
 
@@ -335,22 +373,22 @@ const removeDocument = (index) => {
               <Col md={8}>
                 <Form.Group controlId='destinationCity'>
                   <Form.Label>City</Form.Label>
-                  <Form.Control
+                  <Form.Control style={{backgroundColor: '#cdcaca5f'}}
                     type='text'
-                    placeholder='Enter destination city'
+                    placeholder='City'
                     value={destinationCity}
-                    onChange={(e) => setDestinationCity(e.target.value)}
+                    readOnly
                   />
                 </Form.Group>
               </Col>
               <Col md={4}>
                 <Form.Group controlId='destinationState'>
                   <Form.Label>State</Form.Label>
-                  <Form.Control
+                  <Form.Control style={{backgroundColor: '#cdcaca5f'}}
                     type='text'
-                    placeholder='Enter destination state'
+                    placeholder='State'
                     value={destinationState}
-                    onChange={(e) => setDestinationState(e.target.value)}
+                    readOnly
                   />
                 </Form.Group>
               </Col>
@@ -360,22 +398,22 @@ const removeDocument = (index) => {
               <Col md={8}>
                 <Form.Group controlId='destinationCountry'>
                   <Form.Label>Country</Form.Label>
-                  <Form.Control
+                  <Form.Control style={{backgroundColor: '#cdcaca5f'}}
                     type='text'
-                    placeholder='Enter destination country'
+                    placeholder='Country'
                     value={destinationCountry}
-                    onChange={(e) => setDestinationCountry(e.target.value)}
+                    readOnly
                   />
                 </Form.Group>
               </Col>
               <Col md={4}>
                 <Form.Group controlId='destinationPostcode'>
                   <Form.Label>Postcode</Form.Label>
-                  <Form.Control
+                  <Form.Control style={{backgroundColor: '#cdcaca5f'}}
                     type='text'
-                    placeholder='Enter destination postcode'
+                    placeholder='Postcode'
                     value={destinationPostcode}
-                    onChange={(e) => setDestinationPostcode(e.target.value)}
+                    readOnly
                   />
                 </Form.Group>
               </Col>

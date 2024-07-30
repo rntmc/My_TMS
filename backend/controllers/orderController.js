@@ -1,6 +1,7 @@
 import  mongoose from 'mongoose'
 import asyncHandler from '../middleware/asyncHandler.js';
 import Order from '../models/orderModel.js'
+import Entity from '../models/entityModel.js';
 import getNextOrderNumber from '../utils/getNextOrderNumber.js';
 
 // @Desc Fetch all orders
@@ -66,6 +67,15 @@ const createOrder = asyncHandler(async (req, res) => {
   } = req.body;
 
   const orderNumber = await getNextOrderNumber();
+
+  // Validate origin and destination
+  const originEntity = await Entity.findOne({ entityNumber: origin.entityNumber });
+  const destinationEntity = await Entity.findOne({ entityNumber: destination.entityNumber });
+
+  if (!originEntity || !destinationEntity) {
+    res.status(400);
+    throw new Error('Both origin and destination entities must be valid and already registered in the database.');
+  }
   
   const order = new Order({
     orderNumber,
