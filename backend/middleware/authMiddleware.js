@@ -38,7 +38,7 @@ const admin = (req, res, next) => {
 
 // User middleware
 const user = (req, res, next) => {
-  if (req.user && req.user.role === "User") {
+  if (req.user && (req.user.role === "User" || req.user.role === "Admin")) {
     next();
   } else {
     res.status(401);
@@ -48,7 +48,7 @@ const user = (req, res, next) => {
 
 // Carrier middleware
 const carrier = (req, res, next) => {
-  if (req.user && req.user.role === "Carrier") {
+  if (req.user && (req.user.role === "Carrier" || req.user.role === "Admin")) {
     next();
   } else {
     res.status(401);

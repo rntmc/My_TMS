@@ -10,7 +10,7 @@
 - [X] implement logs in orders, loads.
 - [] Correct the issue with logout. Next day, I remained logged in but Im unable to createOrders. 
 
-- [] User Database: active or inactive.
+- [X] User Database: active or inactive.
 - [] Perhaps add OrganizationID to userModel, so they are linked to that organization orders only
 - [x] When updating an user, I want to see the current state of the name, email and role instead of Enter name.
 - [x] If an user/carrier/supplier is updated, my userInfo in Redux changes to the data I have updated. Correct this.

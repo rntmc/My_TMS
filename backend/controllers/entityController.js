@@ -1,5 +1,6 @@
 import asyncHandler from '../middleware/asyncHandler.js';
 import Entity from '../models/entityModel.js'
+import validateAddress from '../utils/validateAddress.js'
 
 // @Desc Register entity
 // @ route POST /api/entity
@@ -20,6 +21,13 @@ const registerEntity = asyncHandler(async (req, res) => {
   if (entityExist) {
     res.status(400);
     throw new Error('Entity already exists')
+  }
+
+  try {
+    await validateAddress({ address, city, state, postcode, country });
+  } catch (error) {
+    res.status(400);
+    throw new Error(`Address validation failed: ${error.message}`);
   }
 
   const entity = await Entity.create({
@@ -112,6 +120,14 @@ const updateEntity = asyncHandler(async (req, res) => {
     const entity = await Entity.findById(id);
 
     if (entity) {
+      // Validate address if location is provided in the request body
+      if (location) {
+        try {
+          await validateAddress(location);
+        } catch (error) {
+          res.status(400).json({ message: `Address validation failed: ${error.message}` });
+        }
+      }
       entity.name = name || entity.name;
       entity.entityNumber = entityNumber || entity.entityNumber;
       entity.location.address = location?.address || entity.location.address;
