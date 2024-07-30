@@ -12,6 +12,11 @@ const authUser = asyncHandler(async (req, res) => {
   const user = await User.findOne({ email});
 
   if(user && (await user.matchPassword(password))) {
+    // Check if the user is active
+    if (!user.active) {
+      res.status(401);
+      throw new Error('User account is not active');
+    }
     generateToken(res, user._id)
 
     res.status(200).json({
@@ -19,6 +24,7 @@ const authUser = asyncHandler(async (req, res) => {
       name: user.name,
       email: user.email,
       role: user.role,
+      active: user.active
     })
   } else {
     res.status(401);
@@ -30,7 +36,7 @@ const authUser = asyncHandler(async (req, res) => {
 // @ route POST /api/users
 // @access Public
 const registerUser = asyncHandler(async (req, res) => {
-  const {name, email, password, role} = req.body;
+  const {name, email, password, role, active} = req.body;
 
   const userExist = await User.findOne({ email })
 
@@ -43,7 +49,8 @@ const registerUser = asyncHandler(async (req, res) => {
     name,
     email,
     password,
-    role
+    role,
+    active
   });
 
   if(user) {
@@ -54,6 +61,7 @@ const registerUser = asyncHandler(async (req, res) => {
       name: user.name,
       email: user.email,
       role: user.role,
+      active: user.active,
     })
   } else {
     res.status(400);
@@ -85,6 +93,7 @@ const getUserProfile = asyncHandler(async (req, res) => {
       name: user.name,
       email: user.email,
       role: user.role,
+      active: user.active,
     })
   } else {
     res.status(404);
@@ -112,6 +121,7 @@ const updateUserProfile = asyncHandler(async (req, res) => {
       name: updateUser.name,
       email: updateUser.email,
       password: updateUser.password,
+      active: updateUser.active,
     })
   } else {
     res.status(404);
@@ -167,9 +177,10 @@ const updateUser = asyncHandler(async (req, res) => {
   const user = await User.findById(req.params.id)
 
   if(user) {
-    user.name = req.body.name || user.name
-    user.email = req.body.email || user.email
-    user.role = req.body.role || user.role
+    user.name = req.body.name || user.name;
+    user.email = req.body.email || user.email;
+    user.role = req.body.role || user.role;
+    user.active = req.body.active !== undefined ? req.body.active : user.active;
 
     const updatedUser = await user.save();
 
@@ -178,6 +189,7 @@ const updateUser = asyncHandler(async (req, res) => {
       name: updatedUser.name,
       email: updatedUser.email,
       role: updatedUser.role,
+      active: updatedUser.active,
     });
   } else {
     res.status(404);

@@ -18,6 +18,7 @@ const DatabaseUserEditScreen = () => {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [role, setRole] = useState('')
+  const [active, setActive] = useState(true)
 
   const [updateUser] = useUpdateUserMutation();
 
@@ -26,6 +27,7 @@ const DatabaseUserEditScreen = () => {
       setName(user.name || '');
       setEmail(user.email || '');
       setRole(user.role || '')
+      setActive(user.active !== undefined ? user.active : true)
     }
   }, [user]);
 
@@ -38,6 +40,7 @@ const DatabaseUserEditScreen = () => {
         name,
         email,
         role,
+        active,
       }).unwrap();
 
       // Verifica se o usuário atualizado é o mesmo que está logado
@@ -97,6 +100,15 @@ const DatabaseUserEditScreen = () => {
               <option value="User">User</option>
               <option value="Carrier">Carrier</option>
             </Form.Control>
+          </Form.Group>
+
+          <Form.Group controlId='active' className='my-2'>
+            <Form.Check
+              type='checkbox'
+              label='Active'
+              checked={active} // Directly use boolean
+              onChange={(e) => setActive(e.target.checked)} // Set boolean directly
+            ></Form.Check>
           </Form.Group>
 
           <Button type='submit' variant='primary' className='my-2'>

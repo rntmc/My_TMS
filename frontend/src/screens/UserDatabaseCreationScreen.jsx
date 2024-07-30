@@ -8,6 +8,7 @@ const UserDatabaseCreationScreen = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [role, setRole] = useState('');
+  const [active, setActive] = useState(true);
 
   const navigate = useNavigate()
 
@@ -15,7 +16,7 @@ const UserDatabaseCreationScreen = () => {
 
   const submitHandler = async (e) => {
     e.preventDefault();
-    const userData = { name, email, password, role };
+    const userData = { name, email, password, role, active };
 
     try {
       const response = await registerUser(userData).unwrap();
@@ -24,7 +25,8 @@ const UserDatabaseCreationScreen = () => {
       setName('');
       setEmail('');
       setPassword('');
-      setRole('');   // Reset role selections
+      setRole('');
+      setActive(true);
       navigate('/database/users')
     } catch (err) {
       console.error('Error creating user:', err);

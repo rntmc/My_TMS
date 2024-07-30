@@ -1,10 +1,10 @@
 ## TO DO LIST:
 
 - [] check if really need bookingSlice.js
-- [] logInfo at models
+- [X] logInfo at models
 
 - [] loginScreen.jsx: Remove /register as only admin must be able to create users
-- [] RegisterScreen.jsx: Only admins must be able to add users/carriers
+- [X] RegisterScreen.jsx: Only admins must be able to add users/carriers
 - [] fix the middlewares to ensure the accesses are assigned correctly! (if include admin in )
 - [] Only Carrier and Admin should be able to change orders/load status
 - [X] implement logs in orders, loads.
@@ -17,7 +17,7 @@
 
 - [] Supplier Database: adjust opening hours to accept blank days or create drop down list
 
-- [] automatically generate order ID
+- [X] automatically generate order and load ID
 - [] implement googleAPI to validate address (USA Only)
 - [] add distance and freight cost to Orders
 - [x] Order Component: if status is Open, show confirm button(carrier & admin only)
@@ -33,7 +33,7 @@
 
 - [X] The status should change once the button "check" is clicked. We need to refresh the page to work
 
-- [] Carrier address should be udpated to location
+- [X] Carrier address should be udpated to location
 
 - [] Barcode with main packages information
 - [] Roteirizacao pelo TMS??

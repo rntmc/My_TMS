@@ -82,6 +82,7 @@ const UserDatabaseScreen = () => {
               <th>Name</th>
               <th>Email</th>
               <th>Role</th>
+              <th>Status</th>
               <th>Action</th>
             </tr>
           </thead>
@@ -92,6 +93,7 @@ const UserDatabaseScreen = () => {
                 <td>{user.name}</td>
                 <td>{user.email}</td>
                 <td>{user.role ? user.role : ''}</td>
+                <td>{user.active === true ? 'Active' : 'Inactive'}</td>
                 <td>
                   <div style={{ display: 'flex', flexDirection: 'row', gap: '0.5rem', justifyContent: 'center' }}>
                     <OverlayTrigger
