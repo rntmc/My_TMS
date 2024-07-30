@@ -89,6 +89,9 @@ const orderSchema = new mongoose.Schema({
     },
     entityLocation: addressSchema
   },
+  distance: { 
+    type: Number,
+  },
   products: [productSchema],
   packages: [packageSchema],
   freightCost: {

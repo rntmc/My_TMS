@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom';
 import { CgDanger } from "react-icons/cg";
 import { FaCheck } from "react-icons/fa";
 import { MdAttachFile } from "react-icons/md";
-import { useGetOrdersQuery, useUpdateOrderStatusMutation } from '../slices/ordersApiSlice';
+import { useUpdateOrderStatusMutation, useGetOrderDetailsQuery } from '../slices/ordersApiSlice';
 
 const Order = ({ orders: initialOrders }) => {
   const [orders, setOrders] = useState([]);
@@ -62,6 +62,7 @@ const Order = ({ orders: initialOrders }) => {
             <th>Volume</th>
             <th>Weight</th>
             <th>Freight Cost</th>
+            <th>Distance</th>
             <th style={{ width: '120px', textAlign: 'center' }}>Status</th>
           </tr>
         </thead>
@@ -122,6 +123,7 @@ const Order = ({ orders: initialOrders }) => {
               <td>{order.totalVolume.toFixed(2)} m&#179;</td>
               <td>{order.totalWeight.toFixed(2)} kg</td>
               <td>$ {order.freightCost.toFixed(2)}</td>
+              <td>{order.distance} km</td>
               <td>
           <div style={{ display: 'flex', alignItems: 'center', justifyContent:'center', gap: '0.5rem' }}>
             <span>{order.status}</span>

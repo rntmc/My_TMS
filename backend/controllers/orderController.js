@@ -3,6 +3,7 @@ import asyncHandler from '../middleware/asyncHandler.js';
 import Order from '../models/orderModel.js'
 import Entity from '../models/entityModel.js';
 import getNextOrderNumber from '../utils/getNextOrderNumber.js';
+import calculateDistance from '../utils/calculateDistance.js';
 
 // @Desc Fetch all orders
 // @ route GET /api/orders
@@ -76,7 +77,13 @@ const createOrder = asyncHandler(async (req, res) => {
     res.status(400);
     throw new Error('Both origin and destination entities must be valid and already registered in the database.');
   }
-  
+
+  // Format addresses
+  const originAddress = `${originEntity.location.address}, ${originEntity.location.city}, ${originEntity.location.state}, ${originEntity.location.postcode}, ${originEntity.location.country}`
+  const destinationAddress= `${destinationEntity.location.address}, ${destinationEntity.location.city}, ${destinationEntity.location.state}, ${destinationEntity.location.postcode}, ${destinationEntity.location.country}`
+
+  const distance = await calculateDistance( {origin: originAddress, destination: destinationAddress} );
+
   const order = new Order({
     orderNumber,
     status,
@@ -88,6 +95,7 @@ const createOrder = asyncHandler(async (req, res) => {
     destination: {
       ...destination
     },
+    distance,
     products,
     packages,
     freightCost,

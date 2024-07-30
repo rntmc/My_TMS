@@ -18,7 +18,8 @@
 - [] Supplier Database: adjust opening hours to accept blank days or create drop down list
 
 - [X] automatically generate order and load ID
-- [] implement googleAPI to validate address (USA Only)
+- [X] implement googleAPI to validate address
+- [] validate orderNumbers before fill in the form
 - [] add distance and freight cost to Orders
 - [x] Order Component: if status is Open, show confirm button(carrier & admin only)
 - [X] Add Product quantity rows

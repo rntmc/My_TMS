@@ -8,7 +8,7 @@ const costPerKmTable = {
 
 
 export const calculateDistance = async (origin, destination) => {
-  const apiKey = 'AIzaSyBeNCyfRVOgIW_F2QNeDjZtLBRrkolF9GQ'; // Replace with API key
+  const apiKey = process.env.GOOGLE_API_KEY; // Replace with API key
   const response = await axios.get('https://maps.googleapis.com/maps/api/distancematrix/json', {
     params: {
       origins: origin,
