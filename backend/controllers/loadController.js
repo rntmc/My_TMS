@@ -27,7 +27,10 @@ const getLoads = asyncHandler(async (req, res) => {
 // @ route POST /api/myloads
 // @access User/carrier
 const getMyLoads = asyncHandler(async (req, res) => {
-  const loads = await Load.find({ user: req.user._id }).populate({
+  const userOrders = await Order.find({ user: req.user._id }).select('_id');
+  const userOrderIds = userOrders.map(order => order._id);
+
+  const loads = await Load.find({ 'orders': { $in: userOrderIds } }).populate({
     path: 'orders',
     populate: {
       path: 'packages', 

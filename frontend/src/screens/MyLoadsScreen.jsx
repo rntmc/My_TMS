@@ -1,25 +1,29 @@
 import { Row, Col } from 'react-bootstrap';
-import { Link } from 'react-router-dom';
-import { IoMdAdd } from "react-icons/io";
-import { useDispatch, useSelector } from 'react-redux';
-import { toast } from 'react-toastify';
-import { useProfileMutation } from '../slices/usersApiSlice';
 import { useGetMyLoadsQuery } from '../slices/loadsApiSlice';
-import { setCredentials } from '../slices/authSlice';
+import { useGetMyOrdersQuery } from '../slices/ordersApiSlice';
 import Loader from '../components/Loader';
 import Message from '../components/Message'
 import Load from '../components/Load';
 
 const MyLoadsScreen = () => {
-  const {data: loads, isLoading, error} = useGetMyLoadsQuery()
+  const { data: loads, isLoading: isLoadsLoading, error: loadsError } = useGetMyLoadsQuery();
+  const { data: orders, isLoading: isOrdersLoading, error: ordersError } = useGetMyOrdersQuery();
+
+  let filteredLoads = []; //use this to avoid the "some" undefined error
+
+  if (loads && orders) {
+    filteredLoads = loads.filter(load => 
+      load.orders.some(order => orders.some(userOrder => userOrder._id === order._id))
+    );
+  }
 
   return (
     <>
-    {isLoading ? (
+    {isLoadsLoading || isOrdersLoading ? (
       <Loader />
-    ) : error ? (
+    ) : loadsError ||  ordersError ? (
       <Message variant='danger'>
-        {error?.data?.message || error.error}
+        {loadsError?.data?.message || ordersError?.data?.message || loadsError.error || ordersError.error}
       </Message>
     ) : (
       <>
@@ -29,7 +33,7 @@ const MyLoadsScreen = () => {
           </Col>
           </Row>
           <Row>
-            <Load loads={loads} />
+            <Load loads={filteredLoads} />
         </Row>
       </>
     )}

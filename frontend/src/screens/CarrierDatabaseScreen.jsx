@@ -47,16 +47,17 @@ const CarrierDatabaseScreen = () => {
     <Row style={{ padding: '20px', backgroundColor: '#f8f9fa', borderRadius: '10px', boxShadow: '0 0 10px rgba(0, 0, 0, 0.1)' }}>
       <Col xs={12} style={{ marginBottom: '20px' }}>
         <Row>
-          <Col md={11}>
+          <Col md={10}>
             <h2>Carriers Database</h2>
           </Col>
-          <Col md={1} className="text-center">
+          <Col md={2} className="d-flex justify-content-end align-items-center">
             <OverlayTrigger
               placement="top"
-              overlay={<Tooltip>Add Carrier</Tooltip>}
+              overlay={<Tooltip>Create Carrier</Tooltip>}
             >
-              <Link to='/database/carriercreation'>
-                <Button variant="primary" style={{ padding: '0.3rem', backgroundColor: '#007bff', border: 'none', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+              <Link to='/database/carriercreation' style={{ textDecoration: 'none' }}>
+                <Button style={{ padding: '0.5rem 0.8rem', backgroundColor: '#677074', color: '#fff', border: 'none' }}>
+                  Carrier
                   <IoMdAdd style={{ fontSize: '1.5rem' }} />
                 </Button>  
               </Link>

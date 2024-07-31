@@ -6,7 +6,7 @@
 - [X] loginScreen.jsx: Remove /register as only admin must be able to create users
 - [X] RegisterScreen.jsx: Only admins must be able to add users/carriers
 - [] fix the middlewares to ensure the accesses are assigned correctly! (if include admin in )
-- [] Only Carrier and Admin should be able to change orders/load status
+- [X] Only Carrier and Admin should be able to change orders/load status
 - [X] implement logs in orders, loads.
 - [] Correct the issue with logout. Next day, I remained logged in but Im unable to createOrders. 
 

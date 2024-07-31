@@ -63,10 +63,11 @@ const UserDatabaseScreen = () => {
           <Col md={1} className="text-center">
             <OverlayTrigger
               placement="top"
-              overlay={<Tooltip>Add User</Tooltip>}
+              overlay={<Tooltip>Create User</Tooltip>}
             >
-              <Link to='/database/usercreation'>
-                <Button variant="primary" style={{ padding: '0.3rem', backgroundColor: '#007bff', border: 'none', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+              <Link to='/database/usercreation' style={{ textDecoration: 'none' }}>
+                <Button style={{padding: '0.5rem 0.8rem',backgroundColor: '#677074',color: '#fff',textDecoration: 'none',display: 'flex',justifyContent: 'center',alignItems: 'center',border: 'none'}}>
+                  User
                   <IoMdAdd style={{ fontSize: '1.5rem' }} />
                 </Button>  
               </Link>
