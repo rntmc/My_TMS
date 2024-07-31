@@ -39,4 +39,4 @@
 - [] Barcode with main packages information
 - [] Roteirizacao pelo TMS??
 - [] Pagination
-- [] Search function in /myorders and /myloads
+- [X] Search function in /myorders and /myloads
