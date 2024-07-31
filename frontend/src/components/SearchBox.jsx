@@ -16,7 +16,7 @@ const SearchBox = () => {
       if(userInfo.role === 'Admin') {
         navigate(`/bookings/search/${keyword}`);
       } else {
-        navigate(`/myorders/search/${keyword}`);
+        navigate(`/search/${keyword}`);
       }
     } else {
       navigate(-1)
@@ -30,7 +30,7 @@ const SearchBox = () => {
         name='q'
         onChange={(e) => setKeyword(e.target.value)}
         value={keyword}
-        placeholder='Enter load/order'
+        placeholder={userInfo && userInfo.role === 'Admin' ? 'Enter load/order' : 'Enter order'}
         className='mr-sm-2 ml-sm-5'>
       </Form.Control>
       <Button type='submit' variant='outline-light' className='p-2 mx-2'>

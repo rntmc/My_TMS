@@ -53,11 +53,18 @@ export const loadsApiSlice = apiSlice.injectEndpoints({
       }),
       invalidatesTags: ['Loads'],
     }),
-    getMyLoads: builder.query({ //loads associated with a user
-      query: () => ({
-        url: `${LOADS_URL}/myloads`,
-      }),
-      keepUnusedDataFor: 5
+    getMyLoads: builder.query({
+      query: ({ keyword } = {}) => {
+        const params = {};
+        if (keyword) {
+          params.keyword = keyword;
+        }
+        return {
+          url: `${LOADS_URL}/myloads`,
+          params,
+        };
+      },
+      keepUnusedDataFor: 5,
     }),
     uploadLoadDocument: builder.mutation({
       query: (data) => ({

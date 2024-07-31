@@ -1,4 +1,3 @@
-import { useState } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import {useSelector} from 'react-redux'
 import { Row, Col, ListGroup, Form, Button, OverlayTrigger, Tooltip } from 'react-bootstrap';
@@ -104,7 +103,9 @@ const LoadScreen = () => {
             <ListGroup style={{ fontSize: '0.875rem' }}>
               <h3>Load Number: {load.loadNumber}</h3>
             </ListGroup>
-            </Col>
+          </Col>
+            {userInfo.role === 'Admin' ? (
+
             <Col md={2} className="text-end">
               <div style={{ display: 'flex', flexDirection: 'row', gap: '0.25rem', justifyContent: 'flex-end' }}>
                 <OverlayTrigger
@@ -144,6 +145,7 @@ const LoadScreen = () => {
                 </OverlayTrigger>
               </div>
             </Col>
+            ) : ('')}
           </Row>
           <Row>
             <Col md={4}>

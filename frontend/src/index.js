@@ -32,6 +32,7 @@ import EditOrderScreen from './screens/EditOrderScreen';
 import EditLoadScreen from './screens/EditLoadScreen';
 import MyOrdersScreen from './screens/MyOrdersScreen';
 import MyLoadsScreen from './screens/MyLoadsScreen';
+import SearchScreen from './screens/SearchScreen';
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -47,6 +48,7 @@ const router = createBrowserRouter(
         <Route path="/createorder" element={<CreateOrderScreen/>}/> 
         <Route path="/editorder/:id" element={<EditOrderScreen/>}/> 
         <Route path="/myorders/search/:keyword" element={<MyOrdersScreen/>}/> {/*CHECK*/}
+        <Route path="/search/:keyword" element={<SearchScreen/>} />
 
         <Route path="/myloads" element={<MyLoadsScreen/>}/>
         <Route path="/load/:id" element={<LoadScreen/>}/> 

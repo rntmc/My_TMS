@@ -26,9 +26,7 @@ const Bookings = () => {
         <>
           <Row>
             <Col md={10}>
-              <Link to={'/myloads'} style={{ textDecoration: 'none' }}>
-                <h3>Loads</h3>
-              </Link>
+              <h3>Loads</h3>
             </Col>
             <Col md={2} className='d-flex justify-content-end'>
               <OverlayTrigger placement="top" overlay={<Tooltip>Create Load</Tooltip>}>
@@ -46,9 +44,7 @@ const Bookings = () => {
           </Row>
           <Row className='mt-2'>
             <Col md={10}>
-            <Link to={'/myorders'} style={{ textDecoration: 'none' }}>
-                <h3>Orders</h3>
-              </Link>
+              <h3>Orders</h3>
             </Col>
             <Col md={2} className='d-flex justify-content-end'>
                 <OverlayTrigger placement="top" overlay={<Tooltip>Add Order</Tooltip>}>

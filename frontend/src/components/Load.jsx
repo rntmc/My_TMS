@@ -32,25 +32,26 @@ const Load = ({ loads: initialLoads }) => {
       const newTotals = {};
 
       loads.forEach(load => {
-        const loadOrders = load.orders.map(order =>
-          orders.find(o => o._id === order._id)
-        );
+        // Filter orders to include only those the user should see
+        const visibleOrders = load.orders
+          .map(order => orders.find(o => o._id === order._id))
+          .filter(order => order && (!userInfo || userInfo.role === 'Admin' || order.user === userInfo._id));
 
-        const totalVolume = loadOrders.reduce((acc, order) => {
+        const totalVolume = visibleOrders.reduce((acc, order) => {
           if (order && order.packages) {
             return acc + order.packages.reduce((pAcc, pkg) => pAcc + pkg.volume, 0);
           }
           return acc;
         }, 0);
 
-        const totalWeight = loadOrders.reduce((acc, order) => {
+        const totalWeight = visibleOrders.reduce((acc, order) => {
           if (order && order.packages) {
             return acc + order.packages.reduce((pAcc, pkg) => pAcc + pkg.weight, 0);
           }
           return acc;
         }, 0);
 
-        const totalFreightCost = loadOrders.reduce((acc, order) => acc + (order ? order.freightCost : 0), 0);
+        const totalFreightCost = visibleOrders.reduce((acc, order) => acc + (order ? order.freightCost : 0), 0);
 
         newTotals[load._id] = {
           totalVolume,
@@ -61,7 +62,7 @@ const Load = ({ loads: initialLoads }) => {
 
       setTotals(newTotals);
     }
-  }, [orders, loads]);
+  }, [orders, loads, userInfo]);
 
   const handleStatus = async (loadId) => {
     try {
@@ -91,10 +92,14 @@ const Load = ({ loads: initialLoads }) => {
             <th>Load #</th>
             <th>Origin</th>
             <th>Destination</th>
+            <th>
+              <div>Pickup Date</div>
+              <div>Delivery Date</div>
+            </th>
             <th>Orders</th>
-            <th>Cost</th>
             <th>Volume</th>
             <th>Weight</th>
+            <th>Freight Cost</th>
             <th>Carrier</th>
             <th>Method</th>
             <th>Status</th>
@@ -142,10 +147,18 @@ const Load = ({ loads: initialLoads }) => {
                     {load.destination.entityLocation.country} - {load.destination.entityLocation.postcode}
                   </div>
                 </td>
+                <td style={{ fontSize: '10px' }}>
+                  <div>{new Date(load.pickupDate).toLocaleDateString()}</div>
+                  <div>{new Date(load.deliveryDate).toLocaleDateString()}</div>
+                </td>
                 <td>
                   {load.orders.length > 0 ? (
                     load.orders.map((order) => {
                       const orderData = orders.find((o) => o._id === order._id);
+                      // Only render orders that are visible to the user
+                      if (!orderData || (userInfo.role !== 'Admin' && orderData.user !== userInfo._id)) {
+                        return null;
+                      }
                       return (
                         <div key={order._id}>
                           {orderData ? (
@@ -184,9 +197,9 @@ const Load = ({ loads: initialLoads }) => {
                     <p></p>
                   )}
                 </td>
-                <td>$ {totals[load._id]?.totalFreightCost.toFixed(2) ?? load.totalFreightCost.toFixed(2)}</td>
                 <td>{totals[load._id]?.totalVolume.toFixed(2) ?? load.totalVolume.toFixed(2)} m³</td>
                 <td>{totals[load._id]?.totalWeight.toFixed(2) ?? load.totalWeight.toFixed(2)} kg</td>
+                <td>$ {totals[load._id]?.totalFreightCost.toFixed(2) ?? load.totalFreightCost.toFixed(2)}</td>
                 <td>{load.carrierName}</td>
                 <td>{load.transportType}</td>
                 <td>

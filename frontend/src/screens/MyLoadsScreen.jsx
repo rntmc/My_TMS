@@ -1,3 +1,4 @@
+import { useParams } from 'react-router-dom';
 import { Row, Col } from 'react-bootstrap';
 import { useGetMyLoadsQuery } from '../slices/loadsApiSlice';
 import { useGetMyOrdersQuery } from '../slices/ordersApiSlice';
@@ -6,8 +7,10 @@ import Message from '../components/Message'
 import Load from '../components/Load';
 
 const MyLoadsScreen = () => {
-  const { data: loads, isLoading: isLoadsLoading, error: loadsError } = useGetMyLoadsQuery();
-  const { data: orders, isLoading: isOrdersLoading, error: ordersError } = useGetMyOrdersQuery();
+  const {keyword} = useParams()
+
+  const { data: loads, isLoading: isLoadsLoading, error: loadsError } = useGetMyLoadsQuery({ keyword: keyword || '' });
+  const { data: orders, isLoading: isOrdersLoading, error: ordersError } = useGetMyOrdersQuery({ keyword: keyword || '' });
 
   let filteredLoads = []; //use this to avoid the "some" undefined error
 

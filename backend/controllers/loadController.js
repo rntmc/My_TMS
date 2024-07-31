@@ -41,13 +41,54 @@ const getLoads = asyncHandler(async (req, res) => {
 // @ route POST /api/myloads
 // @access User/carrier
 const getMyLoads = asyncHandler(async (req, res) => {
-  const userOrders = await Order.find({ user: req.user._id }).select('_id');
+  const keyword = req.query.keyword;
+
+  // Fetch user's orders
+  let userOrdersQuery = { user: req.user._id };
+
+  if (keyword) {
+    if (!isNaN(keyword)) {
+      userOrdersQuery = {
+        $and: [
+          { user: req.user._id },
+          { orderNumber: Number(keyword) }
+        ]
+      };
+    } else {
+      try {
+        // Attempt to convert the keyword to an ObjectId
+        const objectId = new mongoose.Types.ObjectId(keyword);
+        userOrdersQuery = {
+          $and: [
+            { user: req.user._id },
+            {
+              $or: [
+                { orderNumber: { $regex: keyword, $options: 'i' } },
+                { _id: objectId }
+              ]
+            }
+          ]
+        };
+      } catch (error) {
+        // Keyword is a string but not a valid ObjectId
+        userOrdersQuery = {
+          $and: [
+            { user: req.user._id },
+            { orderNumber: { $regex: keyword, $options: 'i' } }
+          ]
+        };
+      }
+    }
+  }
+
+  const userOrders = await Order.find(userOrdersQuery).select('_id');
   const userOrderIds = userOrders.map(order => order._id);
 
+  // Fetch loads containing the user's orders
   const loads = await Load.find({ 'orders': { $in: userOrderIds } }).populate({
     path: 'orders',
     populate: {
-      path: 'packages', 
+      path: 'packages',
       select: 'packageQty length width height volume weight'
     }
   });
