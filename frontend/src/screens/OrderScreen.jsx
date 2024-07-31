@@ -211,7 +211,7 @@ const OrderScreen = () => {
           <Row className="mb-2">
             <Col md={4}>
               <ListGroup.Item style={{ fontSize: '0.875rem' }}>
-                <strong>Distance:</strong> {'N/A'} km
+                <strong>Distance:</strong> {order.distance.toFixed(0)} km
               </ListGroup.Item>
             </Col>
             <Col md={4}>
