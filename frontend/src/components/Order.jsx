@@ -5,12 +5,15 @@ import { Link } from 'react-router-dom';
 import { CgDanger } from "react-icons/cg";
 import { FaCheck } from "react-icons/fa";
 import { MdAttachFile } from "react-icons/md";
+import Loader from '../components/Loader'
+import Message from '../components/Message'
 import { useUpdateOrderStatusMutation } from '../slices/ordersApiSlice';
 
 const Order = ({ orders: initialOrders }) => {
   const {userInfo} = useSelector(state=> state.auth)
   const [orders, setOrders] = useState([]);
   const [updateOrderStatus, {error, isLoading}] = useUpdateOrderStatusMutation();
+
 
   useEffect(() => {
     if (initialOrders) {
@@ -31,6 +34,9 @@ const Order = ({ orders: initialOrders }) => {
 
   const handleStatus = async (orderId) => {
     try {
+      // Send the updated status to the server
+      await updateOrderStatus({ orderId, status: 'confirmed' });
+
       // Update the status in the local state
       setOrders((prevOrders) =>
         prevOrders.map((order) =>
@@ -38,16 +44,14 @@ const Order = ({ orders: initialOrders }) => {
         )
       );
 
-      // Send the updated status to the server
-      await updateOrderStatus({ orderId, status: 'confirmed' });
 
     } catch (error) {
       console.error('Error updating order status:', error);
     }
   };
 
-  if (isLoading) return <p>Loading...</p>;
-  if (error) return <p>Error: {error.message}</p>;
+  if (isLoading) return <Loader/>;
+  if (error) return <Message>{error.message}</Message>;
 
   return (
     <>
@@ -82,7 +86,7 @@ const Order = ({ orders: initialOrders }) => {
                     overlay={<Tooltip id={`tooltip-dangerous-goods-${order._id}`}>Dangerous Goods</Tooltip>}
                   >
                     <span style={{ display: 'inline-block' }}>
-                      <CgDanger style={{ color: 'lightsalmon'}} />
+                      <CgDanger style={{ color: 'red' }} />
                     </span>
                   </OverlayTrigger>
                 ) : ''}

@@ -35,6 +35,7 @@ const CreateOrderScreen = () => {
   ]);
   const [freightCost, setFreightCost] = useState('');
   const [dangerousGoods, setDangerousGoods] = useState(false);
+  const [specialNotes, setSpecialNotes] = useState('');
   const [document, setDocument] = useState([]);
 
   const {userInfo} = useSelector(state=> state.auth)
@@ -138,12 +139,12 @@ const CreateOrderScreen = () => {
     }
   };
 
-const removeDocument = (index) => {
-    // Remove document at the specified index
-    const updatedDocuments = [...document];
-    updatedDocuments.splice(index, 1);
-    setDocument(updatedDocuments);
-};
+  const removeDocument = (index) => {
+      // Remove document at the specified index
+      const updatedDocuments = [...document];
+      updatedDocuments.splice(index, 1);
+      setDocument(updatedDocuments);
+  };
 
 
   const submitHandler = async (e) => {
@@ -180,6 +181,7 @@ const removeDocument = (index) => {
       packages,
       freightCost,
       dangerousGoods,
+      specialNotes,
       document,
     };
 
@@ -584,7 +586,7 @@ const removeDocument = (index) => {
         </Col>
       </Row>
 
-      <Col className='mt-3'>
+  <Col className='mt-3'>
     <Card>
       <Card.Body>
         <Card.Title>Documentation</Card.Title>
@@ -628,6 +630,19 @@ const removeDocument = (index) => {
       </Card.Body>
     </Card>
   </Col>
+
+  <Row>
+    <Form.Group controlId='specialNotes'>
+      <Form.Label>Special Notes</Form.Label>
+      <Form.Control
+        as='textarea'
+        rows={3}
+        placeholder='Enter Special Notes'
+        value={specialNotes}
+        onChange={(e) => setSpecialNotes(e.target.value)}
+      />
+    </Form.Group>
+  </Row>
 
 
       <Row>

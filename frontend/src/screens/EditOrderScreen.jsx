@@ -11,7 +11,7 @@ import calculateSingleVolume from '../utils/calculateSingleVolume';
 const EditOrderScreen = () => {
   const { id: orderId } = useParams();
   const {userInfo} = useSelector(state=> state.auth)
-  const { data: order, isLoading, isError } = useGetOrderDetailsQuery(orderId);
+  const { data: order, isLoading, isError} = useGetOrderDetailsQuery(orderId);
   const [uploadOrderDocument] = useUploadOrderDocumentMutation();
   const [updateOrder] = useUpdateOrderMutation();
 
@@ -43,6 +43,7 @@ const EditOrderScreen = () => {
   const [freightCost, setFreightCost] = useState('');
   const [dangerousGoods, setDangerousGoods] = useState(false);
   const [document, setDocument] = useState([]);
+  const [specialNotes, setSpecialNotes] = useState('');
 
   // Fetch entity details for origin and destination
   const { data: originEntity, isFetching: isFetchingOriginEntity } = useGetEntityByNumberQuery(originEntityNumber);
@@ -60,6 +61,7 @@ const EditOrderScreen = () => {
       setFreightCost(order.freightCost);
       setDangerousGoods(order.dangerousGoods);
       setDocument(order.document || []);
+      setSpecialNotes(order.specialNotes);
     }
   }, [order]);
 
@@ -214,6 +216,7 @@ const handleBackButtonClick = () => {
       freightCost,
       dangerousGoods,
       document,
+      specialNotes,
     };
 
     try {
@@ -599,6 +602,30 @@ const handleBackButtonClick = () => {
         </Col>
       </Row>
 
+      <Row className='mt-2'>
+        <Col md={2} className='d-flex align-items-center'>
+          <Form.Group controlId='dangerousGoods'>
+            <Form.Check
+              type='checkbox'
+              label='Dangerous Goods'
+              checked={dangerousGoods}
+              onChange={(e) => setDangerousGoods(e.target.checked)}
+            />
+          </Form.Group>
+        </Col>
+        <Col md={3} >
+          <Form.Group controlId='freightCost'>
+            <Form.Label>Freight Cost ($)</Form.Label>
+            <Form.Control
+              type='number'
+              placeholder='Enter freight cost'
+              value={freightCost}
+              onChange={(e) => setFreightCost(e.target.value)}
+            ></Form.Control>
+          </Form.Group>
+        </Col>
+      </Row>
+      
     <Col className='mt-3'>
     <Card>
       <Card.Body>
@@ -644,28 +671,18 @@ const handleBackButtonClick = () => {
     </Card>
   </Col>
       
-      <Row className='mt-2'>
-        <Col md={2} className='d-flex align-items-center'>
-          <Form.Group controlId='dangerousGoods'>
-            <Form.Check
-              type='checkbox'
-              label='Dangerous Goods'
-              checked={dangerousGoods}
-              onChange={(e) => setDangerousGoods(e.target.checked)}
-            />
-          </Form.Group>
-        </Col>
-        <Col md={3} >
-          <Form.Group controlId='freightCost'>
-            <Form.Label>Freight Cost ($)</Form.Label>
-            <Form.Control
-              type='number'
-              placeholder='Enter freight cost'
-              value={freightCost}
-              onChange={(e) => setFreightCost(e.target.value)}
-            ></Form.Control>
-          </Form.Group>
-        </Col>
+
+      <Row>
+      <Form.Group controlId='specialNotes'>
+        <Form.Label>Special Notes</Form.Label>
+        <Form.Control
+          as='textarea'
+          rows={3}
+          placeholder='Enter Special Notes'
+          value={specialNotes}
+          onChange={(e) => setSpecialNotes(e.target.value)}
+        />
+      </Form.Group>
       </Row>
 
       <Button type='submit' className='mt-3'>

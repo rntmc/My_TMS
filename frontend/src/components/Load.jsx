@@ -101,105 +101,124 @@ const Load = ({ loads: initialLoads }) => {
           </tr>
         </thead>
         <tbody style={{ fontSize: '12px' }}>
-          {loads.map((load) => (
-            <tr key={load._id}>
-              <td>
-                <Row>
-                  <Link to={`/load/${load._id}`} style={{color:'blue'}}>{load.loadNumber}</Link>
-                </Row>
-              </td>
-              <td  style={{fontSize:'10px'}}>
-                <div style={{ fontWeight: 'bold' }}>
-                  {load.origin.entityNumber} {load.origin.entityName}
-                </div>
-                <div className='disp'>
-                  {load.origin.entityLocation.country} - {load.origin.entityLocation.postcode}
-                </div>
-              </td>
-              <td style={{fontSize:'10px'}}>
-                <div style={{ fontWeight: 'bold' }}>
-                  {load.destination.entityNumber} {load.destination.entityName}
-                </div>
-                <div className='disp'>
-                  {load.destination.entityLocation.country} - {load.destination.entityLocation.postcode}
-                </div>
-              </td>
-              <td>
-                {load.orders.length > 0 ? (
-                  load.orders.map((order) => {
-                    const orderData = orders.find((o) => o._id === order._id);
-                    return (
-                      <div key={order._id}>
-                        {orderData ? (
-                          <>
-                            <Link to={`/order/${orderData._id}`} style={{ color: 'blue' }}>
-                              {orderData.orderNumber}
-                            </Link>
-                            {orderData.dangerousGoods && (
-                              <OverlayTrigger
-                                placement="top"
-                                overlay={<Tooltip id={`tooltip-dangerous-goods-${order._id}`}>Dangerous Goods</Tooltip>}
-                              >
-                                <span style={{ display: 'inline-block' }}>
-                                  <CgDanger style={{ color: 'lightsalmon', marginLeft: '2px' }} />
-                                </span>
-                              </OverlayTrigger>
-                            )}
-                            {orderData.document.length > 0 && (
-                              <OverlayTrigger
-                                placement="top"
-                                overlay={<Tooltip id={`tooltip-documentation-${order._id}`}>Attachments</Tooltip>}
-                              >
-                                <span style={{ display: 'inline-block' }}>
-                                  <MdAttachFile style={{ color: 'black' }} />
-                                </span>
-                              </OverlayTrigger>
-                            )}
-                          </>
-                        ) : (
-                          <p></p>
-                        )}
-                      </div>
-                    );
-                  })
-                ) : (
-                  <p></p>
-                )}
-              </td>
-              <td>$ {totals[load._id]?.totalFreightCost.toFixed(2) ?? load.totalFreightCost.toFixed(2)}</td>
-              <td>{totals[load._id]?.totalVolume.toFixed(2) ?? load.totalVolume.toFixed(2)} m³</td>
-              <td>{totals[load._id]?.totalWeight.toFixed(2) ?? load.totalWeight.toFixed(2)} kg</td>
-              <td>{load.carrierName}</td>
-              <td>{load.transportType}</td>
-              <td>
-                <div style={{ display: 'flex', alignItems: 'center', justifyContent:'center', gap: '0.3rem' }}>
-                  <span>{load.status}</span>
-                  {load.status === "open" && userInfo.role !== 'User' && (
-                    <OverlayTrigger
-                      placement="top"
-                      overlay={<Tooltip id={`tooltip-confirm-${load._id}`}>Confirm</Tooltip>}
-                    >
-                      <Button 
-                        style={{
-                          padding: '0.3rem',
-                          backgroundColor: '#a5a9ad',
-                          color: 'white',
-                          display: 'flex',
-                          justifyContent: 'center',
-                          alignItems: 'center',
-                          border: 'none',
-                          borderRadius: '5px'
-                        }}
-                        onClick={() => handleStatus(load._id)}
-                      >
-                        <FaCheck style={{ fontSize: '1rem', color: "green" }}/>
-                      </Button>
-                    </OverlayTrigger>
+          {loads.map((load) => {
+            const hasDangerousGoods = load.orders.some(order => {
+              const orderData = orders.find(o => o._id === order._id);
+              return orderData?.dangerousGoods;
+            });
+
+            return (
+              <tr key={load._id}>
+                <td>
+                  <Row>
+                    <Link to={`/load/${load._id}`} style={{ color: 'blue' }}>
+                      {load.loadNumber}
+                      {hasDangerousGoods && (
+                        <OverlayTrigger
+                          placement="top"
+                          overlay={<Tooltip id={`tooltip-dangerous-goods-${load._id}`}>Dangerous Goods</Tooltip>}
+                        >
+                          <span style={{ display: 'inline-block', marginLeft: '5px', cursor: 'default' }}>
+                            <CgDanger style={{ color: 'red' }} />
+                          </span>
+                        </OverlayTrigger>
+                      )}
+                    </Link>
+                  </Row>
+                </td>
+                <td style={{ fontSize: '10px' }}>
+                  <div style={{ fontWeight: 'bold' }}>
+                    {load.origin.entityNumber} {load.origin.entityName}
+                  </div>
+                  <div className='disp'>
+                    {load.origin.entityLocation.country} - {load.origin.entityLocation.postcode}
+                  </div>
+                </td>
+                <td style={{ fontSize: '10px' }}>
+                  <div style={{ fontWeight: 'bold' }}>
+                    {load.destination.entityNumber} {load.destination.entityName}
+                  </div>
+                  <div className='disp'>
+                    {load.destination.entityLocation.country} - {load.destination.entityLocation.postcode}
+                  </div>
+                </td>
+                <td>
+                  {load.orders.length > 0 ? (
+                    load.orders.map((order) => {
+                      const orderData = orders.find((o) => o._id === order._id);
+                      return (
+                        <div key={order._id}>
+                          {orderData ? (
+                            <>
+                              <Link to={`/order/${orderData._id}`} style={{ color: 'blue' }}>
+                                {orderData.orderNumber}
+                              </Link>
+                              {orderData.dangerousGoods && (
+                                <OverlayTrigger
+                                  placement="top"
+                                  overlay={<Tooltip id={`tooltip-dangerous-goods-${order._id}`}>Dangerous Goods</Tooltip>}
+                                >
+                                  <span style={{ display: 'inline-block' }}>
+                                    <CgDanger style={{ color: 'red', marginLeft: '2px' }} />
+                                  </span>
+                                </OverlayTrigger>
+                              )}
+                              {orderData.document.length > 0 && (
+                                <OverlayTrigger
+                                  placement="top"
+                                  overlay={<Tooltip id={`tooltip-documentation-${order._id}`}>Attachments</Tooltip>}
+                                >
+                                  <span style={{ display: 'inline-block' }}>
+                                    <MdAttachFile style={{ color: 'black' }} />
+                                  </span>
+                                </OverlayTrigger>
+                              )}
+                            </>
+                          ) : (
+                            <p></p>
+                          )}
+                        </div>
+                      );
+                    })
+                  ) : (
+                    <p></p>
                   )}
-                </div>
-              </td>
-            </tr>
-          ))}
+                </td>
+                <td>$ {totals[load._id]?.totalFreightCost.toFixed(2) ?? load.totalFreightCost.toFixed(2)}</td>
+                <td>{totals[load._id]?.totalVolume.toFixed(2) ?? load.totalVolume.toFixed(2)} m³</td>
+                <td>{totals[load._id]?.totalWeight.toFixed(2) ?? load.totalWeight.toFixed(2)} kg</td>
+                <td>{load.carrierName}</td>
+                <td>{load.transportType}</td>
+                <td>
+                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.3rem' }}>
+                    <span>{load.status}</span>
+                    {load.status === "open" && userInfo.role !== 'User' && (
+                      <OverlayTrigger
+                        placement="top"
+                        overlay={<Tooltip id={`tooltip-confirm-${load._id}`}>Confirm</Tooltip>}
+                      >
+                        <Button
+                          style={{
+                            padding: '0.3rem',
+                            backgroundColor: '#a5a9ad',
+                            color: 'white',
+                            display: 'flex',
+                            justifyContent: 'center',
+                            alignItems: 'center',
+                            border: 'none',
+                            borderRadius: '5px'
+                          }}
+                          onClick={() => handleStatus(load._id)}
+                        >
+                          <FaCheck style={{ fontSize: '1rem', color: "green" }} />
+                        </Button>
+                      </OverlayTrigger>
+                    )}
+                  </div>
+                </td>
+              </tr>
+            );
+          })}
         </tbody>
       </Table>
     </>

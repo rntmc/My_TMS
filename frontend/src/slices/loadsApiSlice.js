@@ -59,6 +59,13 @@ export const loadsApiSlice = apiSlice.injectEndpoints({
       }),
       keepUnusedDataFor: 5
     }),
+    uploadLoadDocument: builder.mutation({
+      query: (data) => ({
+        url: `${LOADS_URL}`,
+        method: 'POST',
+        body: data,
+      }),
+    }),
   }),
 })
 
@@ -70,4 +77,5 @@ export const {
   useDeleteOrCancelLoadMutation,
   useUpdateLoadMutation,
   useGetMyLoadsQuery,
+  useUploadLoadDocumentMutation,
 } = loadsApiSlice;

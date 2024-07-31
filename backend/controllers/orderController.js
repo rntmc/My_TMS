@@ -65,6 +65,7 @@ const createOrder = asyncHandler(async (req, res) => {
     dangerousGoods,
     document,
     loads,
+    specialNotes,
   } = req.body;
 
   const orderNumber = await getNextOrderNumber();
@@ -103,6 +104,7 @@ const createOrder = asyncHandler(async (req, res) => {
     document,
     user: req.user._id,
     loads,
+    specialNotes,
     trackingInfo: [{
       action: 'created',
       user: req.user._id 
@@ -227,6 +229,7 @@ const updateOrder = asyncHandler(async (req, res) => {
   if (req.body.dangerousGoods !== undefined) order.dangerousGoods = req.body.dangerousGoods;
   if (req.body.document) order.document = req.body.document;
   if (req.body.loads) order.loads = req.body.loads;
+  if (req.body.specialNotes) order.specialNotes = req.body.specialNotes;
 
   if (order.document && order.document.length > 8) {
     res.status(400);

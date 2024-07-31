@@ -102,6 +102,9 @@ const orderSchema = new mongoose.Schema({
     type: Boolean,
     default: false
   },
+  specialNotes: {
+    type: String,
+  },
   trackingInfo: [{
     action: {
       type: String,

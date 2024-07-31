@@ -1,7 +1,7 @@
 import { useParams, useNavigate } from 'react-router-dom';
 import {useSelector} from 'react-redux'
 import { Link  } from 'react-router-dom';
-import { Row, Col, ListGroup, Form, Button, OverlayTrigger, Tooltip, Card  } from 'react-bootstrap';
+import { Row, Col, ListGroup, Form, Button, OverlayTrigger, Tooltip  } from 'react-bootstrap';
 import { MdOutlineEdit, MdClose  } from "react-icons/md";
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
@@ -16,7 +16,7 @@ const OrderScreen = () => {
   const {userInfo} = useSelector(state=> state.auth)
   const navigate = useNavigate()
 
-  const { data: order, isLoading, error} = useGetOrderDetailsQuery(orderId);
+  const { data: order, isLoading, error, refetch} = useGetOrderDetailsQuery(orderId);
   const [deleteOrCancelOrder] = useDeleteOrCancelOrderMutation()  
 
   const cancelDeleteHandler = async (id) => {
@@ -42,6 +42,7 @@ const OrderScreen = () => {
       try {
         await deleteOrCancelOrder(id);
         toast.success(`Order ${order.orderNumber} deleted`)
+        refetch();
         if(userInfo.role === "Admin") {
           navigate('/bookings')
         } else {
@@ -113,6 +114,7 @@ const OrderScreen = () => {
                 <h3>Order Number: {order.orderNumber}</h3>
               </ListGroup>
             </Col>
+            { (order.status === 'open' && userInfo.role === 'User') || (userInfo.role === 'Admin') ? (
             <Col md={2} className="text-end">
               <div style={{ display: 'flex', flexDirection: 'row', gap: '0.25rem', justifyContent: 'flex-end' }}>
                 <OverlayTrigger
@@ -152,6 +154,7 @@ const OrderScreen = () => {
                 </OverlayTrigger>
               </div>
             </Col>
+            ) : ("")}
           </Row>
 
         <Row className='mb-2'>

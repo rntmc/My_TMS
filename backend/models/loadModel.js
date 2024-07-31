@@ -1,6 +1,17 @@
 import mongoose from "mongoose";
 import addressSchema from './addressModel.js';
 
+const documentSchema = new mongoose.Schema({
+  url: {
+    type: String,
+    required: true
+  },
+  name: {
+    type: String,
+    required: true
+  }
+});
+
 const loadSchema = new mongoose.Schema({
   loadNumber: {
     type: Number,
@@ -102,9 +113,7 @@ const loadSchema = new mongoose.Schema({
       required: true
     }
   }],
-  document: {
-    type: String, 
-  },
+  document: [documentSchema],
   user: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User',  // Optional, if you want to track which user created or manages the load
