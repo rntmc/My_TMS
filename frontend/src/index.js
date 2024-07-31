@@ -46,11 +46,11 @@ const router = createBrowserRouter(
         <Route path="/order/:id" element={<OrderScreen/>}/> 
         <Route path="/createorder" element={<CreateOrderScreen/>}/> 
         <Route path="/editorder/:id" element={<EditOrderScreen/>}/> 
-        <Route path="/search/:keyword" element={<MyOrdersScreen/>}/> {/*CHECK*/}
+        <Route path="/myorders/search/:keyword" element={<MyOrdersScreen/>}/> {/*CHECK*/}
 
         <Route path="/myloads" element={<MyLoadsScreen/>}/>
         <Route path="/load/:id" element={<LoadScreen/>}/> 
-        <Route path="/search/:keyword" element={<MyLoadsScreen/>}/> {/*CHECK*/}
+        <Route path="/myloads/search/:keyword" element={<MyLoadsScreen/>}/> {/*CHECK*/}
         
         {/* <Route path="/search/:keyword/page/:pagenumber" element={<Bookings/>}/> {/*CHECK*/}
         {/* <Route path="/myorders/page/:pageNumber" element={<MyOrdersScreen/>}/>  */}
@@ -60,7 +60,7 @@ const router = createBrowserRouter(
         <Route path="/bookings" element={<Bookings/>}/> 
         <Route path="/editload/:id" element={<EditLoadScreen/>}/> 
         <Route path="/createload" element={<CreateLoadScreen/>}/> 
-        <Route path="bookings/search/:keyword" element={<Bookings/>}/> {/*CHECK*/}
+        <Route path="/bookings/search/:keyword" element={<Bookings/>}/> {/*CHECK*/}
         <Route path="/database" element={<DatabaseScreen/>}/> 
         <Route path="/database/users" element={<UserDatabaseScreen/>}/> 
         <Route path="/database/usercreation" element={<UserDatabaseCreationScreen/>}/> 

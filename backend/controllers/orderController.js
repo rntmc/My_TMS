@@ -121,12 +121,60 @@ const createOrder = asyncHandler(async (req, res) => {
   res.status(201).json(createdOrder)
 })
 
-// @Desc get carriers orders ***CHECK***
+// @Desc get user orders ***CHECK***
 // @ route POST /api/myorders
 // @access User/carrier
 const getMyOrders = asyncHandler(async (req, res) => {
-  const orders = await Order.find({ user: req.user._id}) //orders linked to the user
-    .populate('loads');
+  const keyword = req.query.keyword;
+
+  // Base query to fetch orders linked to the user
+  let query = { user: req.user._id };
+
+  if (keyword) {
+    if (!isNaN(keyword)) {
+      // Keyword is a number
+      query = {
+        $and: [
+          { user: req.user._id },
+          {
+            $or: [
+              { orderNumber: Number(keyword) }
+            ]
+          }
+        ]
+      };
+    } else {
+      try {
+        // Attempt to convert the keyword to an ObjectId
+        const objectId = new mongoose.Types.ObjectId(keyword);
+        query = {
+          $and: [
+            { user: req.user._id },
+            {
+              $or: [
+                { orderNumber: { $regex: keyword, $options: 'i' } },
+                { 'loads': { $in: [objectId] } }
+              ]
+            }
+          ]
+        };
+      } catch (error) {
+        // Keyword is a string but not a valid ObjectId
+        query = {
+          $and: [
+            { user: req.user._id },
+            {
+              $or: [
+                { orderNumber: { $regex: keyword, $options: 'i' } }
+              ]
+            }
+          ]
+        };
+      }
+    }
+  }
+
+  const orders = await Order.find(query).populate('loads');
 
   res.status(200).json(orders)
 })

@@ -55,9 +55,16 @@ export const ordersApiSlice = apiSlice.injectEndpoints({
       invalidatesTags: ['Orders'],
     }),
     getMyOrders: builder.query({ //orders associated with a user
-      query: () => ({
-        url: `${ORDERS_URL}/myorders`,
-      }),
+      query: ({ keyword } = {}) => {
+        const params = {};
+        if (keyword) {
+          params.keyword = keyword;
+        }
+        return {
+          url: `${ORDERS_URL}/myorders`,
+          params,
+        };
+      },
       keepUnusedDataFor: 5
     }),
     uploadOrderDocument: builder.mutation({

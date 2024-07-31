@@ -16,7 +16,7 @@ const SearchBox = () => {
       if(userInfo.role === 'Admin') {
         navigate(`/bookings/search/${keyword}`);
       } else {
-        navigate(`/search/${keyword}`);
+        navigate(`/myorders/search/${keyword}`);
       }
     } else {
       navigate(-1)

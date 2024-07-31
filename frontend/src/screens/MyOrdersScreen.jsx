@@ -1,6 +1,6 @@
 import {Row, Col, Button, OverlayTrigger, Tooltip } from 'react-bootstrap';
 import {useSelector} from 'react-redux'
-import { Link } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
 import { IoMdAdd } from "react-icons/io";
 import { useGetMyOrdersQuery } from '../slices/ordersApiSlice';
 import Loader from '../components/Loader';
@@ -9,8 +9,9 @@ import Order from '../components/Order';
 
 const MyOrdersScreen = () => {
   const {userInfo} = useSelector(state=> state.auth)
+  const {keyword} = useParams()
 
-  const { data: orders, isLoading, error } = useGetMyOrdersQuery();
+  const { data: orders, isLoading, error } = useGetMyOrdersQuery({ keyword: keyword || '' });
 
   return (
 <>
