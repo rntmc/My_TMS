@@ -1,8 +1,10 @@
 import { useState } from "react"
+import { useSelector } from "react-redux"
 import {Form, Button} from 'react-bootstrap'
 import {useParams, useNavigate} from 'react-router-dom'
 
 const SearchBox = () => {
+  const {userInfo} = useSelector(state=> state.auth)
   const {keyword: urlKeyword} = useParams()
   const navigate = useNavigate()
   const [keyword, setKeyword] = useState(urlKeyword || '');
@@ -11,7 +13,11 @@ const SearchBox = () => {
     e.preventDefault();
     if(keyword.trim()) {
       setKeyword('')
-      navigate(`/bookings/search/${keyword}`);
+      if(userInfo.role === 'Admin') {
+        navigate(`/bookings/search/${keyword}`);
+      } else {
+        navigate(`/search/${keyword}`);
+      }
     } else {
       navigate(-1)
     }

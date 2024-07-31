@@ -46,11 +46,11 @@ const router = createBrowserRouter(
         <Route path="/order/:id" element={<OrderScreen/>}/> 
         <Route path="/createorder" element={<CreateOrderScreen/>}/> 
         <Route path="/editorder/:id" element={<EditOrderScreen/>}/> 
-        <Route path="/myorders/search/:keyword" element={<MyOrdersScreen/>}/> {/*CHECK*/}
+        <Route path="/search/:keyword" element={<MyOrdersScreen/>}/> {/*CHECK*/}
 
         <Route path="/myloads" element={<MyLoadsScreen/>}/>
         <Route path="/load/:id" element={<LoadScreen/>}/> 
-        <Route path="/myloads/search/:keyword" element={<MyLoadsScreen/>}/> {/*CHECK*/}
+        <Route path="/search/:keyword" element={<MyLoadsScreen/>}/> {/*CHECK*/}
         
         {/* <Route path="/search/:keyword/page/:pagenumber" element={<Bookings/>}/> {/*CHECK*/}
         {/* <Route path="/myorders/page/:pageNumber" element={<MyOrdersScreen/>}/>  */}

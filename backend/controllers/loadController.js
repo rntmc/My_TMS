@@ -13,9 +13,23 @@ const getLoads = asyncHandler(async (req, res) => {
   let query = {};
   if (keyword) {
     if (!isNaN(keyword)) {
-      query = { loadNumber: Number(keyword) };
+      const orders = await Order.find({ orderNumber: Number(keyword) }).select('_id');
+      const orderIds = orders.map(order => order._id);
+      query = {
+        $or: [
+          { loadNumber: Number(keyword) },
+          { 'orders': { $in: orderIds } }
+        ]
+      };
     } else {
-      query = { loadNumber: { $regex: keyword, $options: 'i' } };
+      const orders = await Order.find({ orderNumber: { $regex: keyword, $options: 'i' } }).select('_id');
+      const orderIds = orders.map(order => order._id);
+      query = {
+        $or: [
+          { loadNumber: { $regex: keyword, $options: 'i' } },
+          { 'orders': { $in: orderIds } }
+        ]
+      };
     }
   }
 
