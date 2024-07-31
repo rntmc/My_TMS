@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import {Table, OverlayTrigger, Tooltip, Button, Row} from 'react-bootstrap'
+import {useSelector} from 'react-redux'
 import { Link } from 'react-router-dom'
 import { CgDanger } from "react-icons/cg";
 import { FaCheck } from "react-icons/fa"
@@ -11,8 +12,9 @@ const Load = ({ loads: initialLoads }) => {
   const [loads, setLoads] = useState([])
   const [orders, setOrders] = useState([])
   const [totals, setTotals] = useState({});
+
+  const {userInfo} = useSelector(state=> state.auth)
   const [updateLoadStatus] = useUpdateLoadStatusMutation()
-  
   const { data: loadsData, refetch: refetchLoads } = useGetLoadsQuery();
   const { data: ordersData } = useGetOrdersQuery();
 
@@ -69,7 +71,7 @@ const Load = ({ loads: initialLoads }) => {
       await refetchLoads()
       
       // Update the status in the local state
-      setOrders((prevLoads) =>
+      setLoads((prevLoads) =>
         prevLoads.map((load) =>
           load._id === loadId ? { ...load, status: 'confirmed' } : load
         )
@@ -169,9 +171,10 @@ const Load = ({ loads: initialLoads }) => {
               <td>{totals[load._id]?.totalWeight.toFixed(2) ?? load.totalWeight.toFixed(2)} kg</td>
               <td>{load.carrierName}</td>
               <td>{load.transportType}</td>
-              <td>{load.status}
-                <div style={{ display: 'flex', flexDirection: 'row', gap: '0.5rem', justifyContent: 'center' }}>
-                  {load.status === "open" ? (
+              <td>
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent:'center', gap: '0.3rem' }}>
+                  <span>{load.status}</span>
+                  {load.status === "open" && userInfo.role !== 'User' && (
                     <OverlayTrigger
                       placement="top"
                       overlay={<Tooltip id={`tooltip-confirm-${load._id}`}>Confirm</Tooltip>}
@@ -192,7 +195,7 @@ const Load = ({ loads: initialLoads }) => {
                         <FaCheck style={{ fontSize: '1rem', color: "green" }}/>
                       </Button>
                     </OverlayTrigger>
-                  ) : ("")}
+                  )}
                 </div>
               </td>
             </tr>

@@ -3,7 +3,7 @@
 - [] check if really need bookingSlice.js
 - [X] logInfo at models
 
-- [] loginScreen.jsx: Remove /register as only admin must be able to create users
+- [X] loginScreen.jsx: Remove /register as only admin must be able to create users
 - [X] RegisterScreen.jsx: Only admins must be able to add users/carriers
 - [] fix the middlewares to ensure the accesses are assigned correctly! (if include admin in )
 - [] Only Carrier and Admin should be able to change orders/load status
@@ -19,7 +19,7 @@
 
 - [X] automatically generate order and load ID
 - [X] implement googleAPI to validate address
-- [] validate orderNumbers before fill in the form
+- [X] validate orderNumbers before fill in the form
 - [] add distance and freight cost to Orders
 - [x] Order Component: if status is Open, show confirm button(carrier & admin only)
 - [X] Add Product quantity rows

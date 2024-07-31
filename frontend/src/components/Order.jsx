@@ -1,12 +1,14 @@
 import { useState, useEffect } from 'react';
 import { Table, Button, OverlayTrigger, Tooltip } from 'react-bootstrap';
+import {useSelector} from 'react-redux'
 import { Link } from 'react-router-dom';
 import { CgDanger } from "react-icons/cg";
 import { FaCheck } from "react-icons/fa";
 import { MdAttachFile } from "react-icons/md";
-import { useUpdateOrderStatusMutation, useGetOrderDetailsQuery } from '../slices/ordersApiSlice';
+import { useUpdateOrderStatusMutation } from '../slices/ordersApiSlice';
 
 const Order = ({ orders: initialOrders }) => {
+  const {userInfo} = useSelector(state=> state.auth)
   const [orders, setOrders] = useState([]);
   const [updateOrderStatus, {error, isLoading}] = useUpdateOrderStatusMutation();
 
@@ -125,32 +127,32 @@ const Order = ({ orders: initialOrders }) => {
               <td>$ {order.freightCost.toFixed(2)}</td>
               <td>{order.distance} km</td>
               <td>
-          <div style={{ display: 'flex', alignItems: 'center', justifyContent:'center', gap: '0.5rem' }}>
-            <span>{order.status}</span>
-            {order.status === "open" && (
-              <OverlayTrigger
-                placement="top"
-                overlay={<Tooltip id={`tooltip-confirm-${order._id}`}>Confirm</Tooltip>}
-              >
-                <Button 
-                  style={{
-                    padding: '0.3rem',
-                    backgroundColor: '#a5a9ad',
-                    color: 'white',
-                    display: 'flex',
-                    justifyContent: 'center',
-                    alignItems: 'center',
-                    border: 'none',
-                    borderRadius: '5px'
-                  }}
-                  onClick={() => handleStatus(order._id)}
-                >
-                  <FaCheck style={{ fontSize: '1rem', color: "green" }}/>
-                </Button>
-              </OverlayTrigger>
-            )}
-          </div>
-        </td>
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent:'center', gap: '0.3rem' }}>
+                  <span>{order.status}</span>
+                  {order.status === "open" && userInfo.role !== 'User' && (
+                    <OverlayTrigger
+                      placement="top"
+                      overlay={<Tooltip id={`tooltip-confirm-${order._id}`}>Confirm</Tooltip>}
+                    >
+                      <Button 
+                        style={{
+                          padding: '0.3rem',
+                          backgroundColor: '#a5a9ad',
+                          color: 'white',
+                          display: 'flex',
+                          justifyContent: 'center',
+                          alignItems: 'center',
+                          border: 'none',
+                          borderRadius: '5px'
+                        }}
+                        onClick={() => handleStatus(order._id)}
+                      >
+                        <FaCheck style={{ fontSize: '1rem', color: "green" }}/>
+                      </Button>
+                    </OverlayTrigger>
+                  )}
+                </div>
+              </td>
             </tr>
           ))}
         </tbody>

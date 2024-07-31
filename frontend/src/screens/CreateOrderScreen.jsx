@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import {useSelector} from 'react-redux'
 import { Form, Button, Row, Col, Card, ListGroup } from 'react-bootstrap';
 import { FaPlus, FaMinus, FaTrash } from "react-icons/fa";
 import {toast} from 'react-toastify';
@@ -36,6 +37,7 @@ const CreateOrderScreen = () => {
   const [dangerousGoods, setDangerousGoods] = useState(false);
   const [document, setDocument] = useState([]);
 
+  const {userInfo} = useSelector(state=> state.auth)
   const { data: originEntity, refetch: refetchOriginEntity } = useGetEntityByNumberQuery(originEntityNumber);
   const { data: destinationEntity, refetch: refetchDestinationEntity } = useGetEntityByNumberQuery(destinationEntityNumber)
 
@@ -183,7 +185,11 @@ const removeDocument = (index) => {
 
     try {
       await createOrder(orderData).unwrap();
-      navigate('/bookings');
+      if(userInfo.role==='Admin') {
+        navigate('/bookings');
+      } else {
+        navigate('/myorders')
+      }
     } catch (error) {
       console.error('Error creating order:', error);
     }
