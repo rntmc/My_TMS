@@ -53,11 +53,11 @@ const EntityDatabaseScreen = () => {
           <Col md={2} className="d-flex justify-content-end align-items-center">
             <OverlayTrigger
               placement="top"
-              overlay={<Tooltip>Add Entity</Tooltip>}
+              overlay={<Tooltip>Create Entity</Tooltip>}
             >
               <Link to='/database/entitycreation' style={{ textDecoration: 'none' }}>
                 <Button style={{ padding: '0.5rem 0.8rem', backgroundColor: '#677074', color: '#fff', border: 'none' }}>
-                  Carrier
+                  Entity
                   <IoMdAdd style={{ fontSize: '1.5rem' }} />
                 </Button>  
               </Link>

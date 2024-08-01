@@ -93,7 +93,7 @@ const CarrierDatabaseScreen = () => {
                   <div style={{ display: 'flex', flexDirection: 'row', gap: '0.5rem', justifyContent: 'center' }}>
                     <OverlayTrigger
                       placement="top"
-                      overlay={<Tooltip id={`tooltip-edit-${carrier._id}`}>Editar</Tooltip>}
+                      overlay={<Tooltip id={`tooltip-edit-${carrier._id}`}>Edit</Tooltip>}
                     >
                       <Button 
                         style={{
@@ -114,7 +114,7 @@ const CarrierDatabaseScreen = () => {
 
                     <OverlayTrigger
                       placement="top"
-                      overlay={<Tooltip id={`tooltip-delete-${carrier._id}`}>Deletar</Tooltip>}
+                      overlay={<Tooltip id={`tooltip-delete-${carrier._id}`}>Delete</Tooltip>}
                     >
                       <Button 
                         style={{

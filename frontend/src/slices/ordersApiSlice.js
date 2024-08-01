@@ -55,8 +55,8 @@ export const ordersApiSlice = apiSlice.injectEndpoints({
       invalidatesTags: ['Orders'],
     }),
     getMyOrders: builder.query({ //orders associated with a user
-      query: ({ keyword } = {}) => {
-        const params = {};
+      query: ({ keyword, pageNumber } = {}) => {
+        const params = {page: pageNumber};
         if (keyword) {
           params.keyword = keyword;
         }

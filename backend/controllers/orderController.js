@@ -126,6 +126,8 @@ const createOrder = asyncHandler(async (req, res) => {
 // @access User/carrier
 const getMyOrders = asyncHandler(async (req, res) => {
   const keyword = req.query.keyword;
+  const pageSize = Number(req.query.pageSize) || 8;
+  const page = Number(req.query.page) || 1;
 
   // Base query to fetch orders linked to the user
   let query = { user: req.user._id };
@@ -174,9 +176,14 @@ const getMyOrders = asyncHandler(async (req, res) => {
     }
   }
 
-  const orders = await Order.find(query).populate('loads');
+  const count = await Order.countDocuments(query);
 
-  res.status(200).json(orders)
+  const orders = await Order.find(query)
+    .populate('loads')
+    .skip(pageSize * (page - 1))
+    .limit(pageSize);
+
+  res.status(200).json({ orders, page, pages: Math.ceil(count / pageSize) })
 })
 
 // @Desc get carriers orders ***CHECK***

@@ -1,4 +1,4 @@
-import {Row, Col, Button, OverlayTrigger, Tooltip } from 'react-bootstrap';
+import {Row, Col, Button, OverlayTrigger, Tooltip  } from 'react-bootstrap';
 import {useSelector} from 'react-redux'
 import { Link, useParams } from 'react-router-dom';
 import { IoMdAdd } from "react-icons/io";
@@ -6,12 +6,17 @@ import { useGetMyOrdersQuery } from '../slices/ordersApiSlice';
 import Loader from '../components/Loader';
 import Message from '../components/Message'
 import Order from '../components/Order';
+import Paginate from '../components/Paginate';
 
 const MyOrdersScreen = () => {
   const {userInfo} = useSelector(state=> state.auth)
-  const {keyword} = useParams()
+  const {keyword, pageNumber = 1} = useParams()
 
-  const { data: orders, isLoading, error } = useGetMyOrdersQuery({ keyword: keyword || '' });
+  const { data, isLoading, error } = useGetMyOrdersQuery({ keyword: keyword || '', pageNumber });
+
+  const orders = data?.orders || [];
+  const page = data?.page || 1;
+  const pages = data?.pages || 1;
 
   return (
 <>
@@ -42,6 +47,7 @@ const MyOrdersScreen = () => {
           </Row>
           <Row>
             <Order orders={orders} />
+            <Paginate pages={pages} page={page} role={userInfo.role} keyword={keyword} />
         </Row>
       </>
     )}

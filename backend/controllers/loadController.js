@@ -42,6 +42,8 @@ const getLoads = asyncHandler(async (req, res) => {
 // @access User/carrier
 const getMyLoads = asyncHandler(async (req, res) => {
   const keyword = req.query.keyword;
+  const pageSize = 8;
+  const page = Number(req.query.pageNumber) || 1;
 
   // Fetch user's orders
   let userOrdersQuery = { user: req.user._id };
@@ -85,15 +87,20 @@ const getMyLoads = asyncHandler(async (req, res) => {
   const userOrderIds = userOrders.map(order => order._id);
 
   // Fetch loads containing the user's orders
-  const loads = await Load.find({ 'orders': { $in: userOrderIds } }).populate({
-    path: 'orders',
-    populate: {
-      path: 'packages',
-      select: 'packageQty length width height volume weight'
-    }
-  });
+  const loads = await Load.find({ 'orders': { $in: userOrderIds } })
+    .populate({
+      path: 'orders',
+      populate: {
+        path: 'packages',
+        select: 'packageQty length width height volume weight'
+      }
+    })
+    .limit(pageSize)
+    .skip(pageSize * (page - 1));
 
-  res.status(200).json(loads);
+  const count = await Load.countDocuments({ 'orders': { $in: userOrderIds } });
+
+  res.status(200).json({ loads, page, pages: Math.ceil(count / pageSize) });
 });
 
 // @Desc Fetch a load

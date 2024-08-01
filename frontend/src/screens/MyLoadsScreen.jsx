@@ -1,16 +1,24 @@
-import { useParams } from 'react-router-dom';
+import { useParams, useLocation } from 'react-router-dom';
 import { Row, Col } from 'react-bootstrap';
 import { useGetMyLoadsQuery } from '../slices/loadsApiSlice';
 import { useGetMyOrdersQuery } from '../slices/ordersApiSlice';
 import Loader from '../components/Loader';
 import Message from '../components/Message'
 import Load from '../components/Load';
+import Paginate from '../components/Paginate';
 
 const MyLoadsScreen = () => {
-  const {keyword} = useParams()
+  const {keyword, pageNumber = 1} = useParams()
+  const location = useLocation();
 
-  const { data: loads, isLoading: isLoadsLoading, error: loadsError } = useGetMyLoadsQuery({ keyword: keyword || '' });
-  const { data: orders, isLoading: isOrdersLoading, error: ordersError } = useGetMyOrdersQuery({ keyword: keyword || '' });
+  const { data: loadsData, isLoading: isLoadsLoading, error: loadsError } = useGetMyLoadsQuery({ keyword: keyword || '', pageNumber });
+  const { data: ordersData, isLoading: isOrdersLoading, error: ordersError } = useGetMyOrdersQuery({ keyword: keyword || '' });
+
+  const loads = loadsData?.loads || [];
+  const page = loadsData?.page || 1;
+  const pages = loadsData?.pages || 1;
+
+  const orders = ordersData?.orders || [];
 
   let filteredLoads = []; //use this to avoid the "some" undefined error
 
@@ -37,6 +45,9 @@ const MyLoadsScreen = () => {
           </Row>
           <Row>
             <Load loads={filteredLoads} />
+        </Row>
+        <Row>
+          <Paginate pages={pages} page={page} role="User" keyword={keyword} currentPath={location.pathname} />
         </Row>
       </>
     )}

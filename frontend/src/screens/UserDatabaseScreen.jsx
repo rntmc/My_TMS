@@ -99,7 +99,7 @@ const UserDatabaseScreen = () => {
                   <div style={{ display: 'flex', flexDirection: 'row', gap: '0.5rem', justifyContent: 'center' }}>
                     <OverlayTrigger
                       placement="top"
-                      overlay={<Tooltip id={`tooltip-edit-${user._id}`}>Editar</Tooltip>}
+                      overlay={<Tooltip id={`tooltip-edit-${user._id}`}>Edit</Tooltip>}
                     >
                       <Button 
                         style={{
@@ -120,7 +120,7 @@ const UserDatabaseScreen = () => {
 
                     <OverlayTrigger
                       placement="top"
-                      overlay={<Tooltip id={`tooltip-delete-${user._id}`}>Deletar</Tooltip>}
+                      overlay={<Tooltip id={`tooltip-delete-${user._id}`}>Delete</Tooltip>}
                     >
                       <Button 
                         style={{
