@@ -7,24 +7,36 @@ const openingHoursSchema = new mongoose.Schema({
     required: true,
     enum: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']
   },
+  isWeekend: {
+    type: Boolean,
+    required: true,
+  },
+  isClosed: {
+    type: Boolean,
+    default: false,
+  },
   open: {
     type: String, // Using string to represent time in HH:mm format
-    required: true,
     validate: {
       validator: function(v) {
-        return /^([0-1]\d|2[0-3]):([0-5]\d)$/.test(v); // Validates HH:mm format
+        return this.isClosed || !v || /^([0-1]\d|2[0-3]):([0-5]\d)$/.test(v); // Validates HH:mm format if not closed and not empty
       },
       message: props => `${props.value} is not a valid time!`
+    },
+    required: function() {
+      return !this.isClosed; // Open time is required if not closed
     }
   },
   close: {
     type: String, // Using string to represent time in HH:mm format
-    required: true,
     validate: {
       validator: function(v) {
-        return /^([0-1]\d|2[0-3]):([0-5]\d)$/.test(v); // Validates HH:mm format
+        return this.isClosed || !v || /^([0-1]\d|2[0-3]):([0-5]\d)$/.test(v); // Validates HH:mm format if not closed and not empty
       },
       message: props => `${props.value} is not a valid time!`
+    },
+    required: function() {
+      return !this.isClosed; // Close time is required if not closed
     }
   },
 });
