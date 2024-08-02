@@ -47,16 +47,15 @@ const router = createBrowserRouter(
         <Route path="/order/:id" element={<OrderScreen/>}/> 
         <Route path="/createorder" element={<CreateOrderScreen/>}/> 
         <Route path="/editorder/:id" element={<EditOrderScreen/>}/> 
-        <Route path="/myorders/search/:keyword" element={<MyOrdersScreen/>}/> {/*CHECK*/}
-        <Route path="/search/:keyword" element={<SearchScreen/>} />
-
-        <Route path="/myloads" element={<MyLoadsScreen/>}/>
         <Route path="/load/:id" element={<LoadScreen/>}/> 
-        <Route path="/myloads/search/:keyword" element={<MyLoadsScreen/>}/> {/*CHECK*/}
-        
-        <Route path="/search/:keyword/page/:pagenumber" element={<Bookings/>}/>
-        <Route path="/myorders/page/:pageNumber" element={<MyOrdersScreen/>}/> 
-        <Route path="/myloads/page/:pageNumber" element={<MyLoadsScreen/>}/> 
+
+        <Route path="/myorders/page/:pageNumber" element={<MyOrdersScreen/>}/> {/*CHECK*/}
+        <Route path="/search/:keyword/page/:pageNumber" element={<MyOrdersScreen/>}/> 
+
+        <Route path="/myloads" element={<MyLoadsScreen />} />
+        <Route path="/myloads/page/:pageNumber" element={<MyLoadsScreen/>}/> {/*CHECK*/}
+        <Route path="/search/:keyword/page/:pageNumber" element={<MyLoadsScreen/>}/>
+
       </Route>
 
       <Route path='' element={<AdminRoute/>}>
@@ -74,6 +73,7 @@ const router = createBrowserRouter(
         <Route path="/database/entities" element={<EntityDatabaseScreen/>}/> 
         <Route path="/database/entitycreation" element={<EntityDatabaseCreationScreen/>}/> 
         <Route path="/database/editentity/:id" element={<DatabaseEntityEditScreen/>}/> 
+        <Route path="/bookings/search/:keyword/page/:pageNumber" element={<Bookings/>}/>
       </Route>
     </Route>
   )

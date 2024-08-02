@@ -14,7 +14,6 @@ const Order = ({ orders: initialOrders }) => {
   const [orders, setOrders] = useState([]);
   const [updateOrderStatus, {error, isLoading}] = useUpdateOrderStatusMutation();
 
-
   useEffect(() => {
     if (initialOrders) {
       const formattedOrders = initialOrders.map(order => {

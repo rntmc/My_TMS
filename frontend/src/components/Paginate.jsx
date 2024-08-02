@@ -6,10 +6,11 @@ const Paginate = ({ pages, page, role, keyword = '', currentPath = '' }) => {
     pages > 1 && (
       <Pagination>
         {[...Array(pages).keys()].map((x) => {
+          const pageNumber = x + 1;
           let path = '';
 
           if (role === 'admin') {
-            path = keyword ? `/bookings/search/${keyword}/page/${x + 1}` : `/bookings/page/${x + 1}`;
+            path = keyword ? `/bookings/search/${keyword}/page/${pageNumber}` : `/bookings/page/${pageNumber}`;
           } else {
             if (currentPath && currentPath.includes('/myorders')) {
               path = `/myorders/page/${x + 1}`;

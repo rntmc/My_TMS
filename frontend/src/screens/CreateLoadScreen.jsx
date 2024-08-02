@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { MdDelete } from "react-icons/md";
 import { useCreateLoadMutation } from '../slices/loadsApiSlice';
 import { useGetOrdersQuery } from '../slices/ordersApiSlice';
+import {useGetEntityByNumberQuery } from '../slices/entitiesApiSlice'
 
 const CreateLoadScreen = () => {
   const [loadNumber, setLoadNumber] = useState('');
@@ -40,6 +41,43 @@ const CreateLoadScreen = () => {
   const [createLoad, { isLoading: createLoadLoading }] = useCreateLoadMutation();
   const { data: ordersData, refetch: refetchOrders } = useGetOrdersQuery();
   const navigate = useNavigate();
+  
+  const { data: originEntity, refetch: refetchOriginEntity } = useGetEntityByNumberQuery(originEntityNumber);
+  const { data: destinationEntity, refetch: refetchDestinationEntity } = useGetEntityByNumberQuery(destinationEntityNumber)
+
+  useEffect(() => {
+    if (originEntity) {
+      setOriginEntityName(originEntity.name || '');
+      setOriginAddress(originEntity.location.address || '');
+      setOriginCity(originEntity.location.city || '');
+      setOriginState(originEntity.location.state || '');
+      setOriginPostcode(originEntity.location.postcode || '');
+      setOriginCountry(originEntity.location.country || '');
+    }
+  }, [originEntity]);
+  
+  useEffect(() => {
+    if (destinationEntity) {
+      setDestinationEntityName(destinationEntity.name || '');
+      setDestinationAddress(destinationEntity.location.address || '');
+      setDestinationCity(destinationEntity.location.city || '');
+      setDestinationState(destinationEntity.location.state || '');
+      setDestinationPostcode(destinationEntity.location.postcode || '');
+      setDestinationCountry(destinationEntity.location.country || '');
+    }
+  }, [destinationEntity]);
+
+  useEffect(() => {
+    if (originEntityNumber) {
+      refetchOriginEntity();
+    }
+  }, [originEntityNumber]);
+
+  useEffect(() => {
+    if (destinationEntityNumber) {
+      refetchDestinationEntity();
+    }
+  }, [destinationEntityNumber]);
 
   useEffect(() => {
     const calculateTotals = () => {
@@ -221,11 +259,11 @@ const CreateLoadScreen = () => {
               <Col md={8}>
                 <Form.Group controlId='originEntityName'>
                   <Form.Label>Entity Name</Form.Label>
-                  <Form.Control
+                  <Form.Control style={{backgroundColor: '#cdcaca5f'}}
                     type='text'
                     placeholder='Enter Entity Name'
                     value={originEntityName}
-                    onChange={(e) => setOriginEntityName(e.target.value)}
+                    readOnly
                   />
                 </Form.Group>
               </Col>
@@ -233,33 +271,33 @@ const CreateLoadScreen = () => {
 
             <Form.Group controlId='originAddress'>
               <Form.Label>Address</Form.Label>
-              <Form.Control
+              <Form.Control style={{backgroundColor: '#cdcaca5f'}}
                 type='text'
                 placeholder='Enter Address'
                 value={originAddress}
-                onChange={(e) => setOriginAddress(e.target.value)}
+                readOnly
               />
             </Form.Group>
             <Row>
               <Col md={8}>
                 <Form.Group controlId='originCity'>
                   <Form.Label>City</Form.Label>
-                  <Form.Control
+                  <Form.Control style={{backgroundColor: '#cdcaca5f'}}
                     type='text'
                     placeholder='Enter City'
                     value={originCity}
-                    onChange={(e) => setOriginCity(e.target.value)}
+                    readOnly
                   />
                 </Form.Group>
               </Col>
               <Col md={4}>
                 <Form.Group controlId='originState'>
                   <Form.Label>State</Form.Label>
-                  <Form.Control
+                  <Form.Control style={{backgroundColor: '#cdcaca5f'}}
                     type='text'
                     placeholder='Enter State'
                     value={originState}
-                    onChange={(e) => setOriginState(e.target.value)}
+                    readOnly
                   />
                 </Form.Group>
               </Col>
@@ -268,22 +306,22 @@ const CreateLoadScreen = () => {
               <Col md={8}>
                 <Form.Group controlId='originPostcode'>
                   <Form.Label>Postcode</Form.Label>
-                  <Form.Control
+                  <Form.Control style={{backgroundColor: '#cdcaca5f'}}
                     type='text'
                     placeholder='Enter Postcode'
                     value={originPostcode}
-                    onChange={(e) => setOriginPostcode(e.target.value)}
+                    readOnly
                   />
                 </Form.Group>
               </Col>
               <Col md={4}>
                 <Form.Group controlId='originCountry'>
                   <Form.Label>Country</Form.Label>
-                  <Form.Control
+                  <Form.Control style={{backgroundColor: '#cdcaca5f'}}
                     type='text'
                     placeholder='Enter Country'
                     value={originCountry}
-                    onChange={(e) => setOriginCountry(e.target.value)}
+                    readOnly
                   />
                 </Form.Group>
               </Col>
@@ -310,11 +348,11 @@ const CreateLoadScreen = () => {
               <Col md={8}>
                 <Form.Group controlId='destinationEntityName'>
                   <Form.Label>Entity Name</Form.Label>
-                  <Form.Control
+                  <Form.Control style={{backgroundColor: '#cdcaca5f'}}
                     type='text'
                     placeholder='Enter Entity Name'
                     value={destinationEntityName}
-                    onChange={(e) => setDestinationEntityName(e.target.value)}
+                    readOnly
                   />
                 </Form.Group>
               </Col>
@@ -322,33 +360,33 @@ const CreateLoadScreen = () => {
 
             <Form.Group controlId='destinationAddress'>
               <Form.Label>Address</Form.Label>
-              <Form.Control
+              <Form.Control style={{backgroundColor: '#cdcaca5f'}}
                 type='text'
                 placeholder='Enter Address'
                 value={destinationAddress}
-                onChange={(e) => setDestinationAddress(e.target.value)}
+                readOnly
               />
             </Form.Group>
             <Row>
               <Col md={8}>
                 <Form.Group controlId='destinationCity'>
                   <Form.Label>City</Form.Label>
-                  <Form.Control
+                  <Form.Control style={{backgroundColor: '#cdcaca5f'}}
                     type='text'
                     placeholder='Enter City'
                     value={destinationCity}
-                    onChange={(e) => setDestinationCity(e.target.value)}
+                    readOnly
                   />
                 </Form.Group>
               </Col>
               <Col md={4}>
                 <Form.Group controlId='destinationState'>
                   <Form.Label>State</Form.Label>
-                  <Form.Control
+                  <Form.Control style={{backgroundColor: '#cdcaca5f'}}
                     type='text'
                     placeholder='Enter State'
                     value={destinationState}
-                    onChange={(e) => setDestinationState(e.target.value)}
+                    readOnly
                   />
                 </Form.Group>
               </Col>
@@ -357,22 +395,22 @@ const CreateLoadScreen = () => {
               <Col md={8}>
                 <Form.Group controlId='destinationPostcode'>
                   <Form.Label>Postcode</Form.Label>
-                  <Form.Control
+                  <Form.Control style={{backgroundColor: '#cdcaca5f'}}
                     type='text'
                     placeholder='Enter Postcode'
                     value={destinationPostcode}
-                    onChange={(e) => setDestinationPostcode(e.target.value)}
+                    readOnly
                   />
                 </Form.Group>
               </Col>
               <Col md={4}>
                 <Form.Group controlId='destinationCountry'>
                   <Form.Label>Country</Form.Label>
-                  <Form.Control
+                  <Form.Control style={{backgroundColor: '#cdcaca5f'}}
                     type='text'
                     placeholder='Enter Country'
                     value={destinationCountry}
-                    onChange={(e) => setDestinationCountry(e.target.value)}
+                    readOnly
                   />
                 </Form.Group>
               </Col>

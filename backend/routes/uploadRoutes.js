@@ -46,7 +46,7 @@ router.post('/', (req, res) => {
       return res.status(500).json({ message: 'Upload failed', error: err.message });
     }
     const files = req.files.map(file=>({
-      url: `/${file.path}`,
+      url: `/${file.path.replace(/\\/g, '/')}`, // Replace backslashes with forward slashes
       name: file.originalname
     }));
     res.status(200).send({

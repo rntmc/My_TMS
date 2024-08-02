@@ -54,8 +54,8 @@ export const loadsApiSlice = apiSlice.injectEndpoints({
       invalidatesTags: ['Loads'],
     }),
     getMyLoads: builder.query({
-      query: ({ keyword = '', pageNumber = 1 }) => {
-        const params = {keyword, pageNumber};
+      query: ({ keyword , pageNumber }) => {
+        const params = {page: pageNumber || 1};
         if (keyword) {
           params.keyword = keyword;
         }

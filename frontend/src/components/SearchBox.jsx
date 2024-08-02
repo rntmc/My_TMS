@@ -7,16 +7,18 @@ const SearchBox = () => {
   const {userInfo} = useSelector(state=> state.auth)
   const {keyword: urlKeyword} = useParams()
   const navigate = useNavigate()
+  
   const [keyword, setKeyword] = useState(urlKeyword || '');
 
   const submitHandler = (e) => {
     e.preventDefault();
     if(keyword.trim()) {
       setKeyword('')
+      const page = 1; // Default page number for new search
       if(userInfo.role === 'Admin') {
-        navigate(`/bookings/search/${keyword}`);
+        navigate(`/bookings/search/${keyword}/page/${page}`);
       } else {
-        navigate(`/search/${keyword}`);
+        navigate(`/search/${keyword}/page/${page}`);
       }
     } else {
       navigate(-1)

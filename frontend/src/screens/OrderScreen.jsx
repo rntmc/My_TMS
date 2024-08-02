@@ -1,8 +1,9 @@
-import { useParams, useNavigate } from 'react-router-dom';
+import { useState } from 'react';
 import {useSelector} from 'react-redux'
-import { Link  } from 'react-router-dom';
-import { Row, Col, Card, Form, Button, OverlayTrigger, Tooltip  } from 'react-bootstrap';
-import { MdOutlineEdit, MdClose  } from "react-icons/md";
+import { Link, useParams, useNavigate } from 'react-router-dom';
+import { Row, Col, Card, Form, Button, ListGroup, OverlayTrigger, Tooltip, Collapse  } from 'react-bootstrap';
+import { MdOutlineEdit, MdClose, MdExpandMore, MdExpandLess } from "react-icons/md";
+import { FaDownload } from 'react-icons/fa';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import { toast } from "react-toastify";
@@ -14,6 +15,8 @@ import { useGetOrderDetailsQuery, useDeleteOrCancelOrderMutation } from '../slic
 const OrderScreen = () => {
   const { id: orderId } = useParams();
   const {userInfo} = useSelector(state=> state.auth)
+  const [openDocuments, setOpenDocuments] = useState(false);
+
   const navigate = useNavigate()
 
   const { data: order, isLoading, error, refetch} = useGetOrderDetailsQuery(orderId);
@@ -55,20 +58,20 @@ const OrderScreen = () => {
     }
   }
 
-  const totalDocuments = order?.document?.length || 0;
-
   const downloadDocumentsHandler = (documents) => {
-    if (documents && documents.length > 0) {
-      documents.forEach((doc) => {
-        if (doc.url) {
-          window.open(doc.url, '_blank');
-        } else {
-          toast.error(`Document URL not found for ${doc.name}`);
-        }
-      });
-    } else {
-      toast.error('No documents found.');
-    }
+    documents.forEach((doc) => {
+      if (doc.url) {
+        const link = document.createElement('a');
+        link.href = doc.url;
+        link.download = doc.name;
+        link.style.display = 'none'; // Hide the link
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+      } else {
+        toast.error(`Document URL not found for ${doc.name}`);
+      }
+    });
   };
 
   const editOrderNavigator = () => {
@@ -87,6 +90,7 @@ const OrderScreen = () => {
   const totalVolume = order ? calculateTotalVolume(order.packages) : 0;
   const totalFreightCost = order ? order.packages.reduce((total, pack) => total + pack.freightCost, 0) : 0;
 
+  const totalDocuments = order?.document?.length || 0;
 
   return (
     <>
@@ -117,11 +121,14 @@ const OrderScreen = () => {
               <Card className="order-card mb-3">
                 <Card.Header>
                   <Row>
-                    <Col md={6}>
-                      <h3>Order Number: {order.orderNumber}</h3>
+                    <Col md={6} style={{marginBottom: '0.25rem'}}>
+                      <h3 style={{marginBottom: '0.2rem'}}>Order Number: {order.orderNumber}</h3>
+                      <strong>Status:</strong> {order.status}
+                    </Col>
+                    <Col md={3}>
                     </Col>
                     {(order.status === 'open' && userInfo.role === 'User') || (userInfo.role === 'Admin') ? (
-                      <Col md={6} className="text-end">
+                      <Col md={3} className="text-end">
                         <div style={{ display: 'flex', flexDirection: 'row', gap: '0.25rem', justifyContent: 'flex-end' }}>
                           <OverlayTrigger
                             placement="top"
@@ -164,8 +171,8 @@ const OrderScreen = () => {
                   </Row>
                 </Card.Header>
                 <Card.Body>
-                  <Row className="mb-3">
-                    <Col md={6}>
+                  <Row className="mb-1">
+                    <Col md={6} >
                       <strong>Collection Date:</strong><br />
                       {order.pickupDate ? (
                         <DatePicker selected={new Date(order.pickupDate)} readOnly dateFormat="Pp" />
@@ -179,7 +186,7 @@ const OrderScreen = () => {
                     </Col>
                   </Row>
 
-                  <Row className="mb-3">
+                  <Row className="mb-1">
                     <Col md={6}>
                       <strong>Origin:</strong><br />
                       {`${order.origin.entityNumber} ${order.origin.entityName}`}<br />
@@ -196,7 +203,7 @@ const OrderScreen = () => {
                     </Col>
                   </Row>
 
-                  <Row className="mb-3">
+                  <Row className="mb-1">
                     <Col md={6}>
                       <strong>Volume:</strong> {totalVolume.toFixed(2)} m³
                     </Col>
@@ -205,7 +212,7 @@ const OrderScreen = () => {
                     </Col>
                   </Row>
 
-                  <Row className="mb-3">
+                  <Row className="mb-1">
                     <Col md={6}>
                       <strong>Distance:</strong> {order.distance.toFixed(0)} km
                     </Col>
@@ -214,28 +221,67 @@ const OrderScreen = () => {
                     </Col>
                   </Row>
 
-                  <Row className="mb-3">
+                  <Row className="mb-1">
                     <Col md={6}>
                       <strong>Dangerous Goods:</strong> {order.dangerousGoods ? 'Yes' : 'No'}
                     </Col>
                   </Row>
 
-                  <Row className="mb-3">
+                  <Row className="mb-2">
                     <Col md={12}>
                       <strong>Special Notes:</strong>
                       <Form.Control as="textarea" rows={3} defaultValue={order.specialNotes || ''} readOnly />
                     </Col>
                   </Row>
 
-                  <Button variant="secondary" onClick={() => downloadDocumentsHandler(order.document)}>
-                    Download Documents ({totalDocuments})
-                  </Button>
+                  <Row className="mb-2">
+                    <Col md={12}>
+                      <Card>
+                        <Card.Body>
+                          <Card.Title>
+                            <Button
+                              variant="link"
+                              onClick={() => setOpenDocuments(!openDocuments)}
+                              aria-controls="documents-collapse"
+                              aria-expanded={openDocuments}
+                              style={{ textDecoration: 'none' }}
+                            >
+                              Documents {totalDocuments > 0 && `(${totalDocuments})`} 
+                              {openDocuments ? <MdExpandLess /> : <MdExpandMore />}
+                            </Button>
+                          </Card.Title>
+                          <Collapse in={openDocuments}>
+                            <div id="documents-collapse">
+                              <ListGroup>
+                                {order.document && order.document.length > 0 ? (
+                                  order.document.map((doc, index) => (
+                                    <ListGroup.Item key={index}>
+                                      <a href={doc.url} target="_blank" rel="noopener noreferrer" style={{ textDecoration: 'none' }}>{doc.name}</a>
+                                      <Button
+                                        variant="outline-primary"
+                                        onClick={() => downloadDocumentsHandler([doc])}
+                                        style={{ marginLeft: '1rem' }}
+                                      >
+                                        <FaDownload /> Download
+                                      </Button>
+                                    </ListGroup.Item>
+                                  ))
+                                ) : (
+                                  <ListGroup.Item>No documents available.</ListGroup.Item>
+                                )}
+                              </ListGroup>
+                            </div>
+                          </Collapse>
+                        </Card.Body>
+                      </Card>
+                    </Col>
+                  </Row>
                 </Card.Body>
               </Card>
-
-              <LogHistory trackingInfo={order.trackingInfo} />
             </Col>
           </Row>
+
+          <LogHistory trackingInfo={order.trackingInfo} />
         </>
       )}
     </>

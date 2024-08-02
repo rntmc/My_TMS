@@ -10,9 +10,9 @@ import Paginate from '../components/Paginate';
 
 const MyOrdersScreen = () => {
   const {userInfo} = useSelector(state=> state.auth)
-  const {keyword, pageNumber = 1} = useParams()
+  const {keyword = '', pageNumber = 1} = useParams()
 
-  const { data, isLoading, error } = useGetMyOrdersQuery({ keyword: keyword || '', pageNumber });
+  const { data, isLoading, error } = useGetMyOrdersQuery({ keyword, pageNumber });
 
   const orders = data?.orders || [];
   const page = data?.page || 1;

@@ -81,7 +81,6 @@ const loadSchema = new mongoose.Schema({
   },
   licensePlate: {
     type: String,
-    required: true
   },
   driver: {
     type: String,

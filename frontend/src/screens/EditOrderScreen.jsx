@@ -260,6 +260,7 @@ const handleBackButtonClick = () => {
               value={status}
               onChange={(e) => setStatus(e.target.value)}
             >
+              <option value='open'>Open</option>
               <option value='confirmed'>Confirmed</option>
               <option value='collected'>Collected</option>
               <option value='delivered'>Delivered</option>
@@ -626,6 +627,19 @@ const handleBackButtonClick = () => {
         </Col>
       </Row>
       
+            <Row>
+            <Form.Group controlId='specialNotes'>
+              <Form.Label>Special Notes</Form.Label>
+              <Form.Control
+                as='textarea'
+                rows={3}
+                placeholder='Enter Special Notes'
+                value={specialNotes}
+                onChange={(e) => setSpecialNotes(e.target.value)}
+              />
+            </Form.Group>
+            </Row>
+      
     <Col className='mt-3'>
     <Card>
       <Card.Body>
@@ -672,18 +686,6 @@ const handleBackButtonClick = () => {
   </Col>
       
 
-      <Row>
-      <Form.Group controlId='specialNotes'>
-        <Form.Label>Special Notes</Form.Label>
-        <Form.Control
-          as='textarea'
-          rows={3}
-          placeholder='Enter Special Notes'
-          value={specialNotes}
-          onChange={(e) => setSpecialNotes(e.target.value)}
-        />
-      </Form.Group>
-      </Row>
 
       <Button type='submit' className='mt-3'>
         Update Order

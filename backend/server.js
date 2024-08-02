@@ -11,6 +11,7 @@ import userRoutes from './routes/userRoutes.js'
 import carrierRoutes from './routes/carrierRoutes.js'
 import entitiesRoutes from './routes/entityRoutes.js'
 import uploadRoutes from './routes/uploadRoutes.js'
+import downloadRoutes from './routes/downloadRoutes.js'
 
 const port = process.env.PORT || 5000;
 
@@ -34,9 +35,10 @@ app.use('/api/orders', orderRoutes)
 app.use('/api/carriers', carrierRoutes)
 app.use('/api/entities', entitiesRoutes)
 app.use('/api/uploads', uploadRoutes)
+app.use('/api/download', downloadRoutes)
 
 const __dirname = path.resolve()
-app.use('/uploads', express.static(path.join(__dirname, '/uploads')))
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')))
 
 app.use(notFound)
 app.use(errorHandler)
