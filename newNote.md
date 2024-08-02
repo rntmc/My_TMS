@@ -24,7 +24,7 @@
 - [x] Order Component: if status is Open, show confirm button(carrier & admin only)
 - [X] Add Product quantity rows
 - [X] Add measurements rows
-- [] Add possibility to attach multiple docs to Orders and Loads. Validate file format an max number of files. Add icon for orders with docs attached
+- [X] Add possibility to attach multiple docs to Orders and Loads. Validate file format an max number of files. Add icon for orders with docs attached
 - [] Download docs
 - [X] checkbox next to "open" orders so they can be cancelled easily ('/bookings')
 - [X] update dangerousGoods so the icon changes in the bookings page

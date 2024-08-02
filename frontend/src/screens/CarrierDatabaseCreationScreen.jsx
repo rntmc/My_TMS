@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Form, Button, Row, Col } from 'react-bootstrap';
 import { useAddCarrierMutation } from '../slices/carriersApiSlice';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 
 const CarrierDatabaseCreationScreen = () => {
   const [carrierNumber, setCarrierNumber] = useState('');
@@ -74,6 +74,15 @@ const CarrierDatabaseCreationScreen = () => {
   };
 
   return (
+    <>
+    <Row>
+    <Col md={12}>
+      <Link className='btn btn-light my-3' to='/database'>
+        Return
+      </Link>
+    </Col>
+  </Row>
+
     <Row className="justify-content-md-center">
       <Col xs={12} md={8}>
         <h1>Create Carrier</h1>
@@ -239,6 +248,7 @@ const CarrierDatabaseCreationScreen = () => {
         </Form>
       </Col>
     </Row>
+    </>
   );
 };
 

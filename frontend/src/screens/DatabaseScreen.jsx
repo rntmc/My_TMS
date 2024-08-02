@@ -1,11 +1,20 @@
 import React from 'react';
 import { Row, Col, Button } from 'react-bootstrap';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 
 const DatabaseScreen = () => {
   const navigate = useNavigate();
 
   return (
+    <>
+    <Row>
+      <Col md={12}>
+        <Link className='btn btn-light my-3' to='/bookings'>
+          Return
+        </Link>
+      </Col>
+    </Row>
+    
     <Row style={{ padding: '20px', backgroundColor: '#f8f9fa', borderRadius: '10px', boxShadow: '0 0 10px rgba(0, 0, 0, 0.1)' }}>
       <Col xs={12} className="text-center" style={{ marginBottom: '20px' }}>
         <h2>Databases</h2>
@@ -22,6 +31,8 @@ const DatabaseScreen = () => {
         </div>
       </Col>
     </Row>
+    
+    </>
   );
 };
 

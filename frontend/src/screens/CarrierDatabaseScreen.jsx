@@ -44,6 +44,15 @@ const CarrierDatabaseScreen = () => {
   }
 
   return (
+    <>
+    <Row>
+    <Col md={12}>
+      <Link className='btn btn-light my-3' to='/database'>
+        Return
+      </Link>
+    </Col>
+  </Row>
+
     <Row style={{ padding: '20px', backgroundColor: '#f8f9fa', borderRadius: '10px', boxShadow: '0 0 10px rgba(0, 0, 0, 0.1)' }}>
       <Col xs={12} style={{ marginBottom: '20px' }}>
         <Row>
@@ -140,6 +149,7 @@ const CarrierDatabaseScreen = () => {
         </Table>
       </Col>
     </Row>
+    </>
   );
 };
 
