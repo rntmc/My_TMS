@@ -61,10 +61,19 @@ const OrderScreen = () => {
   const downloadDocumentsHandler = (documents) => {
     documents.forEach((doc) => {
       if (doc.url) {
+        // Adjust for potential issues with backslashes in paths
+        const fixedUrl = doc.url.replace(/\\/g, '/');
+  
+        // Prepend the backend URL if the path is not already absolute
+        const fullUrl = fixedUrl.startsWith('http')
+          ? fixedUrl
+          : `http://localhost:5000${fixedUrl}`;
+  
         const link = document.createElement('a');
-        link.href = doc.url;
+        link.href = fullUrl;
         link.download = doc.name;
-        link.style.display = 'none'; // Hide the link
+        link.target = "_blank"; // Open in a new tab
+        link.rel = "noopener noreferrer"; // Security feature for opening new tabs
         document.body.appendChild(link);
         link.click();
         document.body.removeChild(link);
@@ -256,7 +265,7 @@ const OrderScreen = () => {
                                 {order.document && order.document.length > 0 ? (
                                   order.document.map((doc, index) => (
                                     <ListGroup.Item key={index}>
-                                      <a href={doc.url} target="_blank" rel="noopener noreferrer" style={{ textDecoration: 'none' }}>{doc.name}</a>
+                                      <a href={doc.url}style={{ textDecoration: 'none' }}>{doc.name}</a>
                                       <Button
                                         variant="outline-primary"
                                         onClick={() => downloadDocumentsHandler([doc])}

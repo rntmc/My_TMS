@@ -16,6 +16,7 @@
 - [x] If an user/carrier/supplier is updated, my userInfo in Redux changes to the data I have updated. Correct this.
 
 - [] Supplier Database: adjust opening hours to accept blank days or create drop down list
+- [] Implement filters (supplier and between dates)
 
 - [X] automatically generate order and load ID
 - [X] implement googleAPI to validate address
@@ -25,7 +26,7 @@
 - [X] Add Product quantity rows
 - [X] Add measurements rows
 - [X] Add possibility to attach multiple docs to Orders and Loads. Validate file format an max number of files. Add icon for orders with docs attached
-- [] Download docs
+- [X] Download docs
 - [X] checkbox next to "open" orders so they can be cancelled easily ('/bookings')
 - [X] update dangerousGoods so the icon changes in the bookings page
 - [x] Include dangerousGoods description in booking page

@@ -32,21 +32,44 @@ const getOrders = asyncHandler(async (req, res) => {
   res.json(orders);
 });
 
-// @Desc Fetch a load
-// @ route GET /api/loads/:id
+// @Desc Fetch a order
+// @ route GET /api/orders/:id
 // @access Public
 const getOrderById = asyncHandler(async (req, res) => {
+  // Fetch the order by ID and populate related fields
   const order = await Order.findById(req.params.id)
     .populate('packages')
-    .populate('loads');
+    .populate('loads')
+    .populate('origin.entityNumber') // Ensure to populate the origin entity
 
-  if(order) {
-    res.json(order)
-  } else {
-    res.status(404)
-    throw new Error('Resource not found')
+  if (!order) {
+    res.status(404);
+    throw new Error('Order not found');
   }
-})
+
+  // Function to get opening hours for a given day
+  const getOpeningHoursForDate = async (entityNumber, date) => {
+    const weekday = new Date(date).getDay(); // 0 for Sunday, 1 for Monday, ..., 6 for Saturday
+    const entity = await Entity.findOne({ entityNumber: entityNumber });
+
+    if (entity && entity.openingHours && entity.openingHours[weekday]) {
+      return entity.openingHours[weekday];
+    }
+
+    return null; // or return a default value
+  };
+
+  // Get the opening hours for the pickup date's origin entity
+  const originOpeningHours = await getOpeningHoursForDate(order.origin.entityNumber, order.pickupDate);
+
+  // Add the opening hours to the response object
+  const response = {
+    ...order.toObject(), // Convert the Mongoose document to a plain object
+    originOpeningHours
+  };
+
+  res.json(response);
+});
 
 // @Desc Create new order
 // @ route POST /api/orders
@@ -85,13 +108,23 @@ const createOrder = asyncHandler(async (req, res) => {
 
   const distance = await calculateDistance( {origin: originAddress, destination: destinationAddress} );
 
+   // Determine the weekday from pickupDate
+   const pickupDateObject = new Date(pickupDate);
+   const weekday = pickupDateObject.toLocaleString('en-US', { weekday: 'long' }); // e.g., "Monday"
+ 
+   // Fetch the opening hours for the given weekday
+   const openingHours = originEntity.openingHours.find(day => day.day === weekday);
+   const openingHoursData = openingHours ? { open: openingHours.open, close: openingHours.close } : { open: null, close: null };
+ 
+
   const order = new Order({
     orderNumber,
     status,
     pickupDate,
     deliveryDate,
     origin: {
-      ...origin
+      ...origin,
+      openingHours: openingHoursData,
     },
     destination: {
       ...destination

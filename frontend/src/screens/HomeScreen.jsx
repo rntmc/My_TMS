@@ -1,13 +1,16 @@
 import React from 'react';
+import { useSelector } from 'react-redux';
 import { Container, Row, Col, Card, Button } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 
 const HomeScreen = () => {
+  const { userInfo } = useSelector((state) => state.auth)
+
   return (
     <Container className="mt-4">
       <Row>
         <Col>
-          <h2>Welcome to Your Dashboard</h2>
+          <h2>Welcome to My_TMS {userInfo.name}</h2>
         </Col>
       </Row>
       <Row className="mt-4">
